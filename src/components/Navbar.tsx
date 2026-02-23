@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CartDrawer from "@/components/CartDrawer";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -43,6 +44,7 @@ const Navbar = () => {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
+          <CartDrawer />
           <Link to="/account">
             <Button variant="ghost" size="sm" className="gap-2">
               <User className="h-4 w-4" />
