@@ -77,7 +77,7 @@ const Index = () => {
                 </Button>
               </Link>
               <Link to="/packages">
-                <Button size="lg" variant="outline" className="text-base px-8 border-white text-white hover:bg-white/10">
+                <Button size="lg" variant="outline" className="text-base px-8 border-primary-foreground text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20">
                   Browse Packages
                 </Button>
               </Link>
