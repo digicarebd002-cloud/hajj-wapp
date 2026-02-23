@@ -10,6 +10,7 @@ import Wallet from "./pages/Wallet";
 import Store from "./pages/Store";
 import Packages from "./pages/Packages";
 import Community from "./pages/Community";
+import DiscussionDetail from "./pages/DiscussionDetail";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/store" element={<Store />} />
               <Route path="/packages" element={<Packages />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/community/:id" element={<DiscussionDetail />} />
               <Route path="/account" element={<Account />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
