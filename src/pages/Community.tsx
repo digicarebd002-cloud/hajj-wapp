@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { AuthGate, EmptyState } from "@/components/StateHelpers";
 import {
   Eye,
   MessageCircle,
@@ -297,9 +299,19 @@ const NewDiscussionModal = ({
 
 // --- Main Page ---
 const Community = () => {
+  const { user } = useAuth();
   const [sortTab, setSortTab] = useState("recent");
   const [activeCategory, setActiveCategory] = useState("All Discussions");
   const [modalOpen, setModalOpen] = useState(false);
+  const [authGateOpen, setAuthGateOpen] = useState(false);
+
+  const handleNewDiscussion = () => {
+    if (!user) {
+      setAuthGateOpen(true);
+    } else {
+      setModalOpen(true);
+    }
+  };
 
   const filtered =
     activeCategory === "All Discussions"
@@ -323,7 +335,7 @@ const Community = () => {
               Connect with fellow pilgrims, share experiences, and support each other.
             </p>
           </div>
-          <Button className="gap-2 shrink-0" onClick={() => setModalOpen(true)}>
+          <Button className="gap-2 shrink-0" onClick={handleNewDiscussion}>
             <Plus className="h-4 w-4" /> Start New Discussion
           </Button>
         </div>
@@ -451,6 +463,7 @@ const Community = () => {
 
       {/* New Discussion Modal */}
       <NewDiscussionModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <AuthGate open={authGateOpen} onClose={() => setAuthGateOpen(false)} message="Sign in to start a new discussion and earn points!" />
     </div>
   );
 };
