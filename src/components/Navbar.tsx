@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
+import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -86,6 +87,7 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-2">
+          <NotificationBell />
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
