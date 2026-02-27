@@ -231,9 +231,18 @@ export function useUserLikes(userId: string | undefined) {
 
 // --- Products ---
 export function useProducts() {
-  return useQuery<(Tables<"products"> & { product_variants: Tables<"product_variants">[] })[]>(
+  return useQuery<(Tables<"products"> & { product_variants: Tables<"product_variants">[]; description?: string; image_url?: string })[]>(
     () => supabase.from("products").select("*, product_variants(*)").order("created_at", { ascending: false }) as any,
     []
+  );
+}
+
+// --- Single Product ---
+export function useProduct(id: string) {
+  return useQuery<Tables<"products"> & { product_variants: Tables<"product_variants">[]; description?: string; image_url?: string }>(
+    () => supabase.from("products").select("*, product_variants(*)").eq("id", id).single() as any,
+    [id],
+    { enabled: !!id }
   );
 }
 
