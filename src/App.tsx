@@ -14,6 +14,7 @@ import Community from "./pages/Community";
 import DiscussionDetail from "./pages/DiscussionDetail";
 import Account from "./pages/Account";
 import Auth from "./pages/Auth";
+import Sponsorship from "./pages/Sponsorship";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/community/:id" element={<DiscussionDetail />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/sponsorship" element={<Sponsorship />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
