@@ -1,54 +1,84 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowUpRight, Heart } from "lucide-react";
+
+const footerLinks = {
+  Platform: [
+    { label: "Wallet", path: "/wallet" },
+    { label: "Packages", path: "/packages" },
+    { label: "Community", path: "/community" },
+    { label: "Store", path: "/store" },
+  ],
+  Support: [
+    { label: "Help Center", path: "#" },
+    { label: "Contact", path: "#" },
+    { label: "FAQs", path: "#" },
+  ],
+  Legal: [
+    { label: "Privacy Policy", path: "#" },
+    { label: "Terms of Service", path: "#" },
+  ],
+};
 
 const Footer = () => {
   return (
-    <footer className="bg-dark-teal text-dark-teal-foreground">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="relative bg-dark-teal text-dark-teal-foreground overflow-hidden">
+      {/* Decorative gradient orb */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 py-16 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 text-xl font-bold mb-3">
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-2.5 text-xl font-bold mb-4">
               <span className="text-2xl">🕌</span>
-              Hajj Wallet
+              Hajj <span className="text-primary">Wallet</span>
             </div>
-            <p className="text-sm opacity-80 leading-relaxed">
+            <p className="text-sm opacity-70 leading-relaxed max-w-xs">
               Save Together, Journey Together. A community-driven savings platform helping Muslims reach their Hajj goals.
             </p>
+            <div className="flex items-center gap-3 mt-6">
+              {["𝕏", "📘", "📸"].map((icon, i) => (
+                <motion.div
+                  key={i}
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center text-sm cursor-pointer hover:bg-primary/30 transition-colors"
+                >
+                  {icon}
+                </motion.div>
+              ))}
+            </div>
           </div>
 
-          {/* Platform */}
-          <div>
-            <h4 className="font-semibold mb-3">Platform</h4>
-            <ul className="space-y-2 text-sm opacity-80">
-              <li><Link to="/wallet" className="hover:opacity-100 transition-opacity">Wallet</Link></li>
-              <li><Link to="/packages" className="hover:opacity-100 transition-opacity">Packages</Link></li>
-              <li><Link to="/community" className="hover:opacity-100 transition-opacity">Community</Link></li>
-              <li><Link to="/store" className="hover:opacity-100 transition-opacity">Store</Link></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h4 className="font-semibold mb-3">Support</h4>
-            <ul className="space-y-2 text-sm opacity-80">
-              <li><span className="hover:opacity-100 cursor-pointer">Help Center</span></li>
-              <li><span className="hover:opacity-100 cursor-pointer">Contact</span></li>
-              <li><span className="hover:opacity-100 cursor-pointer">FAQs</span></li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="font-semibold mb-3">Legal</h4>
-            <ul className="space-y-2 text-sm opacity-80">
-              <li><span className="hover:opacity-100 cursor-pointer">Privacy Policy</span></li>
-              <li><span className="hover:opacity-100 cursor-pointer">Terms of Service</span></li>
-            </ul>
-          </div>
+          {/* Link columns */}
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider opacity-50">
+                {title}
+              </h4>
+              <ul className="space-y-3">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.path}
+                      className="group flex items-center gap-1.5 text-sm opacity-70 hover:opacity-100 transition-all"
+                    >
+                      {link.label}
+                      <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className="border-t border-white/20 mt-10 pt-6 text-center text-sm opacity-60">
-          © {new Date().getFullYear()} Hajj Wallet. All rights reserved.
+        <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs opacity-50">
+          <p>© {new Date().getFullYear()} Hajj Wallet. All rights reserved.</p>
+          <p className="flex items-center gap-1">
+            Made with <Heart className="h-3 w-3 text-accent fill-accent" /> for the Ummah
+          </p>
         </div>
       </div>
     </footer>
