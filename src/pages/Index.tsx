@@ -547,9 +547,11 @@ const Index = () => {
               chosen by engagement, dedication, and faith.
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 gap-2 rounded-full px-8 shadow-xl shadow-accent/20 h-13">
-                Learn About Sponsorship <ArrowRight className="h-4 w-4" />
-              </Button>
+              <Link to="/sponsorship">
+                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 gap-2 rounded-full px-8 shadow-xl shadow-accent/20 h-13">
+                  Learn About Sponsorship <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
