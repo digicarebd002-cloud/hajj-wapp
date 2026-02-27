@@ -567,10 +567,31 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_community_stats: {
+        Row: {
+          discussions: number | null
+          members: number | null
+          replies: number | null
+        }
+        Relationships: []
+      }
+      v_monthly_leaderboard: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          monthly_points: number | null
+          tier: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_wallet_stats: { Args: { p_user_id: string }; Returns: Json }
+      increment_view_count: {
+        Args: { p_discussion_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
