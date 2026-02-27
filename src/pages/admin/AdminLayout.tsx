@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, LogOut, ChevronLeft
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-admin";
 import { NavLink } from "@/components/NavLink";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
@@ -29,48 +30,73 @@ function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
-  const navigate = useNavigate();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
-      <SidebarContent>
-        <div className="p-4 flex items-center gap-2">
-          {!collapsed && (
-            <h2 className="text-lg font-bold text-primary truncate">Admin Panel</h2>
-          )}
+    <Sidebar collapsible="icon" className="border-r border-border/50">
+      <SidebarContent className="bg-gradient-to-b from-[hsl(186,41%,10%)] to-[hsl(186,41%,8%)]">
+        {/* Logo area */}
+        <div className="p-4 border-b border-border/30">
+          <Link to="/admin" className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+              <Shield className="h-5 w-5 text-primary-foreground" />
+            </div>
+            {!collapsed && (
+              <div>
+                <h2 className="text-base font-bold text-foreground tracking-tight">Admin</h2>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">Control Panel</p>
+              </div>
+            )}
+          </Link>
         </div>
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
+
+        <SidebarGroup className="mt-2">
+          <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.15em] text-primary/60 font-semibold px-4">
+            Management
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/admin"}
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-primary/10 text-primary font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="px-2 space-y-0.5">
+              {navItems.map((item) => {
+                const isActive = item.url === "/admin"
+                  ? location.pathname === "/admin"
+                  : location.pathname.startsWith(item.url);
+                return (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/admin"}
+                        className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                          isActive
+                            ? "bg-primary/15 text-primary font-semibold shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                        }`}
+                        activeClassName=""
+                      >
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-primary" />
+                        )}
+                        <item.icon className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`} />
+                        {!collapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="mt-auto p-4">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-muted-foreground"
-            onClick={() => navigate("/")}
-          >
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            {!collapsed && "Back to Site"}
-          </Button>
+        <div className="mt-auto p-3 border-t border-border/30">
+          <Link to="/">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+              size="sm"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {!collapsed && "Back to Site"}
+            </Button>
+          </Link>
         </div>
       </SidebarContent>
     </Sidebar>
@@ -88,11 +114,19 @@ export default function AdminLayout() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="space-y-4 w-64">
-          <Skeleton className="h-8 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center animate-pulse shadow-lg shadow-primary/20">
+            <Shield className="h-6 w-6 text-primary-foreground" />
+          </div>
+          <div className="space-y-2 w-48">
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-3/4 mx-auto" />
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -101,15 +135,26 @@ export default function AdminLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-[hsl(186,41%,7%)]">
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center border-b border-border px-4 shrink-0">
+          <header className="h-14 flex items-center border-b border-border/30 px-4 shrink-0 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
             <SidebarTrigger />
-            <span className="ml-3 text-sm font-medium text-muted-foreground">Hajj Together Admin</span>
+            <div className="ml-3 flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-sm font-semibold text-foreground/80">Hajj Together</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-primary font-medium">Admin</span>
+            </div>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-6">
-            <Outlet />
+          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Outlet />
+            </motion.div>
           </main>
         </div>
       </div>

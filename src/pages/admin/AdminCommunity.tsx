@@ -4,9 +4,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, MessageSquare, Star } from "lucide-react";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { motion } from "framer-motion";
 
 interface Discussion {
   id: string; title: string; category: string; views: number;
@@ -57,52 +58,68 @@ export default function AdminCommunity() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-foreground">Community</h1>
-      <div className="rounded-lg border border-border overflow-hidden">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center">
+            <MessageSquare className="h-5 w-5 text-violet-400" />
+          </div>
+          Community
+        </h1>
+        <p className="text-muted-foreground mt-1 ml-[52px]">{discussions.length} discussions</p>
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-border/50 overflow-hidden bg-card/30 backdrop-blur-sm">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead><TableHead>Category</TableHead>
-              <TableHead>Views</TableHead><TableHead>Date</TableHead><TableHead className="w-24"></TableHead>
+            <TableRow className="bg-card/50 hover:bg-card/50">
+              <TableHead className="font-semibold text-foreground/70">Title</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Category</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Views</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Date</TableHead>
+              <TableHead className="w-24"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-12">Loading...</TableCell></TableRow>
+            ) : discussions.length === 0 ? (
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-12">No discussions yet</TableCell></TableRow>
             ) : discussions.map(d => (
-              <TableRow key={d.id}>
-                <TableCell className="font-medium max-w-xs truncate">{d.title}</TableCell>
-                <TableCell><Badge variant="outline">{d.category}</Badge></TableCell>
-                <TableCell>{d.views}</TableCell>
-                <TableCell>{format(new Date(d.created_at), "MMM d, yyyy")}</TableCell>
-                <TableCell className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => viewReplies(d.id)}><Eye className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="icon" onClick={() => deleteDiscussion(d.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+              <TableRow key={d.id} className="hover:bg-secondary/30 transition-colors">
+                <TableCell className="font-medium text-foreground max-w-xs truncate">{d.title}</TableCell>
+                <TableCell><Badge variant="outline" className="bg-secondary/30">{d.category}</Badge></TableCell>
+                <TableCell className="text-muted-foreground">{d.views}</TableCell>
+                <TableCell className="text-muted-foreground">{format(new Date(d.created_at), "MMM d, yyyy")}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => viewReplies(d.id)} className="hover:bg-primary/10 hover:text-primary"><Eye className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => deleteDiscussion(d.id)} className="hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+      </motion.div>
 
       <Dialog open={!!selectedId} onOpenChange={o => !o && setSelectedId(null)}>
-        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Replies</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader><DialogTitle className="text-xl font-bold">Replies</DialogTitle></DialogHeader>
           {replies.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No replies yet.</p>
+            <p className="text-muted-foreground text-sm py-8 text-center">No replies yet.</p>
           ) : (
             <div className="space-y-3">
               {replies.map(r => (
-                <div key={r.id} className="p-3 rounded-lg bg-muted/50 border border-border">
-                  <p className="text-sm text-foreground">{r.body}</p>
-                  <div className="flex items-center justify-between mt-2">
+                <div key={r.id} className={`p-4 rounded-xl border transition-colors ${r.is_best_answer ? "bg-primary/10 border-primary/30" : "bg-secondary/30 border-border/50"}`}>
+                  <p className="text-sm text-foreground leading-relaxed">{r.body}</p>
+                  <div className="flex items-center justify-between mt-3">
                     <span className="text-xs text-muted-foreground">{format(new Date(r.created_at), "MMM d, yyyy")}</span>
                     <div className="flex gap-2">
-                      <Button size="sm" variant={r.is_best_answer ? "default" : "outline"} onClick={() => toggleBest(r)}>
-                        {r.is_best_answer ? "★ Best" : "Mark Best"}
+                      <Button size="sm" variant={r.is_best_answer ? "default" : "outline"} onClick={() => toggleBest(r)} className="gap-1 text-xs h-7">
+                        <Star className="h-3 w-3" />{r.is_best_answer ? "Best Answer" : "Mark Best"}
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => deleteReply(r.id)}>
+                      <Button size="sm" variant="ghost" onClick={() => deleteReply(r.id)} className="h-7 hover:bg-destructive/10">
                         <Trash2 className="h-3 w-3 text-destructive" />
                       </Button>
                     </div>

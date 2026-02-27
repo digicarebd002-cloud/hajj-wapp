@@ -8,7 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, X } from "lucide-react";
+import { Plus, Edit, Trash2, X, Package as PkgIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Pkg {
   id: string; name: string; price: number; duration: string; accommodation: string;
@@ -59,7 +60,6 @@ export default function AdminPackages() {
       if (error) { toast.error(error.message); return; }
       pkgId = data.id;
     }
-    // Sync features
     await supabase.from("package_features").delete().eq("package_id", pkgId!);
     if (features.length > 0) {
       await supabase.from("package_features").insert(
@@ -80,76 +80,91 @@ export default function AdminPackages() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Packages</h1>
-        <Button onClick={openCreate}><Plus className="mr-2 h-4 w-4" />Add Package</Button>
+        <div>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/15 flex items-center justify-center">
+              <PkgIcon className="h-5 w-5 text-orange-400" />
+            </div>
+            Packages
+          </h1>
+          <p className="text-muted-foreground mt-1 ml-[52px]">{packages.length} packages</p>
+        </div>
+        <Button onClick={openCreate} className="gap-2 font-semibold shadow-lg shadow-primary/20">
+          <Plus className="h-4 w-4" />Add Package
+        </Button>
       </div>
 
-      <div className="rounded-lg border border-border overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-border/50 overflow-hidden bg-card/30 backdrop-blur-sm">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead><TableHead>Price</TableHead><TableHead>Duration</TableHead>
-              <TableHead>Popular</TableHead><TableHead className="w-20"></TableHead>
+            <TableRow className="bg-card/50 hover:bg-card/50">
+              <TableHead className="font-semibold text-foreground/70">Name</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Price</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Duration</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Popular</TableHead>
+              <TableHead className="w-24"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-12">Loading...</TableCell></TableRow>
             ) : packages.map(p => (
-              <TableRow key={p.id}>
-                <TableCell className="font-medium">{p.name}</TableCell>
-                <TableCell>${p.price.toLocaleString()}</TableCell>
-                <TableCell>{p.duration}</TableCell>
-                <TableCell>{p.is_popular ? <Badge>Popular</Badge> : "—"}</TableCell>
-                <TableCell className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Edit className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="icon" onClick={() => remove(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+              <TableRow key={p.id} className="hover:bg-secondary/30 transition-colors">
+                <TableCell className="font-medium text-foreground">{p.name}</TableCell>
+                <TableCell className="font-semibold text-primary">${p.price.toLocaleString()}</TableCell>
+                <TableCell className="text-muted-foreground">{p.duration}</TableCell>
+                <TableCell>{p.is_popular ? <Badge className="bg-primary/20 text-primary border-primary/30">Popular</Badge> : <span className="text-muted-foreground">—</span>}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(p)} className="hover:bg-primary/10 hover:text-primary"><Edit className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => remove(p.id)} className="hover:bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+      </motion.div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>{editId ? "Edit Package" : "New Package"}</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <div><Label>Name</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader><DialogTitle className="text-xl font-bold">{editId ? "Edit Package" : "New Package"}</DialogTitle></DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Name</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="bg-secondary/50" /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Price</Label><Input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} /></div>
-              <div><Label>Duration</Label><Input value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price</Label><Input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} className="bg-secondary/50" /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Duration</Label><Input value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))} className="bg-secondary/50" /></div>
             </div>
-            <div><Label>Accommodation</Label><Input value={form.accommodation} onChange={e => setForm(f => ({ ...f, accommodation: e.target.value }))} /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Accommodation</Label><Input value={form.accommodation} onChange={e => setForm(f => ({ ...f, accommodation: e.target.value }))} className="bg-secondary/50" /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Meals</Label><Input value={form.meals} onChange={e => setForm(f => ({ ...f, meals: e.target.value }))} /></div>
-              <div><Label>Guide</Label><Input value={form.guide} onChange={e => setForm(f => ({ ...f, guide: e.target.value }))} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Meals</Label><Input value={form.meals} onChange={e => setForm(f => ({ ...f, meals: e.target.value }))} className="bg-secondary/50" /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Guide</Label><Input value={form.guide} onChange={e => setForm(f => ({ ...f, guide: e.target.value }))} className="bg-secondary/50" /></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Departure</Label><Input value={form.departure} onChange={e => setForm(f => ({ ...f, departure: e.target.value }))} /></div>
-              <div><Label>Group Size</Label><Input value={form.group_size} onChange={e => setForm(f => ({ ...f, group_size: e.target.value }))} /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Departure</Label><Input value={form.departure} onChange={e => setForm(f => ({ ...f, departure: e.target.value }))} className="bg-secondary/50" /></div>
+              <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Group Size</Label><Input value={form.group_size} onChange={e => setForm(f => ({ ...f, group_size: e.target.value }))} className="bg-secondary/50" /></div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30">
               <Switch checked={form.is_popular} onCheckedChange={v => setForm(f => ({ ...f, is_popular: v }))} />
-              <Label>Popular</Label>
+              <Label className="font-medium">Popular Package</Label>
             </div>
-            <div>
-              <Label>Features</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Features</Label>
               <div className="flex flex-wrap gap-2 mt-1 mb-2">
                 {features.map((f, i) => (
-                  <Badge key={i} variant="secondary" className="gap-1">
-                    {f} <X className="h-3 w-3 cursor-pointer" onClick={() => setFeatures(fs => fs.filter((_, j) => j !== i))} />
+                  <Badge key={i} variant="secondary" className="gap-1 bg-secondary/50">
+                    {f} <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => setFeatures(fs => fs.filter((_, j) => j !== i))} />
                   </Badge>
                 ))}
               </div>
               <div className="flex gap-2">
-                <Input value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="Add feature" onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addFeature())} />
-                <Button type="button" variant="outline" onClick={addFeature}>Add</Button>
+                <Input value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="Add feature" className="bg-secondary/50" onKeyDown={e => e.key === "Enter" && (e.preventDefault(), addFeature())} />
+                <Button type="button" variant="outline" onClick={addFeature} size="sm">Add</Button>
               </div>
             </div>
-            <Button className="w-full" onClick={save}>{editId ? "Update" : "Create"}</Button>
+            <Button className="w-full font-semibold" onClick={save}>{editId ? "Update Package" : "Create Package"}</Button>
           </div>
         </DialogContent>
       </Dialog>
