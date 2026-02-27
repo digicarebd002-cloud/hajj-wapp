@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, Eye, MessageCircle, ThumbsUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,35 @@ const DiscussionDetail = () => {
   const [replyText, setReplyText] = useState("");
   const [posting, setPosting] = useState(false);
   const [likedReplies, setLikedReplies] = useState<Set<string>>(new Set());
+
+  // Increment view count on load
+  useEffect(() => {
+    if (id) {
+      supabase.from('discussions').select('views').eq('id', id).single().then(({ data }) => {
+        if (data) {
+          supabase.from('discussions').update({ views: data.views + 1 }).eq('id', id).then(() => {});
+        }
+      });
+    }
+  }, [id]);
+
+  // Real-time replies subscription
+  useEffect(() => {
+    if (!id) return;
+    const channel = supabase
+      .channel(`replies-${id}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'replies',
+        filter: `discussion_id=eq.${id}`,
+      }, () => {
+        refetchReplies();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [id, refetchReplies]);
 
   const handleReply = async () => {
     if (!user || !id) return;
