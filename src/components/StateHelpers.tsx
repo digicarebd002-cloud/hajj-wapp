@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 /* ─── Teal Shimmer Skeleton ─── */
 export const ShimmerBlock = ({ className }: { className?: string }) => (
@@ -40,6 +40,7 @@ export const ListSkeleton = ({ rows = 4 }: { rows?: number }) => (
   </div>
 );
 
+/* ─── Grid & Stats Skeletons ─── */
 export const GridSkeleton = ({ cols = 3, count = 6 }: { cols?: number; count?: number }) => (
   <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${cols} gap-6`}>
     {Array.from({ length: count }).map((_, i) => (
@@ -129,28 +130,39 @@ export const AuthGate = ({
   open: boolean;
   onClose: () => void;
   message?: string;
-}) => (
-  <Dialog open={open} onOpenChange={onClose}>
-    <DialogContent className="max-w-sm text-center">
-      <DialogHeader>
-        <DialogTitle>Sign In Required</DialogTitle>
-        <DialogDescription>{message}</DialogDescription>
-      </DialogHeader>
-      <div className="flex flex-col gap-3 mt-4">
-        <Link to="/auth" onClick={onClose}>
-          <Button className="w-full">Sign In / Register</Button>
-        </Link>
-        <Button variant="ghost" onClick={onClose}>
-          Cancel
-        </Button>
-      </div>
-    </DialogContent>
-  </Dialog>
-);
+}) => {
+  const { setReturnTo } = useAuth();
+  const location = useLocation();
 
-/* ─── Auth-required page wrapper ─── */
+  const handleSignIn = () => {
+    setReturnTo(location.pathname);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-sm text-center">
+        <DialogHeader>
+          <DialogTitle>Sign In Required</DialogTitle>
+          <DialogDescription>{message}</DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-3 mt-4">
+          <Link to="/auth" onClick={handleSignIn}>
+            <Button className="w-full">Sign In / Register</Button>
+          </Link>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+/* ─── Auth-required page wrapper (preserves return URL) ─── */
 export const RequireAuth = ({ children }: { children: ReactNode }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, setReturnTo } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -166,6 +178,11 @@ export const RequireAuth = ({ children }: { children: ReactNode }) => {
   }
 
   if (!user) {
+    // Save the current path so Auth page can redirect back after login
+    const handleSignInClick = () => {
+      setReturnTo(location.pathname);
+    };
+
     return (
       <div className="section-padding min-h-screen flex flex-col items-center justify-center text-center">
         <span className="text-6xl mb-4">🔐</span>
@@ -173,7 +190,7 @@ export const RequireAuth = ({ children }: { children: ReactNode }) => {
         <p className="text-muted-foreground mb-6 max-w-sm">
           You need to be signed in to access this page.
         </p>
-        <Link to="/auth">
+        <Link to="/auth" onClick={handleSignInClick}>
           <Button size="lg">Sign In / Register</Button>
         </Link>
       </div>

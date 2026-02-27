@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthGate, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
@@ -53,6 +53,22 @@ const Community = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [authGateOpen, setAuthGateOpen] = useState(false);
   const [posting, setPosting] = useState(false);
+
+  // Real-time subscription for new discussions
+  useEffect(() => {
+    const channel = supabase
+      .channel('community-realtime')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'discussions',
+      }, () => {
+        refetch();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [refetch]);
 
   const handleNewDiscussion = () => { user ? setModalOpen(true) : setAuthGateOpen(true); };
 
