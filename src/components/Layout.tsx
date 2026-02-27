@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import TierUpgradeModal from "./TierUpgradeModal";
+import { useTierWatch } from "@/hooks/use-tier-watch";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -12,10 +14,12 @@ const pageVariants = {
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
+  const { upgradedTo, dismissUpgrade } = useTierWatch();
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
