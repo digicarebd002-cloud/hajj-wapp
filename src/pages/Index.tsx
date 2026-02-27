@@ -113,7 +113,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="inline-flex items-center gap-2 bg-primary-foreground/15 backdrop-blur-md text-primary-foreground px-5 py-2.5 rounded-full text-sm font-medium mb-8 border border-primary-foreground/10"
+                className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-medium mb-8 border border-white/10"
               >
                 <Sparkles className="h-4 w-4 text-accent" />
                 The Hajj Savings Platform
@@ -123,7 +123,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.4 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-[1.1]"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.1]"
               >
                 Save Together,
                 <br />
@@ -142,7 +142,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="text-lg text-primary-foreground/75 mb-10 leading-relaxed max-w-xl"
+                className="text-lg text-white/85 mb-10 leading-relaxed max-w-xl"
               >
                 Join a supportive community saving for the sacred pilgrimage to Mecca.
                 Build your Hajj fund, earn rewards, and fulfill your spiritual journey.
@@ -166,7 +166,7 @@ const Index = () => {
                     size="lg"
                     variant="outline"
                     onClick={scrollToHowItWorks}
-                    className="text-base px-8 border-primary-foreground/30 text-primary-foreground bg-primary-foreground/5 hover:bg-primary-foreground/15 rounded-full h-13 backdrop-blur-sm"
+                    className="text-base px-8 border-white/30 text-white bg-white/5 hover:bg-white/15 rounded-full h-13 backdrop-blur-sm"
                   >
                     See How It Works
                   </Button>
@@ -181,7 +181,7 @@ const Index = () => {
                 className="flex flex-wrap gap-6 mt-12"
               >
                 {features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-primary-foreground/60 text-sm">
+                  <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
                     <f.icon className="h-4 w-4 text-accent" />
                     {f.title}
                   </div>
@@ -227,10 +227,10 @@ const Index = () => {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <span className="text-primary-foreground/40 text-xs">Scroll</span>
-          <div className="w-5 h-8 border-2 border-primary-foreground/30 rounded-full flex justify-center pt-1.5">
+          <span className="text-white/50 text-xs">Scroll</span>
+          <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5">
             <motion.div
-              className="w-1 h-2 bg-primary-foreground/50 rounded-full"
+              className="w-1 h-2 bg-white/50 rounded-full"
               animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
