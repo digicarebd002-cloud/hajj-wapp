@@ -542,7 +542,7 @@ const Index = () => {
               <Heart className="h-12 w-12 text-accent mx-auto mb-6" />
             </motion.div>
             <h2 className="text-3xl md:text-4xl font-bold mb-5">Monthly Sponsorship Program</h2>
-            <p className="opacity-75 mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
               Every month, we select a community member to travel to Mecca fully sponsored —
               chosen by engagement, dedication, and faith.
             </p>
