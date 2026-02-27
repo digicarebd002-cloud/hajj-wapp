@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AuthGate, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useDiscussions, useCommunityStats, useMonthlyLeaderboard, useUserLikes } from "@/hooks/use-supabase-data";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, MessageCircle, Star, Clock, Plus, TrendingUp, HelpCircle, Heart } from "lucide-react";
+import { MessageCircle, Clock, Plus, TrendingUp, HelpCircle, ThumbsUp, Users, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,15 +19,12 @@ import { motion, AnimatePresence } from "framer-motion";
 const CATEGORIES = ["All Discussions", "Hajj Preparation", "Savings Tips", "Travel Planning", "Spiritual Guidance", "Success Stories"];
 const PAGE_SIZE = 10;
 
-const tierBadgeClass: Record<string, string> = { Silver: "tier-badge-silver", Gold: "tier-badge-gold", Platinum: "tier-badge-platinum" };
-const TierBadge = ({ tier }: { tier: string | null }) => { if (!tier) return null; return <span className={`${tierBadgeClass[tier]} text-[10px] px-2 py-0.5`}>{tier}</span>; };
-
-const pointRules = [
-  { action: "Create a discussion", pts: "+10 pts" },
-  { action: "Reply to a thread", pts: "+5 pts" },
-  { action: "Receive a like", pts: "+2 pts" },
-  { action: "Best answer", pts: "+25 pts" },
-];
+const tierLabel: Record<string, string> = { Silver: "Silver Member", Gold: "Gold Member", Platinum: "Platinum Member" };
+const tierColorClass: Record<string, string> = {
+  Silver: "bg-muted text-muted-foreground",
+  Gold: "bg-gradient-to-r from-amber-500 to-amber-600 text-white",
+  Platinum: "bg-gradient-to-r from-teal-600 to-teal-700 text-white",
+};
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 25 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } } };
@@ -36,12 +33,190 @@ const slideRight = { hidden: { opacity: 0, x: 30 }, show: { opacity: 1, x: 0, tr
 function getTimeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return `${mins} minutes ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
+  if (hrs < 24) return `${hrs} hours ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 
+function getAvatarUrl(name: string) {
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
+}
+
+const pointRules = [
+  { action: "Create a discussion", pts: "+10 pts" },
+  { action: "Reply to a thread", pts: "+5 pts" },
+  { action: "Receive a like", pts: "+2 pts" },
+  { action: "Best answer", pts: "+25 pts" },
+];
+
+/* ─── Discussion Card ─── */
+const DiscussionCard = ({
+  d, isLiked, onLike,
+}: {
+  d: any; isLiked: boolean; onLike: (id: string) => void;
+}) => {
+  const authorName = (d.profiles as any)?.full_name || "Anonymous";
+  const authorTier = (d.profiles as any)?.tier || null;
+  const replyCount = d.reply_count?.[0]?.count ?? 0;
+  const isPopular = (d.like_count + d.views) > 100;
+
+  return (
+    <motion.div variants={fadeUp} whileHover={{ y: -2, boxShadow: "0 10px 30px -8px hsl(var(--primary) / 0.1)" }} className="bg-card rounded-xl p-5 card-shadow transition-colors">
+      {/* Title row */}
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <Link to={`/community/${d.id}`} className="flex items-center gap-2 group">
+          <span className="text-primary text-lg">✦</span>
+          <h3 className="font-semibold text-card-foreground group-hover:text-primary transition-colors text-base">{d.title}</h3>
+        </Link>
+        {isPopular && (
+          <Badge className="bg-primary/15 text-primary border-primary/30 shrink-0 gap-1 text-xs">
+            <TrendingUp className="h-3 w-3" /> Popular
+          </Badge>
+        )}
+      </div>
+
+      {/* Author row */}
+      <div className="flex items-center gap-2 mb-3">
+        <img src={getAvatarUrl(authorName)} alt={authorName} className="w-8 h-8 rounded-full bg-secondary" />
+        <span className="text-sm font-medium">{authorName}</span>
+        {authorTier && (
+          <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${tierColorClass[authorTier] || "bg-muted text-muted-foreground"}`}>
+            {tierLabel[authorTier] || authorTier}
+          </span>
+        )}
+        <span className="text-xs text-muted-foreground">• {getTimeAgo(d.created_at)}</span>
+      </div>
+
+      {/* Body snippet */}
+      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{d.body}</p>
+
+      {/* Bottom row */}
+      <div className="flex items-center justify-between">
+        <Badge variant="outline" className="text-xs border-border text-muted-foreground">{d.category}</Badge>
+        <div className="flex items-center gap-5 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5" /> {replyCount}</span>
+          <button onClick={() => onLike(d.id)} className={`flex items-center gap-1.5 transition-colors ${isLiked ? "text-primary font-medium" : "hover:text-primary"}`}>
+            <ThumbsUp className={`h-3.5 w-3.5 ${isLiked ? "fill-primary" : ""}`} /> {d.like_count ?? 0}
+          </button>
+          <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" /> {d.views}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ─── Sidebar Components ─── */
+const CategoriesSidebar = ({ catCounts, activeCategory, onSelect }: { catCounts: { name: string; count: number }[]; activeCategory: string; onSelect: (c: string) => void }) => (
+  <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
+    <h3 className="font-semibold mb-4 text-base">Categories</h3>
+    <div className="space-y-1">
+      {catCounts.map((c) => (
+        <button
+          key={c.name}
+          onClick={() => onSelect(c.name)}
+          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${activeCategory === c.name ? "bg-primary/10 text-primary font-medium" : "hover:bg-secondary text-foreground"}`}
+        >
+          <span>{c.name}</span>
+          <span className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold ${activeCategory === c.name ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+            {c.count}
+          </span>
+        </button>
+      ))}
+    </div>
+  </motion.div>
+);
+
+const LeaderboardSidebar = ({ leaderboard }: { leaderboard: any[] }) => (
+  <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
+    <div className="mb-4">
+      <h3 className="font-semibold text-base flex items-center gap-2">✦ Top Contributors</h3>
+      <p className="text-xs text-muted-foreground mt-1">This month's most helpful members</p>
+    </div>
+    <div className="space-y-3">
+      {leaderboard.map((l: any, i: number) => (
+        <motion.div key={l.user_id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.08 }} className="flex items-center gap-3">
+          <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${i === 0 ? "bg-primary text-primary-foreground" : i === 1 ? "bg-primary/70 text-primary-foreground" : i === 2 ? "bg-primary/40 text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+            {i + 1}
+          </span>
+          <img src={getAvatarUrl(l.full_name || "User")} alt={l.full_name} className="w-9 h-9 rounded-full bg-secondary" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{l.full_name}</p>
+            <div className="flex items-center gap-2">
+              {l.tier && (
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${tierColorClass[l.tier] || "bg-muted text-muted-foreground"}`}>
+                  {l.tier}
+                </span>
+              )}
+              <span className="text-xs text-muted-foreground">{(l.points_total ?? 0).toLocaleString()} pts</span>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </motion.div>
+);
+
+const StatsSidebar = ({ stats, statsLoading }: { stats: any; statsLoading: boolean }) => (
+  <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
+    <h3 className="font-semibold mb-4 text-base">Community Stats</h3>
+    <div className="grid grid-cols-2 gap-3">
+      {[
+        { label: "Total Members", value: statsLoading ? "..." : stats.members.toLocaleString() },
+        { label: "Discussions", value: statsLoading ? "..." : stats.discussions.toLocaleString() },
+        { label: "Replies", value: statsLoading ? "..." : stats.replies.toLocaleString() },
+        { label: "Active Today", value: statsLoading ? "..." : Math.floor(stats.members * 0.12).toLocaleString() },
+      ].map((s) => (
+        <div key={s.label} className="bg-secondary rounded-lg p-3 text-center">
+          <p className="text-lg font-bold">{s.value}</p>
+          <p className="text-xs text-muted-foreground">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </motion.div>
+);
+
+const PointsSidebar = () => (
+  <motion.div variants={slideRight} className="bg-secondary rounded-xl p-5">
+    <h3 className="font-semibold mb-3 text-base">✨ Earn Points</h3>
+    <div className="space-y-2.5">
+      {pointRules.map((r) => (
+        <div key={r.action} className="flex items-center justify-between text-sm">
+          <span>{r.action}</span>
+          <span className="font-semibold text-primary">{r.pts}</span>
+        </div>
+      ))}
+    </div>
+    <p className="text-xs text-muted-foreground mt-4">Points contribute to your membership tier and unlock exclusive benefits!</p>
+  </motion.div>
+);
+
+/* ─── New Discussion Modal ─── */
+const NewDiscussionModal = ({ open, onOpenChange, onSubmit, posting }: { open: boolean; onOpenChange: (v: boolean) => void; onSubmit: (e: React.FormEvent<HTMLFormElement>) => void; posting: boolean }) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="max-w-lg">
+      <DialogHeader>
+        <DialogTitle>Start New Discussion</DialogTitle>
+        <DialogDescription>Share your question or experience with the community</DialogDescription>
+      </DialogHeader>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="space-y-2"><Label htmlFor="disc-title">Title</Label><Input id="disc-title" name="title" placeholder="What's on your mind?" required minLength={5} /></div>
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Select name="category" required>
+            <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
+            <SelectContent>{CATEGORIES.slice(1).map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2"><Label htmlFor="disc-body">Body</Label><Textarea id="disc-body" name="body" placeholder="Share your thoughts (min 50 characters)..." className="resize-none min-h-[120px]" required minLength={50} /></div>
+        <Button type="submit" className="w-full" disabled={posting}>{posting ? "Posting..." : "Post Discussion"}</Button>
+      </form>
+    </DialogContent>
+  </Dialog>
+);
+
+/* ─── Main Page ─── */
 const Community = () => {
   const { user } = useAuth();
   const { data: discussions, loading, error, refetch } = useDiscussions();
@@ -55,7 +230,6 @@ const Community = () => {
   const [posting, setPosting] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // Real-time subscription for new discussions
   useEffect(() => {
     const channel = supabase
       .channel('community-realtime')
@@ -85,7 +259,6 @@ const Community = () => {
   const toggleDiscussionLike = async (discId: string) => {
     if (!user) { setAuthGateOpen(true); return; }
     const isLiked = likedDiscussions.has(discId);
-    // Optimistic update
     setLikedDiscussions((prev) => {
       const s = new Set(prev);
       isLiked ? s.delete(discId) : s.add(discId);
@@ -116,24 +289,27 @@ const Community = () => {
 
   return (
     <div className="section-padding min-h-screen">
-      <div className="container mx-auto">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Community Forum</h1>
-            <p className="text-muted-foreground">Connect with fellow pilgrims, share experiences, and support each other.</p>
-          </div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button className="gap-2 shrink-0" onClick={handleNewDiscussion}><Plus className="h-4 w-4" /> Start New Discussion</Button>
-          </motion.div>
+      <div className="container mx-auto max-w-6xl">
+        {/* Centered Header */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Community Forum</h1>
+          <p className="text-muted-foreground max-w-xl mx-auto">Connect with fellow pilgrims, share experiences, and support each other on the journey to Hajj.</p>
+        </motion.div>
+
+        {/* Full-width Start Discussion Button */}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-8 max-w-3xl mx-auto lg:mx-0 lg:max-w-none lg:pr-[calc(35%+2rem)]">
+          <Button className="w-full gap-2 h-12 text-base" onClick={handleNewDiscussion}>
+            <MessageSquare className="h-5 w-5" /> Start New Discussion
+          </Button>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Column */}
           <div className="flex-1 lg:w-[65%] min-w-0">
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-6">
+            {/* Tabs */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-6">
               <Tabs value={sortTab} onValueChange={(v) => { setSortTab(v); setVisibleCount(PAGE_SIZE); }}>
-                <TabsList>
+                <TabsList className="w-full grid grid-cols-3">
                   <TabsTrigger value="recent" className="gap-1.5"><Clock className="h-3.5 w-3.5" /> Recent</TabsTrigger>
                   <TabsTrigger value="popular" className="gap-1.5"><TrendingUp className="h-3.5 w-3.5" /> Popular</TabsTrigger>
                   <TabsTrigger value="unanswered" className="gap-1.5"><HelpCircle className="h-3.5 w-3.5" /> Unanswered</TabsTrigger>
@@ -141,48 +317,16 @@ const Community = () => {
               </Tabs>
             </motion.div>
 
+            {/* Discussion List */}
             {loading ? <div className="space-y-4"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>
             : error ? <ErrorState message={error} onRetry={refetch} />
             : sorted.length === 0 ? <EmptyState icon="💬" title="No discussions yet" description="Be the first to start a discussion!" actionLabel="Start Discussion" onAction={handleNewDiscussion} />
             : (
               <AnimatePresence mode="wait">
                 <motion.div key={activeCategory + sortTab} variants={stagger} initial="hidden" animate="show" className="space-y-4">
-                  {visible.map((d) => {
-                    const authorName = (d.profiles as any)?.full_name || "Anonymous";
-                    const authorTier = (d.profiles as any)?.tier || null;
-                    const initials = authorName.split(" ").map((n: string) => n[0]).join("").slice(0, 2);
-                    const replyCount = d.reply_count?.[0]?.count ?? 0;
-                    const isLiked = likedDiscussions.has(d.id);
-                    const likeCount = (d.like_count ?? 0) + (isLiked && !(d._origLiked) ? 0 : 0); // count already includes server state
-
-                    return (
-                      <motion.div key={d.id} variants={fadeUp} whileHover={{ x: 4, boxShadow: "0 10px 30px -8px hsl(var(--primary) / 0.1)" }} className="bg-card rounded-xl p-5 card-shadow transition-colors">
-                        <div className="flex items-start gap-3">
-                          <motion.div whileHover={{ scale: 1.1, rotate: 5 }} className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">
-                            {initials}
-                          </motion.div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-semibold">{authorName}</span>
-                              <TierBadge tier={authorTier} />
-                              <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(d.created_at)}</span>
-                            </div>
-                            <Link to={`/community/${d.id}`} className="block mt-1 font-semibold text-card-foreground hover:text-primary transition-colors">{d.title}</Link>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{d.body}</p>
-                            <div className="flex items-center gap-4 mt-3 flex-wrap">
-                              <Badge variant="outline" className="text-xs border-primary/30 text-primary">{d.category}</Badge>
-                              <span className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="h-3 w-3" /> {d.views}</span>
-                              <span className="text-xs text-muted-foreground flex items-center gap-1"><MessageCircle className="h-3 w-3" /> {replyCount}</span>
-                              <button onClick={() => toggleDiscussionLike(d.id)} className={`flex items-center gap-1 text-xs transition-colors ${isLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
-                                <Heart className={`h-3 w-3 ${isLiked ? "fill-primary" : ""}`} /> {d.like_count ?? 0}
-                              </button>
-                              <span className="text-xs text-muted-foreground flex items-center gap-1"><Star className="h-3 w-3" /> {d.points}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                  {visible.map((d) => (
+                    <DiscussionCard key={d.id} d={d} isLiked={likedDiscussions.has(d.id)} onLike={toggleDiscussionLike} />
+                  ))}
                 </motion.div>
               </AnimatePresence>
             )}
@@ -196,104 +340,16 @@ const Community = () => {
 
           {/* Sidebar */}
           <motion.aside variants={stagger} initial="hidden" animate="show" className="lg:w-[35%] space-y-6">
-            {/* Categories */}
-            <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
-              <h3 className="font-semibold mb-3">Categories</h3>
-              <div className="space-y-1">
-                {catCounts.map((c) => (
-                  <motion.button key={c.name} whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }} onClick={() => { setActiveCategory(c.name); setVisibleCount(PAGE_SIZE); }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === c.name ? "bg-primary text-primary-foreground" : "hover:bg-secondary text-foreground"}`}>
-                    <span>{c.name}</span>
-                    <span className={`text-xs font-medium ${activeCategory === c.name ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{c.count}</span>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Monthly Leaderboard */}
-            {leaderboard && leaderboard.length > 0 && (
-              <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
-                <h3 className="font-semibold mb-3">🏆 Top Contributors</h3>
-                <div className="space-y-3">
-                  {leaderboard.map((l: any, i: number) => {
-                    const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
-                    const initials = (l.full_name || "?").split(" ").map((n: string) => n[0]).join("").slice(0, 2);
-                    return (
-                      <motion.div key={l.user_id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.08 }} whileHover={{ x: 4 }} className="flex items-center gap-3">
-                        <span className="text-lg w-6 text-center">{rank}</span>
-                        <motion.div whileHover={{ scale: 1.15, rotate: -5 }} className={`w-8 h-8 rounded-full ${i === 0 ? "bg-primary" : i === 1 ? "bg-accent" : "bg-muted-foreground"} text-primary-foreground flex items-center justify-center text-xs font-bold`}>
-                          {initials}
-                        </motion.div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{l.full_name}</p>
-                          <div className="flex items-center gap-2">
-                            <TierBadge tier={l.tier} />
-                            <span className="text-xs text-muted-foreground">{(l.points_total ?? 0).toLocaleString()} pts</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Stats */}
-            <motion.div variants={slideRight} className="bg-card rounded-xl card-shadow p-5">
-              <h3 className="font-semibold mb-3">Community Stats</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { icon: "👥", label: "Members", value: statsLoading ? "..." : stats.members.toLocaleString() },
-                  { icon: "💬", label: "Discussions", value: statsLoading ? "..." : stats.discussions.toLocaleString() },
-                  { icon: "📝", label: "Replies", value: statsLoading ? "..." : stats.replies.toLocaleString() },
-                ].map((s, i) => (
-                  <motion.div key={s.label} whileHover={{ scale: 1.05, y: -2 }} className="bg-secondary rounded-lg p-3 text-center">
-                    <motion.span className="text-lg block" animate={{ y: [0, -3, 0] }} transition={{ delay: i * 0.3, duration: 2, repeat: Infinity }}>{s.icon}</motion.span>
-                    <p className="text-lg font-bold">{s.value}</p>
-                    <p className="text-xs text-muted-foreground">{s.label}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Points */}
-            <motion.div variants={slideRight} className="bg-secondary rounded-xl p-5">
-              <h3 className="font-semibold mb-3">✨ Earn Points</h3>
-              <div className="space-y-2">
-                {pointRules.map((r) => (
-                  <div key={r.action} className="flex items-center justify-between text-sm">
-                    <span>{r.action}</span>
-                    <span className="font-semibold text-primary">{r.pts}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-4">Points contribute to your membership tier!</p>
-            </motion.div>
+            <CategoriesSidebar catCounts={catCounts} activeCategory={activeCategory} onSelect={(c) => { setActiveCategory(c); setVisibleCount(PAGE_SIZE); }} />
+            {leaderboard && leaderboard.length > 0 && <LeaderboardSidebar leaderboard={leaderboard} />}
+            <StatsSidebar stats={stats} statsLoading={statsLoading} />
+            <PointsSidebar />
           </motion.aside>
         </div>
       </div>
 
       {/* Modals */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Start New Discussion</DialogTitle>
-            <DialogDescription>Share your question or experience with the community</DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmitDiscussion} className="space-y-4">
-            <div className="space-y-2"><Label htmlFor="disc-title">Title</Label><Input id="disc-title" name="title" placeholder="What's on your mind?" required minLength={5} /></div>
-            <div className="space-y-2">
-              <Label>Category</Label>
-              <Select name="category" required>
-                <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
-                <SelectContent>{CATEGORIES.slice(1).map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2"><Label htmlFor="disc-body">Body</Label><Textarea id="disc-body" name="body" placeholder="Share your thoughts (min 50 characters)..." className="resize-none min-h-[120px]" required minLength={50} /></div>
-            <Button type="submit" className="w-full" disabled={posting}>{posting ? "Posting..." : "Post Discussion"}</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <NewDiscussionModal open={modalOpen} onOpenChange={setModalOpen} onSubmit={handleSubmitDiscussion} posting={posting} />
       <AuthGate open={authGateOpen} onClose={() => setAuthGateOpen(false)} message="Sign in to start a new discussion and earn points!" />
     </div>
   );
