@@ -34,7 +34,7 @@ const Footer = () => {
               <span className="text-2xl">🕌</span>
               Hajj <span className="text-primary">Wallet</span>
             </div>
-            <p className="text-sm opacity-70 leading-relaxed max-w-xs">
+            <p className="text-sm text-foreground/70 leading-relaxed max-w-xs">
               Save Together, Journey Together. A community-driven savings platform helping Muslims reach their Hajj goals.
             </p>
             <div className="flex items-center gap-3 mt-6">
@@ -54,7 +54,7 @@ const Footer = () => {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider opacity-50">
+              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-foreground/50">
                 {title}
               </h4>
               <ul className="space-y-3">
@@ -62,7 +62,7 @@ const Footer = () => {
                   <li key={link.label}>
                     <Link
                       to={link.path}
-                      className="group flex items-center gap-1.5 text-sm opacity-70 hover:opacity-100 transition-all"
+                      className="group flex items-center gap-1.5 text-sm text-foreground/70 hover:text-foreground transition-all"
                     >
                       {link.label}
                       <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
@@ -74,7 +74,7 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs opacity-50">
+        <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-foreground/50">
           <p>© {new Date().getFullYear()} Hajj Wallet. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Made with <Heart className="h-3 w-3 text-accent fill-accent" /> for the Ummah

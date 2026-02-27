@@ -78,8 +78,8 @@ const Sponsorship = () => {
             >
               <Heart className="h-14 w-14 text-accent mx-auto" />
             </motion.div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-5">Monthly Sponsorship Program</h1>
-            <p className="opacity-75 leading-relaxed max-w-2xl mx-auto text-lg">
+            <h1 className="text-4xl md:text-5xl font-bold mb-5 text-foreground">Monthly Sponsorship Program</h1>
+            <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-lg">
               Every month, we sponsor selected members to travel for Hajj completely free.
               Your dedication to our community could make you our next sponsored pilgrim.
             </p>
@@ -92,7 +92,7 @@ const Sponsorship = () => {
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="mb-12">
             <h2 className="text-2xl md:text-3xl font-bold">How It Works</h2>
-            <p className="opacity-60 mt-2">Our sponsorship selection process</p>
+            <p className="text-muted-foreground mt-2">Our sponsorship selection process</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -109,7 +109,7 @@ const Sponsorship = () => {
                   <step.icon className="h-7 w-7 text-accent" />
                 </div>
                 <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
-                <p className="opacity-60 text-sm leading-relaxed">{step.desc}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -121,7 +121,7 @@ const Sponsorship = () => {
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">Eligibility Criteria</h2>
-            <p className="opacity-60 mt-2">Requirements to be considered for sponsorship</p>
+            <p className="text-muted-foreground mt-2">Requirements to be considered for sponsorship</p>
           </motion.div>
 
           <div className="space-y-4 max-w-2xl">
@@ -135,7 +135,7 @@ const Sponsorship = () => {
                 className="flex items-start gap-3"
               >
                 <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 shrink-0" />
-                <span className="opacity-80">{item}</span>
+                <span className="text-foreground/80">{item}</span>
               </motion.div>
             ))}
           </div>
@@ -147,7 +147,7 @@ const Sponsorship = () => {
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">What's Included in Sponsorship</h2>
-            <p className="opacity-60 mt-2">Full coverage for your Hajj journey</p>
+            <p className="text-muted-foreground mt-2">Full coverage for your Hajj journey</p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -161,7 +161,7 @@ const Sponsorship = () => {
                 className="flex items-center gap-3 bg-primary-foreground/5 rounded-xl p-4 border border-primary-foreground/10"
               >
                 <item.icon className="h-5 w-5 text-accent shrink-0" />
-                <span className="text-sm opacity-80">{item.label}</span>
+                <span className="text-sm text-foreground/80">{item.label}</span>
               </motion.div>
             ))}
           </div>
@@ -173,7 +173,7 @@ const Sponsorship = () => {
         <div className="container mx-auto max-w-2xl text-center px-4">
           <motion.div {...fadeUp}>
             <h2 className="text-3xl md:text-4xl font-bold mb-5">Ready to Start Your Journey?</h2>
-            <p className="opacity-70 mb-8 text-lg">
+            <p className="text-muted-foreground mb-8 text-lg">
               Join our community today and start building your path to a sponsored Hajj pilgrimage.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
