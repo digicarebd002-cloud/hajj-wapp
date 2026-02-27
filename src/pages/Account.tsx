@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
-import { useProfile, usePointsLedger, useNotificationPreferences, useWallet } from "@/hooks/use-supabase-data";
+import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
-  Edit, ShoppingBag, MessageCircle, Package, FileText,
-  Phone, CreditCard, Star, LogOut, Lock,
+  ShoppingBag, MessageCircle, Package, FileText,
+  Phone, CreditCard, Lock, LogOut, Edit, Check, X,
 } from "lucide-react";
 
 const tierBadgeClass: Record<string, string> = {
@@ -41,11 +41,115 @@ const actionIcons: Record<string, string> = {
   wallet_contribution: "💰",
 };
 
+function timeAgo(date: string) {
+  const s = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  if (s < 604800) return `${Math.floor(s / 86400)}d ago`;
+  return new Date(date).toLocaleDateString();
+}
+
+// --- Goal Amount Inline Editor ---
+const GoalEditor = ({ wallet, onSaved }: { wallet: any; onSaved: () => void }) => {
+  const { user } = useAuth();
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState(String(wallet?.goal_amount ?? 2500));
+
+  const save = async () => {
+    const num = parseFloat(val);
+    if (!num || num <= 0 || !user) return;
+    const { error } = await supabase.from("wallets").update({ goal_amount: num }).eq("user_id", user.id);
+    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
+    else { toast({ title: "Goal updated!" }); onSaved(); }
+    setEditing(false);
+  };
+
+  if (!editing) {
+    return (
+      <button onClick={() => setEditing(true)} className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors text-sm">
+        ${Number(wallet?.goal_amount ?? 2500).toLocaleString()} <Edit className="h-3 w-3" />
+      </button>
+    );
+  }
+
+  return (
+    <div className="inline-flex items-center gap-1">
+      <Input type="number" value={val} onChange={(e) => setVal(e.target.value)} className="w-28 h-7 text-sm" />
+      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={save}><Check className="h-3 w-3" /></Button>
+      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditing(false)}><X className="h-3 w-3" /></Button>
+    </div>
+  );
+};
+
+// --- Debounced Notification Toggle ---
+const NotifToggle = ({ notifKey, defaultVal, userId }: { notifKey: string; defaultVal: boolean; userId: string }) => {
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const [checked, setChecked] = useState(defaultVal);
+
+  const handleChange = useCallback((val: boolean) => {
+    setChecked(val);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(async () => {
+      await supabase.from("notification_preferences").update({ [notifKey]: val }).eq("user_id", userId);
+    }, 500);
+  }, [notifKey, userId]);
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  return <Switch checked={checked} onCheckedChange={handleChange} />;
+};
+
+// --- Activity Feed (merged from points_ledger + wallet_transactions) ---
+const ActivityFeed = ({ userId }: { userId: string }) => {
+  const { data: points, loading: pLoading, error: pError, refetch } = usePointsLedger(30);
+  const { data: txs, loading: tLoading } = useWalletTransactions();
+  const loading = pLoading || tLoading;
+
+  // Merge into a single timeline
+  const merged = (() => {
+    const items: { id: string; icon: string; text: string; date: string }[] = [];
+    (points ?? []).forEach((p) => items.push({
+      id: p.id,
+      icon: actionIcons[p.action] || "⭐",
+      text: `${p.action.replace(/_/g, " ")} — +${p.points} pts`,
+      date: p.created_at,
+    }));
+    (txs ?? []).filter(t => t.status === "completed" && t.amount > 0).forEach((t) => items.push({
+      id: t.id,
+      icon: "💰",
+      text: `Wallet contribution — $${Number(t.amount).toLocaleString()}`,
+      date: t.created_at,
+    }));
+    items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return items.slice(0, 20);
+  })();
+
+  if (loading) return <CardSkeleton />;
+  if (pError) return <ErrorState message={pError} onRetry={refetch} />;
+  if (merged.length === 0) return (
+    <EmptyState icon="📋" title="No activity yet" description="Start by making a contribution or joining the community!" actionLabel="Visit Community" actionTo="/community" />
+  );
+
+  return (
+    <div className="space-y-3">
+      {merged.map((item) => (
+        <div key={item.id} className="flex items-start gap-3">
+          <span className="text-lg mt-0.5">{item.icon}</span>
+          <div className="flex-1">
+            <p className="text-sm">{item.text}</p>
+            <p className="text-xs text-muted-foreground">{timeAgo(item.date)}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const AccountContent = () => {
   const { user, signOut } = useAuth();
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
-  const { data: wallet, loading: walletLoading } = useWallet();
-  const { data: activity, loading: activityLoading, error: activityError, refetch: refetchActivity } = usePointsLedger();
+  const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
 
   const handleSignOut = async () => {
@@ -62,11 +166,6 @@ const AccountContent = () => {
     }).eq("user_id", user!.id);
     if (error) toast({ title: "Error saving", description: error.message, variant: "destructive" });
     else { toast({ title: "Settings saved!" }); refetchProfile(); }
-  };
-
-  const handleToggleNotif = async (key: string, checked: boolean) => {
-    if (!notifPrefs) return;
-    await supabase.from("notification_preferences").update({ [key]: checked }).eq("user_id", user!.id);
   };
 
   if (profileLoading) return <div className="section-padding min-h-screen"><div className="container mx-auto max-w-4xl space-y-6"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div></div>;
@@ -114,7 +213,7 @@ const AccountContent = () => {
             ].map((s) => (
               <div key={s.label} className="bg-secondary rounded-lg p-3 text-center">
                 <span className="text-lg">{s.icon}</span>
-                <p className="text-lg font-bold">{s.value}</p>
+                <p className="text-lg font-bold capitalize">{s.value}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             ))}
@@ -142,13 +241,13 @@ const AccountContent = () => {
               )}
             </div>
 
-            {/* Savings Goal */}
+            {/* Savings Goal with editable goal */}
             <div className="bg-card rounded-xl card-shadow p-6">
               <h3 className="font-semibold mb-2">Hajj Savings Goal</h3>
               <Progress value={savingsProgress} className="h-3 mb-2" />
-              <div className="flex justify-between text-sm mb-2">
+              <div className="flex justify-between text-sm mb-2 items-center">
                 <span className="font-bold text-primary">${Number(walletBalance).toLocaleString()}</span>
-                <span className="text-muted-foreground">${Number(goalAmount).toLocaleString()}</span>
+                <GoalEditor wallet={wallet} onSaved={refetchWallet} />
               </div>
               <Link to="/wallet" className="text-sm text-primary hover:underline mt-2 inline-block">Add Funds →</Link>
             </div>
@@ -173,10 +272,13 @@ const AccountContent = () => {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold flex items-center gap-2"><CreditCard className="h-5 w-5 text-accent" /> {p.tier} Membership</h3>
-                  <p className="text-sm text-muted-foreground">Status: {p.membership_status}</p>
+                  <p className="text-sm text-muted-foreground capitalize">Status: {p.membership_status}</p>
                 </div>
                 <Badge className="bg-primary text-primary-foreground border-0 capitalize">{p.membership_status}</Badge>
               </div>
+              {p.next_billing_date && (
+                <p className="text-xs text-muted-foreground">Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+              )}
             </div>
 
             <div className="bg-secondary rounded-xl p-6 text-center">
@@ -188,21 +290,7 @@ const AccountContent = () => {
           <TabsContent value="activity">
             <div className="bg-card rounded-xl card-shadow p-6">
               <h3 className="font-semibold mb-4">Recent Activity</h3>
-              {activityLoading ? <CardSkeleton /> : activityError ? <ErrorState message={activityError} onRetry={refetchActivity} /> : !activity || activity.length === 0 ? (
-                <EmptyState icon="📋" title="No activity yet" description="Start engaging with the community to earn points!" actionLabel="Visit Community" actionTo="/community" />
-              ) : (
-                <div className="space-y-4">
-                  {activity.map((a) => (
-                    <div key={a.id} className="flex items-start gap-3">
-                      <span className="text-lg mt-0.5">{actionIcons[a.action] || "⭐"}</span>
-                      <div className="flex-1">
-                        <p className="text-sm">{a.action.replace(/_/g, " ")} <span className="font-semibold text-primary">+{a.points} pts</span></p>
-                        <p className="text-xs text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ActivityFeed userId={user!.id} />
             </div>
           </TabsContent>
 
@@ -234,11 +322,12 @@ const AccountContent = () => {
               {!notifsLoading && notifPrefs && (
                 <div className="bg-card rounded-xl card-shadow p-6 mt-6">
                   <h3 className="font-semibold mb-4">Notification Preferences</h3>
+                  <p className="text-xs text-muted-foreground mb-4">Changes are saved automatically.</p>
                   <div className="space-y-4">
                     {notificationTypes.map((n) => (
                       <div key={n.key} className="flex items-center justify-between">
                         <div><p className="text-sm font-medium">{n.label}</p><p className="text-xs text-muted-foreground">{n.desc}</p></div>
-                        <Switch defaultChecked={notifPrefs[n.key] as boolean} onCheckedChange={(checked) => handleToggleNotif(n.key, checked)} />
+                        <NotifToggle notifKey={n.key} defaultVal={notifPrefs[n.key] as boolean} userId={user!.id} />
                       </div>
                     ))}
                   </div>
