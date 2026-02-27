@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { Send, Bell, Megaphone } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AdminNotifications() {
   const [title, setTitle] = useState("");
@@ -47,17 +47,39 @@ export default function AdminNotifications() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
-      <Card className="max-w-lg">
-        <CardHeader><CardTitle>Send Broadcast</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          <div><Label>Title</Label><Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Notification title" /></div>
-          <div><Label>Body</Label><Textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Notification message" /></div>
-          <div>
-            <Label>Target Audience</Label>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+            <Bell className="h-5 w-5 text-primary" />
+          </div>
+          Notifications
+        </h1>
+        <p className="text-muted-foreground mt-1 ml-[52px]">Send broadcast notifications</p>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm overflow-hidden"
+      >
+        <div className="p-5 border-b border-border/30 bg-gradient-to-r from-primary/10 to-transparent flex items-center gap-3">
+          <Megaphone className="h-5 w-5 text-primary" />
+          <h2 className="font-bold text-foreground">Compose Broadcast</h2>
+        </div>
+        <div className="p-6 space-y-5">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Title</Label>
+            <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Notification title" className="bg-secondary/50" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Message</Label>
+            <Textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Write your notification message..." rows={4} className="bg-secondary/50" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Target Audience</Label>
             <Select value={tier} onValueChange={setTier}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Users</SelectItem>
                 <SelectItem value="Silver">Silver Tier</SelectItem>
@@ -66,11 +88,11 @@ export default function AdminNotifications() {
               </SelectContent>
             </Select>
           </div>
-          <Button className="w-full" onClick={send} disabled={sending}>
-            <Send className="mr-2 h-4 w-4" />{sending ? "Sending..." : "Send Notification"}
+          <Button className="w-full font-semibold gap-2 shadow-lg shadow-primary/20" onClick={send} disabled={sending}>
+            <Send className="h-4 w-4" />{sending ? "Sending..." : "Send Notification"}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </motion.div>
     </div>
   );
 }

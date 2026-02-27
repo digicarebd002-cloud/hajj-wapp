@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { ClipboardList } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Order {
   id: string; user_id: string; subtotal: number; total: number;
@@ -31,43 +33,57 @@ export default function AdminOrders() {
   };
 
   const statusColor = (s: string) => {
-    if (s === "delivered") return "bg-emerald-500/20 text-emerald-400";
-    if (s === "shipped") return "bg-blue-500/20 text-blue-400";
-    if (s === "confirmed") return "bg-primary/20 text-primary";
-    return "bg-muted text-muted-foreground";
+    if (s === "delivered") return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+    if (s === "shipped") return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+    if (s === "confirmed") return "bg-primary/20 text-primary border-primary/30";
+    return "bg-muted/50 text-muted-foreground border-border";
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-foreground">Orders</h1>
-      <div className="rounded-lg border border-border overflow-hidden">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-pink-500/15 flex items-center justify-center">
+            <ClipboardList className="h-5 w-5 text-pink-400" />
+          </div>
+          Orders
+        </h1>
+        <p className="text-muted-foreground mt-1 ml-[52px]">{orders.length} total orders</p>
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-border/50 overflow-hidden bg-card/30 backdrop-blur-sm">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Order ID</TableHead><TableHead>Date</TableHead>
-              <TableHead>Total</TableHead><TableHead>Status</TableHead><TableHead>Change Status</TableHead>
+            <TableRow className="bg-card/50 hover:bg-card/50">
+              <TableHead className="font-semibold text-foreground/70">Order ID</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Date</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Total</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Status</TableHead>
+              <TableHead className="font-semibold text-foreground/70">Change Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-12">Loading...</TableCell></TableRow>
+            ) : orders.length === 0 ? (
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-12">No orders yet</TableCell></TableRow>
             ) : orders.map(o => (
-              <TableRow key={o.id}>
-                <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}</TableCell>
-                <TableCell>{format(new Date(o.created_at), "MMM d, yyyy")}</TableCell>
-                <TableCell>${o.total}</TableCell>
-                <TableCell><Badge className={statusColor(o.status)}>{o.status}</Badge></TableCell>
+              <TableRow key={o.id} className="hover:bg-secondary/30 transition-colors">
+                <TableCell className="font-mono text-xs text-muted-foreground">{o.id.slice(0, 8)}...</TableCell>
+                <TableCell className="text-muted-foreground">{format(new Date(o.created_at), "MMM d, yyyy")}</TableCell>
+                <TableCell className="font-semibold text-primary">${o.total}</TableCell>
+                <TableCell><Badge variant="outline" className={statusColor(o.status)}>{o.status}</Badge></TableCell>
                 <TableCell>
                   <Select value={o.status} onValueChange={v => updateStatus(o.id, v)}>
-                    <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                    <SelectContent>{statuses.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectTrigger className="w-36 bg-secondary/30 border-border/50"><SelectValue /></SelectTrigger>
+                    <SelectContent>{statuses.map(s => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent>
                   </Select>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+      </motion.div>
     </div>
   );
 }
