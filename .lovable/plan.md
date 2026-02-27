@@ -1,129 +1,63 @@
 
 
-# Admin Panel Plan
+# Wallet Page -- Public Landing for Non-Logged-In Users
 
 ## Overview
-A full-featured admin dashboard accessible at `/admin` with a sidebar layout, covering management of all core entities: Users, Products, Packages, Orders, Bookings, Community (Discussions/Replies), Sponsorship, Wallet Transactions, and Notifications.
+Transform the Wallet page so that unauthenticated visitors see a beautiful, informative landing experience with 4 sections (in English), followed by a CTA to sign up. Logged-in users continue to see the existing wallet dashboard.
 
-## Database Changes
+## Architecture
+- Remove the `<RequireAuth>` wrapper from the Wallet page
+- Add a conditional: if `user` exists, show `<WalletContent />`; otherwise, show `<WalletPublicLanding />`
+- All 4 public sections are static (no database queries needed)
 
-### 1. User Roles Table
-Create a `user_roles` table with RLS and a `has_role()` security definer function to safely check admin status without recursive policies.
+---
 
-```text
-user_roles
------------
-id         uuid PK
-user_id    uuid FK -> auth.users (cascade)
-role       app_role enum ('admin', 'moderator', 'user')
-UNIQUE(user_id, role)
-```
+## Section 1: Hajj Savings Calculator (Interactive)
+- User inputs their **savings goal** (default $5,000) and **weekly contribution** ($25-$500 slider)
+- Instantly calculates: weeks to goal, estimated completion date
+- Animated progress bar preview showing projected savings timeline
+- CTA button: "Start Saving Now" (links to `/auth`)
 
-### 2. RLS Policies for Admin Access
-Add SELECT/UPDATE/DELETE policies on key tables (products, packages, package_features, profiles, discussions, replies, bookings, orders, etc.) allowing users with `has_role(auth.uid(), 'admin')` to perform all operations. Also add INSERT policies for products, packages, and package_features for admins.
+## Section 2: How It Works (3-4 Steps)
+- Step-by-step cards with icons:
+  1. **Sign Up** -- Create your free account in seconds
+  2. **Set Your Goal** -- Choose your Hajj savings target
+  3. **Contribute Regularly** -- Add funds weekly or monthly
+  4. **Achieve Your Dream** -- Reach your goal and go for Hajj
+- Each step has an icon, title, and short description
+- Staggered animation on scroll
 
-### 3. Storage Bucket
-Create a `product-images` storage bucket for product image uploads from the admin panel.
+## Section 3: Community Stats and Success Stories
+- Show live stats from the database: total members, total savings goals set, total contributions made
+- 2-3 hardcoded testimonial/success story cards with quotes (placeholder data since no testimonials table exists)
+- Stats fetched via public-safe count queries (profiles count, wallets count)
 
-## Frontend Architecture
+## Section 4: Membership Tiers and Benefits
+- 3 cards for Silver, Gold, Platinum tiers
+- Each card lists tier benefits (points thresholds, perks)
+- Visual hierarchy: Silver (basic), Gold (highlighted), Platinum (premium glow)
+- CTA: "Join Now" button linking to `/auth`
 
-### Route & Layout
-- New route: `/admin` with nested sub-routes (`/admin/users`, `/admin/products`, `/admin/packages`, `/admin/orders`, `/admin/bookings`, `/admin/community`, `/admin/sponsorship`, `/admin/notifications`)
-- Sidebar layout using `SidebarProvider` + `Sidebar` component
-- Admin guard component that checks `has_role` via an RPC call and redirects non-admins
-
-### Admin Pages (8 sections)
-
-#### 1. Dashboard (`/admin`)
-- Summary cards: Total Users, Total Revenue (orders + bookings), Active Discussions, Products Count
-- Recent activity feed
-
-#### 2. Users (`/admin/users`)
-- Table of all profiles with search/filter
-- View/edit user details: name, email, phone, tier, points
-- Adjust points manually (insert into points_ledger + update profile)
-- Change user tier override
-
-#### 3. Products (`/admin/products`)
-- Table of all products with image thumbnails
-- Create/Edit product form: name, price, category, description, image upload, is_limited, rating, reviews
-- Manage variants (sizes/colors) inline
-- Delete product
-
-#### 4. Packages (`/admin/packages`)
-- Table of all Hajj packages
-- Create/Edit package form: name, price, duration, accommodation, meals, guide, departure, group_size, is_popular
-- Manage package features (add/remove/reorder)
-- Delete package
-
-#### 5. Orders (`/admin/orders`)
-- Table of all orders with user info, total, status
-- View order items
-- Update order status (pending/confirmed/shipped/delivered)
-
-#### 6. Bookings (`/admin/bookings`)
-- Table of all bookings with traveller info, package name, status
-- Update booking status (pending/confirmed/cancelled)
-
-#### 7. Community (`/admin/community`)
-- Table of all discussions with author, category, views, replies count
-- Delete inappropriate discussions
-- View/delete replies
-- Mark best answers
-
-#### 8. Notifications (`/admin/notifications`)
-- Send broadcast notifications to all users or specific tiers
-- View recent notifications sent
-
-## File Structure
-
-```text
-src/
-  pages/
-    admin/
-      AdminLayout.tsx        -- Sidebar + outlet wrapper with admin guard
-      AdminDashboard.tsx     -- Overview cards + stats
-      AdminUsers.tsx         -- User management table
-      AdminProducts.tsx      -- Product CRUD
-      AdminPackages.tsx      -- Package CRUD
-      AdminOrders.tsx        -- Order management
-      AdminBookings.tsx      -- Booking management
-      AdminCommunity.tsx     -- Discussion/reply moderation
-      AdminNotifications.tsx -- Broadcast notifications
-  hooks/
-    use-admin.ts             -- useIsAdmin hook + admin data fetching hooks
-```
+---
 
 ## Technical Details
 
-### Admin Check Hook (`use-admin.ts`)
-- Calls `has_role` RPC function on mount
-- Returns `{ isAdmin, loading }` 
-- AdminLayout redirects to `/` if not admin
+### Files Modified
+- **`src/pages/Wallet.tsx`**: Main changes
+  - Remove `<RequireAuth>` wrapper
+  - Add auth check: show `WalletPublicLanding` or `WalletContent`
+  - Create `WalletPublicLanding` component with all 4 sections
+  - Calculator uses local React state only (no DB)
+  - Community stats section fetches public counts (profiles, wallets tables allow admin select only, so we'll use static/estimated numbers or make a simple edge function)
 
-### Admin Data Hooks
-- Use direct Supabase queries with admin RLS policies (admin can SELECT all rows)
-- Pagination with `.range()` for large tables
+### Stats Data Approach
+- Since profiles/wallets tables have RLS restricting to own user or admin, the community stats will use **static placeholder numbers** that can be updated later, or we can reuse the existing `useCommunityStats` hook which already queries discussions/replies/profiles counts (profiles SELECT requires auth though).
+- Best approach: use hardcoded impressive numbers for the public view, keeping it simple.
 
-### Product Image Upload
-- Upload to `product-images` bucket
-- Get public URL and store in `products.image_url`
+### Animations
+- Framer Motion stagger animations for each section
+- Scroll-triggered reveals using the existing `use-scroll-reveal` hook
+- Calculator slider/progress bar animations
 
-### Styling
-- Consistent with existing dark teal + gold theme
-- Uses existing shadcn components (Table, Card, Dialog, Input, Select, Badge, Tabs)
-- Responsive sidebar that collapses on mobile
-
-## Implementation Order
-1. Database migration (roles table, has_role function, admin RLS policies, storage bucket)
-2. `use-admin.ts` hook
-3. `AdminLayout.tsx` with sidebar and route guard
-4. Dashboard page
-5. Users management
-6. Products management (with image upload)
-7. Packages management
-8. Orders + Bookings management
-9. Community moderation
-10. Notifications broadcast
-11. Add routes to `App.tsx`
-
+### No Database Changes Required
+All content is static or computed client-side. No new tables, RLS policies, or migrations needed.
