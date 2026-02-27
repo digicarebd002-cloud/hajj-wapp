@@ -6,20 +6,22 @@ import type { Tables } from "@/integrations/supabase/types";
 // Generic fetch hook — accepts PromiseLike (Supabase returns PostgrestBuilder)
 function useQuery<T>(
   queryFn: () => PromiseLike<{ data: T | null; error: any }>,
-  deps: any[] = []
+  deps: any[] = [],
+  { enabled = true }: { enabled?: boolean } = {}
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const refetch = useCallback(async () => {
+    if (!enabled) { setLoading(false); return; }
     setLoading(true);
     setError(null);
     const { data, error } = await queryFn();
     if (error) setError(error.message);
     else setData(data);
     setLoading(false);
-  }, deps);
+  }, [...deps, enabled]);
 
   useEffect(() => { refetch(); }, [refetch]);
 
@@ -30,8 +32,9 @@ function useQuery<T>(
 export function useProfile() {
   const { user } = useAuth();
   return useQuery<Tables<"profiles">>(
-    () => supabase.from("profiles").select("*").eq("user_id", user?.id ?? "").single(),
-    [user?.id]
+    () => supabase.from("profiles").select("*").eq("user_id", user!.id).single(),
+    [user?.id],
+    { enabled: !!user?.id }
   );
 }
 
@@ -39,8 +42,9 @@ export function useProfile() {
 export function useWallet() {
   const { user } = useAuth();
   return useQuery<Tables<"wallets">>(
-    () => supabase.from("wallets").select("*").eq("user_id", user?.id ?? "").single(),
-    [user?.id]
+    () => supabase.from("wallets").select("*").eq("user_id", user!.id).single(),
+    [user?.id],
+    { enabled: !!user?.id }
   );
 }
 
@@ -48,8 +52,9 @@ export function useWallet() {
 export function useWalletTransactions() {
   const { user } = useAuth();
   return useQuery<Tables<"wallet_transactions">[]>(
-    () => supabase.from("wallet_transactions").select("*").eq("user_id", user?.id ?? "").order("created_at", { ascending: false }),
-    [user?.id]
+    () => supabase.from("wallet_transactions").select("*").eq("user_id", user!.id).order("created_at", { ascending: false }),
+    [user?.id],
+    { enabled: !!user?.id }
   );
 }
 
@@ -77,8 +82,9 @@ export function useWalletStats() {
 export function usePointsLedger(limit = 20) {
   const { user } = useAuth();
   return useQuery<Tables<"points_ledger">[]>(
-    () => supabase.from("points_ledger").select("*").eq("user_id", user?.id ?? "").order("created_at", { ascending: false }).limit(limit),
-    [user?.id, limit]
+    () => supabase.from("points_ledger").select("*").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(limit),
+    [user?.id, limit],
+    { enabled: !!user?.id }
   );
 }
 
@@ -86,8 +92,9 @@ export function usePointsLedger(limit = 20) {
 export function useNotificationPreferences() {
   const { user } = useAuth();
   return useQuery<Tables<"notification_preferences">>(
-    () => supabase.from("notification_preferences").select("*").eq("user_id", user?.id ?? "").single(),
-    [user?.id]
+    () => supabase.from("notification_preferences").select("*").eq("user_id", user!.id).single(),
+    [user?.id],
+    { enabled: !!user?.id }
   );
 }
 
