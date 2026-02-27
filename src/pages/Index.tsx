@@ -4,7 +4,7 @@ import {
   Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-hajj.jpg";
+
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -76,12 +76,16 @@ const Index = () => {
     <div className="overflow-hidden">
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
-        <motion.div
-          className="absolute inset-0 bg-cover bg-center scale-105"
-          style={{ backgroundImage: `url(${heroImage})`, y: heroY }}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+          src="/videos/hajj-bg.mp4"
         />
         <div className="absolute inset-0" style={{
-          background: "linear-gradient(135deg, hsl(186 41% 18% / 0.95) 0%, hsl(180 80% 24% / 0.85) 50%, hsl(180 80% 24% / 0.6) 100%)"
+          background: "linear-gradient(135deg, hsl(186 41% 18% / 0.85) 0%, hsl(180 80% 24% / 0.75) 50%, hsl(180 80% 24% / 0.5) 100%)"
         }} />
 
         {/* Floating particles */}
@@ -238,39 +242,6 @@ const Index = () => {
         </motion.div>
       </section>
 
-      {/* ===== VIDEO BACKGROUND SECTION ===== */}
-      <section className="relative h-[70vh] md:h-[80vh] overflow-hidden flex items-center justify-center">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hajj-bg.mp4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background/80" />
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="relative text-center px-4 max-w-3xl"
-        >
-          <motion.span
-            className="text-6xl md:text-7xl drop-shadow-2xl block mb-6"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            🕋
-          </motion.span>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-            Experience the Sacred Journey
-          </h2>
-          <p className="text-white/80 text-lg md:text-xl leading-relaxed drop-shadow">
-            Feel the spiritual atmosphere of Hajj and take the first step towards your pilgrimage
-          </p>
-        </motion.div>
-      </section>
 
       {/* ===== HOW IT WORKS ===== */}
       <section id="how-it-works" className="section-padding" ref={stepsReveal.ref}>
