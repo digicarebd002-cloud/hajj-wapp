@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import Wallet from "./pages/Wallet";
 import Store from "./pages/Store";
+import ProductDetail from "./pages/ProductDetail";
 import Packages from "./pages/Packages";
 import Community from "./pages/Community";
 import DiscussionDetail from "./pages/DiscussionDetail";
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/store" element={<Store />} />
+                <Route path="/store/:id" element={<ProductDetail />} />
                 <Route path="/packages" element={<Packages />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/community/:id" element={<DiscussionDetail />} />

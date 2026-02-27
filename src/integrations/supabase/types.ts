@@ -426,8 +426,10 @@ export type Database = {
         Row: {
           category: string
           created_at: string
+          description: string | null
           id: string
           image_emoji: string | null
+          image_url: string | null
           is_limited: boolean
           name: string
           price: number
@@ -437,8 +439,10 @@ export type Database = {
         Insert: {
           category: string
           created_at?: string
+          description?: string | null
           id?: string
           image_emoji?: string | null
+          image_url?: string | null
           is_limited?: boolean
           name: string
           price: number
@@ -448,8 +452,10 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string
+          description?: string | null
           id?: string
           image_emoji?: string | null
+          image_url?: string | null
           is_limited?: boolean
           name?: string
           price?: number
