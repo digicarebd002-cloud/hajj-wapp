@@ -15,6 +15,7 @@ import { usePackages } from "@/hooks/use-supabase-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 
 const trustBadges = [
   { icon: "✅", label: "Fully Licensed" },
@@ -113,6 +114,16 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
   );
 };
 
+const staggerContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } },
+};
+
 const Packages = () => {
   const { data: packages, loading, error, refetch } = usePackages();
   const [bookingPkg, setBookingPkg] = useState<DbPackage | null>(null);
@@ -120,19 +131,43 @@ const Packages = () => {
   return (
     <div className="section-padding min-h-screen">
       <div className="container mx-auto">
-        <div className="text-center mb-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Hajj Packages 2026</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">Begin your sacred journey with packages designed for comfort, guidance, and spiritual fulfillment.</p>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {trustBadges.map((b) => (
-            <div key={b.label} className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground rounded-full px-4 py-2 text-sm font-medium">
-              <span>{b.icon}</span>{b.label}
-            </div>
+        {/* Trust badges */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="flex flex-wrap justify-center gap-3 mb-12"
+        >
+          {trustBadges.map((b, i) => (
+            <motion.div
+              key={b.label}
+              variants={fadeUp}
+              whileHover={{ scale: 1.08, y: -2 }}
+              className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground rounded-full px-4 py-2 text-sm font-medium cursor-default"
+            >
+              <motion.span
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ delay: i * 0.2 + 0.5, duration: 0.5 }}
+              >
+                {b.icon}
+              </motion.span>
+              {b.label}
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
+        {/* Package Cards */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16"><CardSkeleton /><CardSkeleton /></div>
         ) : error ? (
@@ -140,16 +175,44 @@ const Packages = () => {
         ) : !packages || packages.length === 0 ? (
           <EmptyState icon="📦" title="No packages available" description="Hajj packages will be listed here soon. Check back later!" />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16"
+          >
             {packages.map((pkg) => {
               const features = pkg.package_features?.sort((a, b) => a.sort_order - b.sort_order) ?? [];
               return (
-                <div key={pkg.id} className={`bg-card rounded-xl card-shadow relative overflow-hidden ${pkg.is_popular ? "ring-2 ring-accent" : ""}`}>
-                  {pkg.is_popular && <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground border-0">⭐ Most Popular</Badge>}
+                <motion.div
+                  key={pkg.id}
+                  variants={fadeUp}
+                  whileHover={{ y: -8, boxShadow: "0 25px 50px -12px hsl(var(--primary) / 0.15)" }}
+                  className={`bg-card rounded-xl card-shadow relative overflow-hidden ${pkg.is_popular ? "ring-2 ring-accent" : ""}`}
+                >
+                  {pkg.is_popular && (
+                    <motion.div
+                      initial={{ scale: 0, rotate: -12 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
+                    >
+                      <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground border-0">⭐ Most Popular</Badge>
+                    </motion.div>
+                  )}
                   <div className="p-6 space-y-5">
                     <div>
                       <h2 className="text-2xl font-bold text-card-foreground">{pkg.name}</h2>
-                      <div className="mt-2"><span className="text-4xl font-bold text-primary">${Number(pkg.price).toLocaleString()}</span><span className="text-muted-foreground text-sm"> / person</span></div>
+                      <div className="mt-2">
+                        <motion.span
+                          className="text-4xl font-bold text-primary"
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3, type: "spring" }}
+                        >
+                          ${Number(pkg.price).toLocaleString()}
+                        </motion.span>
+                        <span className="text-muted-foreground text-sm"> / person</span>
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div><span className="text-muted-foreground">Duration</span><p className="font-medium">{pkg.duration}</p></div>
@@ -162,56 +225,122 @@ const Packages = () => {
                     <Separator />
                     {features.length > 0 && (
                       <ul className="space-y-2">
-                        {features.map((f) => (
-                          <li key={f.id} className="flex items-start gap-2 text-sm"><Check className="h-4 w-4 text-primary mt-0.5 shrink-0" /><span className="text-card-foreground">{f.feature}</span></li>
+                        {features.map((f, i) => (
+                          <motion.li
+                            key={f.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 + i * 0.05 }}
+                            className="flex items-start gap-2 text-sm"
+                          >
+                            <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                            <span className="text-card-foreground">{f.feature}</span>
+                          </motion.li>
                         ))}
                       </ul>
                     )}
                     <div className="flex gap-3 pt-2">
-                      <Button className="flex-1" onClick={() => setBookingPkg(pkg)}>Book This Package</Button>
-                      <Button variant="outline" className="gap-1.5"><Download className="h-4 w-4" /> Itinerary</Button>
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1">
+                        <Button className="w-full" onClick={() => setBookingPkg(pkg)}>Book This Package</Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button variant="outline" className="gap-1.5"><Download className="h-4 w-4" /> Itinerary</Button>
+                      </motion.div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
 
         {/* Payment Plans */}
-        <div className="mb-16">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          className="mb-16"
+        >
           <h2 className="text-2xl font-bold text-center mb-8">Flexible Payment Options</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+          >
             {paymentOptions.map((opt) => (
-              <div key={opt.title} className="bg-card rounded-xl card-shadow p-6 text-center space-y-3">
-                <span className="text-4xl">{opt.icon}</span>
+              <motion.div
+                key={opt.title}
+                variants={fadeUp}
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="bg-card rounded-xl card-shadow p-6 text-center space-y-3"
+              >
+                <motion.span
+                  className="text-4xl block"
+                  whileHover={{ scale: 1.3 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  {opt.icon}
+                </motion.span>
                 <h3 className="font-semibold text-card-foreground">{opt.title}</h3>
                 <p className="text-sm text-muted-foreground">{opt.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="mb-16 border-2 border-primary rounded-xl p-8 md:p-12 text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold mb-2">Need Help Choosing?</h2>
-          <p className="text-muted-foreground mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg">Schedule Free Consultation</Button>
-            <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-4 w-4" /><span className="font-medium">1-800-HAJJ-HELP</span></div>
+        {/* Need Help CTA */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 150 }}
+          className="mb-16 border-2 border-primary rounded-xl p-8 md:p-12 text-center max-w-2xl mx-auto relative overflow-hidden"
+        >
+          <motion.div
+            className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-primary/5"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold mb-2">Need Help Choosing?</h2>
+            <p className="text-muted-foreground mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button size="lg">Schedule Free Consultation</Button>
+              </motion.div>
+              <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-4 w-4" /><span className="font-medium">1-800-HAJJ-HELP</span></div>
+            </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="max-w-3xl mx-auto">
+        {/* FAQ */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto"
+        >
           <h2 className="text-2xl font-bold text-center mb-6">Important Information</h2>
           <Accordion type="single" collapsible className="space-y-2">
-            {faqItems.map((item) => (
-              <AccordionItem key={item.id} value={item.id} className="bg-card rounded-lg card-shadow border-none px-4">
-                <AccordionTrigger className="hover:no-underline"><span className="flex items-center gap-2 text-left">{item.icon}{item.title}</span></AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">{item.content}</AccordionContent>
-              </AccordionItem>
+            {faqItems.map((item, i) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <AccordionItem value={item.id} className="bg-card rounded-lg card-shadow border-none px-4">
+                  <AccordionTrigger className="hover:no-underline"><span className="flex items-center gap-2 text-left">{item.icon}{item.title}</span></AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">{item.content}</AccordionContent>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
-        </div>
+        </motion.div>
       </div>
 
       {bookingPkg && <BookingModal pkg={bookingPkg} open={!!bookingPkg} onClose={() => setBookingPkg(null)} />}
