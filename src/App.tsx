@@ -18,6 +18,16 @@ import Auth from "./pages/Auth";
 import Sponsorship from "./pages/Sponsorship";
 import NotFound from "./pages/NotFound";
 
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminPackages from "./pages/admin/AdminPackages";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminCommunity from "./pages/admin/AdminCommunity";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -28,21 +38,38 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/wallet" element={<Wallet />} />
-                <Route path="/store" element={<Store />} />
-                <Route path="/store/:id" element={<ProductDetail />} />
-                <Route path="/packages" element={<Packages />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/community/:id" element={<DiscussionDetail />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/sponsorship" element={<Sponsorship />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
+            <Routes>
+              {/* Admin routes - no main Layout */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="packages" element={<AdminPackages />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="bookings" element={<AdminBookings />} />
+                <Route path="community" element={<AdminCommunity />} />
+                <Route path="notifications" element={<AdminNotifications />} />
+              </Route>
+
+              {/* Public routes with Layout */}
+              <Route path="/*" element={
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/wallet" element={<Wallet />} />
+                    <Route path="/store" element={<Store />} />
+                    <Route path="/store/:id" element={<ProductDetail />} />
+                    <Route path="/packages" element={<Packages />} />
+                    <Route path="/community" element={<Community />} />
+                    <Route path="/community/:id" element={<DiscussionDetail />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/sponsorship" element={<Sponsorship />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              } />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </CartProvider>
