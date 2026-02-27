@@ -8,6 +8,17 @@ import { useWallet, useWalletTransactions, useProfile } from "@/hooks/use-supaba
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } },
+};
 
 const WalletContent = () => {
   const { user } = useAuth();
@@ -69,90 +80,175 @@ const WalletContent = () => {
   return (
     <div className="section-padding min-h-screen">
       <div className="container mx-auto max-w-4xl">
-        <div className="mb-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
           <h1 className="text-3xl md:text-4xl font-bold mb-2">My Hajj Wallet</h1>
           <p className="text-muted-foreground">Track your progress toward your sacred journey</p>
-        </div>
+        </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-card rounded-xl card-shadow p-6">
-            <p className="text-sm text-muted-foreground mb-1">Current Balance</p>
-            <p className="text-3xl font-bold text-primary">${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-            <p className="text-xs text-muted-foreground mt-1">{contributionCount} contributions made</p>
-          </div>
-          <div className="bg-card rounded-xl card-shadow p-6">
-            <p className="text-sm text-muted-foreground mb-1">Goal Amount</p>
-            <p className="text-3xl font-bold">${goalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-            <p className="text-xs text-muted-foreground mt-1">${remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining</p>
-          </div>
-          <div className="bg-card rounded-xl card-shadow p-6">
-            <p className="text-sm text-muted-foreground mb-1">Membership</p>
-            <p className="text-3xl font-bold capitalize">{profile?.membership_status ?? "—"}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-xs text-muted-foreground">Tier: {profile?.tier ?? "—"}</p>
-              {profile?.membership_status === "active" && (
-                <Badge className="bg-primary text-primary-foreground border-0 text-[10px]">Active</Badge>
-              )}
-            </div>
-          </div>
-        </div>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+        >
+          {[
+            {
+              label: "Current Balance",
+              value: `$${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+              sub: `${contributionCount} contributions made`,
+              highlight: true,
+            },
+            {
+              label: "Goal Amount",
+              value: `$${goalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+              sub: `$${remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining`,
+            },
+            {
+              label: "Membership",
+              value: profile?.membership_status ?? "—",
+              sub: `Tier: ${profile?.tier ?? "—"}`,
+              badge: profile?.membership_status === "active",
+            },
+          ].map((card, i) => (
+            <motion.div
+              key={card.label}
+              variants={fadeUp}
+              whileHover={{ y: -6, boxShadow: "0 15px 30px -8px hsl(var(--primary) / 0.12)" }}
+              className="bg-card rounded-xl card-shadow p-6"
+            >
+              <p className="text-sm text-muted-foreground mb-1">{card.label}</p>
+              <motion.p
+                className={`text-3xl font-bold ${card.highlight ? "text-primary" : ""} ${card.label === "Membership" ? "capitalize" : ""}`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
+              >
+                {card.value}
+              </motion.p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-xs text-muted-foreground">{card.sub}</p>
+                {card.badge && (
+                  <Badge className="bg-primary text-primary-foreground border-0 text-[10px]">Active</Badge>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Savings Progress */}
-        <div className="bg-card rounded-xl card-shadow p-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          whileHover={{ boxShadow: "0 15px 30px -8px hsl(var(--primary) / 0.08)" }}
+          className="bg-card rounded-xl card-shadow p-6 mb-8"
+        >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Savings Progress</h2>
-            <span className="text-sm text-primary font-medium">
+            <motion.span
+              className="text-sm text-primary font-medium"
+              key={progress}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+            >
               {progress.toFixed(1)}% of goal reached
-            </span>
+            </motion.span>
           </div>
           <Progress value={progress} className="h-3 mb-2" />
           <div className="flex justify-between text-xs text-muted-foreground mb-6">
             <span>$0</span><span>${goalAmount.toLocaleString()}</span>
           </div>
           {remaining > 0 && (
-            <div className="grid grid-cols-3 gap-4 text-sm">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-3 gap-4 text-sm"
+            >
               {[50, 100, 200].map((w) => (
-                <div key={w} className="bg-secondary rounded-lg p-3 text-center">
+                <motion.div
+                  key={w}
+                  variants={fadeUp}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="bg-secondary rounded-lg p-3 text-center"
+                >
                   <p className="text-muted-foreground">At ${w}/week</p>
                   <p className="font-semibold text-primary">{weeksToGoal(w)} weeks</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Contribute */}
-        <div className="bg-card rounded-xl card-shadow p-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-card rounded-xl card-shadow p-6 mb-8"
+        >
           <h2 className="text-lg font-semibold mb-1">Make a Contribution</h2>
           <p className="text-sm text-muted-foreground mb-4">Add funds to your Hajj savings wallet</p>
           <div className="flex gap-2 mb-3">
             {quickAmounts.map((amt) => (
-              <Button key={amt} variant={contributionAmount === String(amt) ? "default" : "outline"} size="sm" onClick={() => setContributionAmount(String(amt))}>
-                ${amt}
-              </Button>
+              <motion.div key={amt} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+                <Button variant={contributionAmount === String(amt) ? "default" : "outline"} size="sm" onClick={() => setContributionAmount(String(amt))}>
+                  ${amt}
+                </Button>
+              </motion.div>
             ))}
           </div>
           <div className="flex gap-3">
             <Input type="number" placeholder="Custom amount ($)" value={contributionAmount} onChange={(e) => setContributionAmount(e.target.value)} className="flex-1" />
-            <Button onClick={handleContribute} disabled={!contributionAmount || contributing}>
-              {contributing ? "Processing..." : "Contribute Now"}
-            </Button>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button onClick={handleContribute} disabled={!contributionAmount || contributing}>
+                {contributing ? "Processing..." : "Contribute Now"}
+              </Button>
+            </motion.div>
           </div>
-          <div className="bg-secondary rounded-lg p-4 mt-4 text-sm text-muted-foreground">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="bg-secondary rounded-lg p-4 mt-4 text-sm text-muted-foreground"
+          >
             💡 <strong>Tip:</strong> Set up recurring contributions to reach your goal faster!
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Recent Contributions */}
-        <div className="mb-4"><h2 className="text-lg font-semibold">Recent Contributions</h2></div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mb-4"
+        >
+          <h2 className="text-lg font-semibold">Recent Contributions</h2>
+        </motion.div>
 
         {txLoading ? <CardSkeleton /> : !transactions || transactions.length === 0 ? (
           <EmptyState icon="💰" title="No contributions yet" description="Make your first contribution to start your Hajj savings journey!" actionLabel="Make a Contribution" onAction={() => setContributionAmount("50")} />
         ) : (
-          <div className="bg-card rounded-xl card-shadow overflow-hidden mb-4">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="bg-card rounded-xl card-shadow overflow-hidden mb-4"
+          >
             {transactions.map((tx, i) => (
-              <div key={tx.id} className={`flex items-center justify-between px-6 py-4 ${i < transactions.length - 1 ? "border-b" : ""}`}>
+              <motion.div
+                key={tx.id}
+                variants={fadeUp}
+                whileHover={{ backgroundColor: "hsl(var(--secondary) / 0.5)" }}
+                className={`flex items-center justify-between px-6 py-4 transition-colors ${i < transactions.length - 1 ? "border-b" : ""}`}
+              >
                 <div>
                   <p className="font-semibold text-primary">+${Number(tx.amount).toLocaleString()}</p>
                   <p className="text-sm text-muted-foreground">{new Date(tx.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
@@ -160,9 +256,9 @@ const WalletContent = () => {
                 <Badge variant={tx.type === "recurring" ? "default" : "secondary"} className="text-xs">
                   {tx.type === "recurring" ? "Recurring" : "One-time"}
                 </Badge>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
