@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import WalletPublicLanding from "@/components/wallet/WalletPublicLanding";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -347,10 +348,9 @@ const WalletContent = () => {
   );
 };
 
-const Wallet = () => (
-  <RequireAuth>
-    <WalletContent />
-  </RequireAuth>
-);
+const Wallet = () => {
+  const { user } = useAuth();
+  return user ? <WalletContent /> : <WalletPublicLanding />;
+};
 
 export default Wallet;
