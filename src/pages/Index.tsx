@@ -162,8 +162,8 @@ const Index = () => {
               >
                 <Link to="/account">
                   <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button size="lg" className="gap-2 text-base px-8 shadow-xl shadow-primary/30 rounded-full h-13">
-                      Start Your Journey <ArrowRight className="h-4 w-4" />
+                    <Button size="lg" className="gap-2.5 rounded-full btn-glow">
+                      Start Your Journey <ArrowRight className="h-5 w-5" />
                     </Button>
                   </motion.div>
                 </Link>
@@ -172,7 +172,7 @@ const Index = () => {
                     size="lg"
                     variant="outline"
                     onClick={scrollToHowItWorks}
-                    className="text-base px-8 border-white/30 text-white bg-white/5 hover:bg-white/15 rounded-full h-13 backdrop-blur-sm"
+                    className="rounded-full border-white/30 text-white bg-white/5 hover:bg-white/15 backdrop-blur-sm"
                   >
                     See How It Works
                   </Button>
@@ -413,7 +413,7 @@ const Index = () => {
               </ul>
               <Link to="/packages">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full gap-2 rounded-xl h-12 shadow-md">
+                  <Button className="w-full gap-2 rounded-xl btn-glow">
                     Compare Packages <ArrowRight className="h-4 w-4" />
                   </Button>
                 </motion.div>
@@ -491,8 +491,8 @@ const Index = () => {
           <div className="text-center mb-14">
             <Link to="/community">
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Button size="lg" className="gap-2 rounded-full px-8 shadow-lg shadow-primary/20">
-                  Join the Discussion <ArrowRight className="h-4 w-4" />
+                <Button size="lg" className="gap-2.5 rounded-full btn-glow">
+                  Join the Discussion <ArrowRight className="h-5 w-5" />
                 </Button>
               </motion.div>
             </Link>
@@ -557,8 +557,8 @@ const Index = () => {
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link to="/sponsorship">
-                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 gap-2 rounded-full px-8 shadow-xl shadow-accent/20 h-13">
-                  Learn About Sponsorship <ArrowRight className="h-4 w-4" />
+                <Button size="lg" className="gap-2.5 rounded-full btn-glow">
+                  Learn About Sponsorship <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
             </motion.div>
@@ -583,8 +583,8 @@ const Index = () => {
             </p>
             <Link to="/account">
               <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button size="lg" className="gap-2 text-base px-10 rounded-full shadow-xl shadow-primary/20 h-13">
-                  Join Hajj Wallet <ArrowRight className="h-4 w-4" />
+                <Button size="lg" className="gap-2.5 rounded-full btn-glow">
+                  Join Hajj Wallet <ArrowRight className="h-5 w-5" />
                 </Button>
               </motion.div>
             </Link>

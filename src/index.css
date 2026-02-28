@@ -139,4 +139,23 @@
     backdrop-filter: blur(20px);
     border: 1px solid hsl(var(--border) / 0.5);
   }
+
+  /* Button glow for primary CTA buttons */
+  .btn-glow {
+    position: relative;
+  }
+  .btn-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: hsl(var(--primary) / 0.4);
+    filter: blur(20px);
+    z-index: -1;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+  .btn-glow:hover::after {
+    opacity: 0.9;
+  }
 }
