@@ -246,6 +246,15 @@ export function useProduct(id: string) {
   );
 }
 
+// --- Single Product by Slug ---
+export function useProductBySlug(slug: string) {
+  return useQuery<Tables<"products"> & { product_variants: Tables<"product_variants">[]; description?: string; image_url?: string }>(
+    () => supabase.from("products").select("*, product_variants(*)").eq("slug", slug).single() as any,
+    [slug],
+    { enabled: !!slug }
+  );
+}
+
 // --- Packages ---
 export function usePackages() {
   return useQuery<(Tables<"packages"> & { package_features: Tables<"package_features">[] })[]>(

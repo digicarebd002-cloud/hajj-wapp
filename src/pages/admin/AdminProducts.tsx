@@ -19,6 +19,7 @@ interface Product {
   id: string; name: string; price: number; category: string;
   short_description: string | null; description: string | null; image_url: string | null; is_limited: boolean;
   rating: number; reviews: number; image_emoji: string | null;
+  slug: string | null; meta_title: string | null; meta_description: string | null; og_image_url: string | null;
 }
 
 interface Category {
@@ -29,7 +30,7 @@ interface Variant {
   id: string; product_id: string; size: string; color_name: string; color_value: string; price: number | null;
 }
 
-const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0" };
+const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0", slug: "", meta_title: "", meta_description: "", og_image_url: "" };
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -81,7 +82,7 @@ export default function AdminProducts() {
   };
   const openEdit = (p: Product) => {
     setEditId(p.id);
-    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews) });
+    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews), slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", og_image_url: p.og_image_url || "" });
     setDialogOpen(true);
   };
 
@@ -111,6 +112,7 @@ export default function AdminProducts() {
       name: form.name, price: Number(form.price), category: form.category,
       short_description: form.short_description, description: form.description, image_url: form.image_url,
       is_limited: form.is_limited, rating: Number(form.rating), reviews: Number(form.reviews),
+      slug: form.slug || null, meta_title: form.meta_title || null, meta_description: form.meta_description || null, og_image_url: form.og_image_url || null,
     };
     let error;
     if (editId) {
@@ -359,6 +361,28 @@ export default function AdminProducts() {
               <Switch checked={form.is_limited} onCheckedChange={v => setForm(f => ({ ...f, is_limited: v }))} />
               <Label className="font-medium">Limited Edition</Label>
             </div>
+
+            <Separator />
+            <p className="text-sm font-semibold text-foreground flex items-center gap-2">🔍 SEO Settings</p>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">URL Slug</Label>
+              <Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-') }))} placeholder="e.g. premium-ihram-towel" className="bg-secondary/50" />
+              <p className="text-xs text-muted-foreground">/store/{form.slug || 'auto-generated'}</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Meta Title <span className="text-muted-foreground/60">({(form.meta_title || '').length}/60)</span></Label>
+              <Input value={form.meta_title} onChange={e => setForm(f => ({ ...f, meta_title: e.target.value }))} placeholder="SEO title (max 60 chars)" maxLength={60} className="bg-secondary/50" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Meta Description <span className="text-muted-foreground/60">({(form.meta_description || '').length}/160)</span></Label>
+              <Textarea value={form.meta_description} onChange={e => setForm(f => ({ ...f, meta_description: e.target.value }))} placeholder="SEO description (max 160 chars)" maxLength={160} className="bg-secondary/50" rows={2} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">OG Image URL</Label>
+              <Input value={form.og_image_url} onChange={e => setForm(f => ({ ...f, og_image_url: e.target.value }))} placeholder="Social share image URL (1200x630 recommended)" className="bg-secondary/50" />
+            </div>
+
             <Button className="w-full font-semibold" onClick={save}>{editId ? "Update Product" : "Create Product"}</Button>
           </div>
         </DialogContent>
