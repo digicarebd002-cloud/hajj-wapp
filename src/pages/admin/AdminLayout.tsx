@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-admin";
 import { NavLink } from "@/components/NavLink";
@@ -24,6 +24,7 @@ const navItems = [
   { title: "Bookings", url: "/admin/bookings", icon: CalendarCheck },
   { title: "Community", url: "/admin/community", icon: MessageSquare },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
+  { title: "Pages", url: "/admin/pages", icon: FileText },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 

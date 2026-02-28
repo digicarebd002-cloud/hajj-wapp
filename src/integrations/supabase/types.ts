@@ -345,6 +345,42 @@ export type Database = {
         }
         Relationships: []
       }
+      page_contents: {
+        Row: {
+          content_type: string
+          content_value: string
+          created_at: string
+          id: string
+          label: string
+          page_slug: string
+          section_key: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          content_type?: string
+          content_value?: string
+          created_at?: string
+          id?: string
+          label?: string
+          page_slug: string
+          section_key: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          content_type?: string
+          content_value?: string
+          created_at?: string
+          id?: string
+          label?: string
+          page_slug?: string
+          section_key?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       points_ledger: {
         Row: {
           action: string
