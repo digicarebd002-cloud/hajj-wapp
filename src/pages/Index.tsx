@@ -3,6 +3,7 @@ import {
   Users, Wallet, Star, ArrowRight, Handshake, Award,
   Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe
 } from "lucide-react";
+import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
 
 import { useCountUp } from "@/hooks/use-count-up";
@@ -243,6 +244,9 @@ const Index = () => {
         </motion.div>
       </section>
 
+
+      {/* ===== WALLET SHOWCASE ===== */}
+      <WalletShowcase />
 
       {/* ===== HOW IT WORKS ===== */}
       <section id="how-it-works" className="section-padding" ref={stepsReveal.ref}>
