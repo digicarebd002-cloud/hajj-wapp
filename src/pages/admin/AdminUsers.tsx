@@ -6,22 +6,39 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Search, Edit, Users as UsersIcon } from "lucide-react";
+import { Search, Edit, Users as UsersIcon, History, Award, MessageSquare, MessageCircle, ThumbsUp, Star, Zap, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 
 interface Profile {
   id: string; user_id: string; full_name: string; email: string;
   phone: string | null; tier: string; points_total: number; membership_status: string;
 }
 
+interface PointEntry {
+  id: string; action: string; points: number; created_at: string; reference_id: string | null;
+}
+
+const actionMeta: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  create_discussion: { label: "Created Discussion", icon: <MessageSquare className="h-3.5 w-3.5" />, color: "bg-blue-500/15 text-blue-400" },
+  create_reply: { label: "Replied to Thread", icon: <MessageCircle className="h-3.5 w-3.5" />, color: "bg-violet-500/15 text-violet-400" },
+  receive_like: { label: "Received Like", icon: <ThumbsUp className="h-3.5 w-3.5" />, color: "bg-pink-500/15 text-pink-400" },
+  best_answer: { label: "Best Answer", icon: <Star className="h-3.5 w-3.5" />, color: "bg-amber-500/15 text-amber-400" },
+  admin_adjustment: { label: "Admin Adjustment", icon: <Zap className="h-3.5 w-3.5" />, color: "bg-primary/15 text-primary" },
+};
+
 export default function AdminUsers() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Profile | null>(null);
-  const [form, setForm] = useState({ full_name: "", phone: "", tier: "", points_adj: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", tier: "", points_adj: "", adj_reason: "" });
+  const [pointsHistory, setPointsHistory] = useState<PointEntry[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const fetchProfiles = async () => {
     const { data } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
@@ -36,9 +53,13 @@ export default function AdminUsers() {
     p.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const openEdit = (p: Profile) => {
+  const openEdit = async (p: Profile) => {
     setEditing(p);
-    setForm({ full_name: p.full_name, phone: p.phone || "", tier: p.tier, points_adj: "" });
+    setForm({ full_name: p.full_name, phone: p.phone || "", tier: p.tier, points_adj: "", adj_reason: "" });
+    setHistoryLoading(true);
+    const { data } = await supabase.from("points_ledger").select("*").eq("user_id", p.user_id).order("created_at", { ascending: false }).limit(50);
+    setPointsHistory((data as any) || []);
+    setHistoryLoading(false);
   };
 
   const save = async () => {
@@ -81,8 +102,8 @@ export default function AdminUsers() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/15 flex items-center justify-center">
-              <UsersIcon className="h-5 w-5 text-blue-400" />
+            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+              <UsersIcon className="h-5 w-5 text-primary" />
             </div>
             Users
           </h1>
@@ -134,24 +155,91 @@ export default function AdminUsers() {
       </motion.div>
 
       <Dialog open={!!editing} onOpenChange={o => !o && setEditing(null)}>
-        <DialogContent className="bg-card border-border/50">
-          <DialogHeader><DialogTitle className="text-xl font-bold">Edit User</DialogTitle></DialogHeader>
-          <div className="space-y-4 mt-2">
-            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Name</Label><Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} className="bg-secondary/50" /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Phone</Label><Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="bg-secondary/50" /></div>
-            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tier</Label>
-              <Select value={form.tier} onValueChange={v => setForm(f => ({ ...f, tier: v }))}>
-                <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Silver">Silver</SelectItem>
-                  <SelectItem value="Gold">Gold</SelectItem>
-                  <SelectItem value="Platinum">Platinum</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Points Adjustment (+/-)</Label><Input type="number" value={form.points_adj} onChange={e => setForm(f => ({ ...f, points_adj: e.target.value }))} placeholder="e.g. +50 or -20" className="bg-secondary/50" /></div>
-            <Button className="w-full mt-2 font-semibold" onClick={save}>Save Changes</Button>
-          </div>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              Edit User
+              {editing && <Badge variant="outline" className={tierColor(editing.tier)}>{editing.tier} — {editing.points_total} pts</Badge>}
+            </DialogTitle>
+          </DialogHeader>
+
+          <Tabs defaultValue="profile" className="mt-2">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="profile" className="gap-2"><Edit className="h-3.5 w-3.5" /> Profile & Points</TabsTrigger>
+              <TabsTrigger value="history" className="gap-2"><History className="h-3.5 w-3.5" /> Points History</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="profile" className="space-y-4 mt-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Name</Label>
+                <Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} className="bg-secondary/50" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Phone</Label>
+                <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="bg-secondary/50" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tier</Label>
+                <Select value={form.tier} onValueChange={v => setForm(f => ({ ...f, tier: v }))}>
+                  <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Silver">Silver</SelectItem>
+                    <SelectItem value="Gold">Gold</SelectItem>
+                    <SelectItem value="Platinum">Platinum</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="border border-border/50 rounded-xl p-4 space-y-3 bg-secondary/20">
+                <h4 className="text-sm font-semibold flex items-center gap-2"><Award className="h-4 w-4 text-primary" /> Points Adjustment</h4>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Amount (+/-)</Label>
+                  <Input type="number" value={form.points_adj} onChange={e => setForm(f => ({ ...f, points_adj: e.target.value }))} placeholder="e.g. +50 or -20" className="bg-secondary/50" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Reason (optional)</Label>
+                  <Textarea value={form.adj_reason} onChange={e => setForm(f => ({ ...f, adj_reason: e.target.value }))} placeholder="Why are you adjusting points?" className="bg-secondary/50 min-h-[60px]" />
+                </div>
+                {form.points_adj && Number(form.points_adj) !== 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    New total: <span className="font-bold text-primary">{(editing?.points_total ?? 0) + Number(form.points_adj)} pts</span>
+                  </p>
+                )}
+              </div>
+
+              <Button className="w-full mt-2 font-semibold" onClick={save}>Save Changes</Button>
+            </TabsContent>
+
+            <TabsContent value="history" className="mt-4">
+              <div className="rounded-xl border border-border/50 overflow-hidden bg-card/30">
+                {historyLoading ? (
+                  <p className="text-center text-muted-foreground py-12">Loading history...</p>
+                ) : pointsHistory.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-12">No points history for this user.</p>
+                ) : (
+                  <div className="divide-y divide-border/30">
+                    {pointsHistory.map((entry) => {
+                      const meta = actionMeta[entry.action] || { label: entry.action.replace(/_/g, " "), icon: <Zap className="h-3.5 w-3.5" />, color: "bg-muted text-muted-foreground" };
+                      return (
+                        <div key={entry.id} className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/20 transition-colors">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${meta.color}`}>
+                            {meta.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium">{meta.label}</p>
+                            <p className="text-xs text-muted-foreground">{format(new Date(entry.created_at), "MMM d, yyyy 'at' h:mm a")}</p>
+                          </div>
+                          <span className={`font-bold text-sm ${entry.points >= 0 ? "text-primary" : "text-destructive"}`}>
+                            {entry.points >= 0 ? "+" : ""}{entry.points} pts
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </div>
