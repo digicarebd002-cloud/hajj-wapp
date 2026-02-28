@@ -435,6 +435,7 @@ export type Database = {
           price: number
           rating: number
           reviews: number
+          short_description: string | null
         }
         Insert: {
           category: string
@@ -448,6 +449,7 @@ export type Database = {
           price: number
           rating?: number
           reviews?: number
+          short_description?: string | null
         }
         Update: {
           category?: string
@@ -461,6 +463,7 @@ export type Database = {
           price?: number
           rating?: number
           reviews?: number
+          short_description?: string | null
         }
         Relationships: []
       }

@@ -14,11 +14,11 @@ import { motion } from "framer-motion";
 
 interface Product {
   id: string; name: string; price: number; category: string;
-  description: string | null; image_url: string | null; is_limited: boolean;
+  short_description: string | null; description: string | null; image_url: string | null; is_limited: boolean;
   rating: number; reviews: number; image_emoji: string | null;
 }
 
-const emptyForm = { name: "", price: "", category: "Apparel", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0" };
+const emptyForm = { name: "", price: "", category: "Apparel", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0" };
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,7 +38,7 @@ export default function AdminProducts() {
   const openCreate = () => { setEditId(null); setForm(emptyForm); setDialogOpen(true); };
   const openEdit = (p: Product) => {
     setEditId(p.id);
-    setForm({ name: p.name, price: String(p.price), category: p.category, description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews) });
+    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews) });
     setDialogOpen(true);
   };
 
@@ -59,7 +59,7 @@ export default function AdminProducts() {
   const save = async () => {
     const payload = {
       name: form.name, price: Number(form.price), category: form.category,
-      description: form.description, image_url: form.image_url,
+      short_description: form.short_description, description: form.description, image_url: form.image_url,
       is_limited: form.is_limited, rating: Number(form.rating), reviews: Number(form.reviews),
     };
     let error;
@@ -148,7 +148,8 @@ export default function AdminProducts() {
               <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price</Label><Input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} className="bg-secondary/50" /></div>
               <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</Label><Input value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className="bg-secondary/50" /></div>
             </div>
-            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Description</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="bg-secondary/50" /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Short Description</Label><Input value={form.short_description} onChange={e => setForm(f => ({ ...f, short_description: e.target.value }))} placeholder="Brief summary shown on cards" className="bg-secondary/50" /></div>
+            <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Full Description</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Detailed description shown on product page" className="bg-secondary/50" rows={4} /></div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Image</Label>
               <div className="flex items-center gap-3 mt-1">

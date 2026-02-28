@@ -42,6 +42,7 @@ const ProductDetail = () => {
   const colors = [...new Map(variants.map((v) => [v.color_name, v])).values()];
   const sizes = [...new Set(variants.map((v) => v.size))];
   const imageUrl = (product as any).image_url;
+  const shortDescription = (product as any).short_description;
   const description = (product as any).description;
   const canAdd = !!selectedColor && !!selectedSize;
 
@@ -142,8 +143,11 @@ const ProductDetail = () => {
             </div>
 
             {/* Description */}
+            {shortDescription && (
+              <p className="text-muted-foreground leading-relaxed">{shortDescription}</p>
+            )}
             {description && (
-              <p className="text-muted-foreground leading-relaxed">{description}</p>
+              <p className="text-muted-foreground/80 text-sm leading-relaxed">{description}</p>
             )}
 
             <Separator />
