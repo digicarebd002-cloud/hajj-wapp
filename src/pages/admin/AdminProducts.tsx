@@ -10,8 +10,9 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Product {
@@ -22,6 +23,10 @@ interface Product {
 
 interface Category {
   id: string; name: string; sort_order: number;
+}
+
+interface Variant {
+  id: string; product_id: string; size: string; color_name: string; color_value: string;
 }
 
 const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0" };
@@ -41,6 +46,13 @@ export default function AdminProducts() {
   const [editCatId, setEditCatId] = useState<string | null>(null);
   const [editCatName, setEditCatName] = useState("");
 
+  // Variants
+  const [variantDialogOpen, setVariantDialogOpen] = useState(false);
+  const [variantProduct, setVariantProduct] = useState<Product | null>(null);
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [variantLoading, setVariantLoading] = useState(false);
+  const [newVariant, setNewVariant] = useState({ size: "", color_name: "", color_value: "#000000" });
+
   const fetchData = async () => {
     const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
     setProducts(data || []);
@@ -55,6 +67,13 @@ export default function AdminProducts() {
 
   useEffect(() => { fetchData(); fetchCategories(); }, []);
 
+  const fetchVariants = async (productId: string) => {
+    setVariantLoading(true);
+    const { data } = await supabase.from("product_variants").select("*").eq("product_id", productId).order("size");
+    setVariants((data as any) || []);
+    setVariantLoading(false);
+  };
+
   const openCreate = () => {
     setEditId(null);
     setForm({ ...emptyForm, category: categories[0]?.name || "" });
@@ -64,6 +83,13 @@ export default function AdminProducts() {
     setEditId(p.id);
     setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews) });
     setDialogOpen(true);
+  };
+
+  const openVariants = (p: Product) => {
+    setVariantProduct(p);
+    setVariantDialogOpen(true);
+    fetchVariants(p.id);
+    setNewVariant({ size: "", color_name: "", color_value: "#000000" });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +155,37 @@ export default function AdminProducts() {
     else { toast.success("Deleted"); fetchCategories(); }
   };
 
+  // Variant actions
+  const addVariant = async () => {
+    if (!variantProduct || !newVariant.size.trim() || !newVariant.color_name.trim()) {
+      toast.error("Size and color name are required");
+      return;
+    }
+    const { error } = await supabase.from("product_variants").insert({
+      product_id: variantProduct.id,
+      size: newVariant.size.trim(),
+      color_name: newVariant.color_name.trim(),
+      color_value: newVariant.color_value,
+    } as any);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Variant added");
+      setNewVariant({ size: "", color_name: "", color_value: "#000000" });
+      fetchVariants(variantProduct.id);
+    }
+  };
+
+  const deleteVariant = async (id: string) => {
+    if (!variantProduct) return;
+    const { error } = await supabase.from("product_variants").delete().eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success("Variant removed"); fetchVariants(variantProduct.id); }
+  };
+
+  // Group variants for display
+  const uniqueSizes = [...new Set(variants.map(v => v.size))];
+  const uniqueColors = [...new Map(variants.map(v => [v.color_name, v])).values()];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -165,13 +222,14 @@ export default function AdminProducts() {
                   <TableHead className="font-semibold text-foreground/70">Name</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Category</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Price</TableHead>
+                  <TableHead className="font-semibold text-foreground/70">Variants</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Limited</TableHead>
-                  <TableHead className="w-24"></TableHead>
+                  <TableHead className="w-32"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-12">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-12">Loading...</TableCell></TableRow>
                 ) : products.map(p => (
                   <TableRow key={p.id} className="hover:bg-secondary/30 transition-colors">
                     <TableCell>
@@ -180,6 +238,11 @@ export default function AdminProducts() {
                     <TableCell className="font-medium text-foreground">{p.name}</TableCell>
                     <TableCell><Badge variant="outline" className="bg-secondary/30">{p.category}</Badge></TableCell>
                     <TableCell className="font-semibold text-primary">${p.price}</TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
+                        <Palette className="h-3.5 w-3.5" /> Variants
+                      </Button>
+                    </TableCell>
                     <TableCell>{p.is_limited ? <Badge className="bg-primary/20 text-primary border-primary/30">Limited</Badge> : <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -296,6 +359,146 @@ export default function AdminProducts() {
               <Label className="font-medium">Limited Edition</Label>
             </div>
             <Button className="w-full font-semibold" onClick={save}>{editId ? "Update Product" : "Create Product"}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Variants Dialog */}
+      <Dialog open={variantDialogOpen} onOpenChange={setVariantDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Palette className="h-5 w-5 text-primary" />
+              Variants — {variantProduct?.name}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-5 mt-2">
+            {/* Summary */}
+            <div className="flex gap-4">
+              <div className="flex-1 p-3 rounded-lg bg-secondary/30 text-center">
+                <Ruler className="h-4 w-4 mx-auto mb-1 text-primary" />
+                <p className="text-lg font-bold text-foreground">{uniqueSizes.length}</p>
+                <p className="text-xs text-muted-foreground">Sizes</p>
+              </div>
+              <div className="flex-1 p-3 rounded-lg bg-secondary/30 text-center">
+                <Palette className="h-4 w-4 mx-auto mb-1 text-primary" />
+                <p className="text-lg font-bold text-foreground">{uniqueColors.length}</p>
+                <p className="text-xs text-muted-foreground">Colors</p>
+              </div>
+              <div className="flex-1 p-3 rounded-lg bg-secondary/30 text-center">
+                <ShoppingBag className="h-4 w-4 mx-auto mb-1 text-primary" />
+                <p className="text-lg font-bold text-foreground">{variants.length}</p>
+                <p className="text-xs text-muted-foreground">Total Variants</p>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Add new variant */}
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-foreground">Add Variant</p>
+              <div className="grid grid-cols-[1fr_1fr_80px_auto] gap-2 items-end">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Size</Label>
+                  <Input
+                    value={newVariant.size}
+                    onChange={e => setNewVariant(v => ({ ...v, size: e.target.value }))}
+                    placeholder="e.g. S, M, L, XL"
+                    className="bg-secondary/50 h-9"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Color Name</Label>
+                  <Input
+                    value={newVariant.color_name}
+                    onChange={e => setNewVariant(v => ({ ...v, color_name: e.target.value }))}
+                    placeholder="e.g. Black, White"
+                    className="bg-secondary/50 h-9"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Color</Label>
+                  <input
+                    type="color"
+                    value={newVariant.color_value}
+                    onChange={e => setNewVariant(v => ({ ...v, color_value: e.target.value }))}
+                    className="w-full h-9 rounded-md border border-border cursor-pointer bg-secondary/50"
+                  />
+                </div>
+                <Button size="sm" onClick={addVariant} className="h-9 gap-1">
+                  <Plus className="h-3.5 w-3.5" /> Add
+                </Button>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Current variants */}
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-foreground">Current Variants</p>
+              {variantLoading ? (
+                <p className="text-muted-foreground text-sm text-center py-6">Loading...</p>
+              ) : variants.length === 0 ? (
+                <p className="text-muted-foreground text-sm text-center py-6">No variants yet. Add sizes and colors above.</p>
+              ) : (
+                <div className="rounded-xl border border-border/50 overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-card/50 hover:bg-card/50">
+                        <TableHead className="font-semibold text-foreground/70">Size</TableHead>
+                        <TableHead className="font-semibold text-foreground/70">Color</TableHead>
+                        <TableHead className="w-16"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {variants.map(v => (
+                        <TableRow key={v.id} className="hover:bg-secondary/30 transition-colors">
+                          <TableCell>
+                            <Badge variant="outline" className="bg-secondary/30 font-medium">{v.size}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="w-5 h-5 rounded-full border border-border/50 shrink-0"
+                                style={{ backgroundColor: v.color_value }}
+                              />
+                              <span className="text-foreground font-medium">{v.color_name}</span>
+                              <span className="text-muted-foreground text-xs">{v.color_value}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="icon" onClick={() => deleteVariant(v.id)} className="hover:bg-destructive/10 h-8 w-8">
+                              <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
+
+            {/* Quick info */}
+            {variants.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Available Options</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {uniqueSizes.map(s => (
+                    <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  {uniqueColors.map(c => (
+                    <Badge key={c.color_name} variant="outline" className="text-xs gap-1.5">
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: c.color_value }} />
+                      {c.color_name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
