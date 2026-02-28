@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,10 +27,17 @@ const cardVariants = {
 const Store = () => {
   const { data: products, loading, error, refetch } = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [selections, setSelections] = useState<ProductSelections>({});
   const { addToCart } = useCart();
 
-  const categories = ["All", ...new Set(products?.map((p) => p.category) ?? [])];
+  useEffect(() => {
+    supabase.from("product_categories").select("name").order("sort_order").then(({ data }) => {
+      setDynamicCategories((data as any[])?.map((c: any) => c.name) || []);
+    });
+  }, []);
+
+  const categories = ["All", ...dynamicCategories];
   const filtered = activeCategory === "All" ? products : products?.filter((p) => p.category === activeCategory);
 
   const getSelection = (id: string) => selections[id] || { color: null, size: null };
