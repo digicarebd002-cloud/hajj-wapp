@@ -27,6 +27,8 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminCommunity from "./pages/admin/AdminCommunity";
 import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminSettings from "./pages/admin/AdminSettings";
+import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 
 const queryClient = new QueryClient();
 
@@ -34,44 +36,47 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CartProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Admin routes - no main Layout */}
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="packages" element={<AdminPackages />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="bookings" element={<AdminBookings />} />
-                <Route path="community" element={<AdminCommunity />} />
-                <Route path="notifications" element={<AdminNotifications />} />
-              </Route>
+        <SiteSettingsProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                {/* Admin routes - no main Layout */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="packages" element={<AdminPackages />} />
+                  <Route path="orders" element={<AdminOrders />} />
+                  <Route path="bookings" element={<AdminBookings />} />
+                  <Route path="community" element={<AdminCommunity />} />
+                  <Route path="notifications" element={<AdminNotifications />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                </Route>
 
-              {/* Public routes with Layout */}
-              <Route path="/*" element={
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/wallet" element={<Wallet />} />
-                    <Route path="/store" element={<Store />} />
-                    <Route path="/store/:id" element={<ProductDetail />} />
-                    <Route path="/packages" element={<Packages />} />
-                    <Route path="/community" element={<Community />} />
-                    <Route path="/community/:id" element={<DiscussionDetail />} />
-                    <Route path="/account" element={<Account />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/sponsorship" element={<Sponsorship />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Layout>
-              } />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+                {/* Public routes with Layout */}
+                <Route path="/*" element={
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/wallet" element={<Wallet />} />
+                      <Route path="/store" element={<Store />} />
+                      <Route path="/store/:id" element={<ProductDetail />} />
+                      <Route path="/packages" element={<Packages />} />
+                      <Route path="/community" element={<Community />} />
+                      <Route path="/community/:id" element={<DiscussionDetail />} />
+                      <Route path="/account" element={<Account />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/sponsorship" element={<Sponsorship />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Layout>
+                } />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </SiteSettingsProvider>
       </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
