@@ -500,11 +500,15 @@ export type Database = {
           image_emoji: string | null
           image_url: string | null
           is_limited: boolean
+          meta_description: string | null
+          meta_title: string | null
           name: string
+          og_image_url: string | null
           price: number
           rating: number
           reviews: number
           short_description: string | null
+          slug: string | null
         }
         Insert: {
           category: string
@@ -514,11 +518,15 @@ export type Database = {
           image_emoji?: string | null
           image_url?: string | null
           is_limited?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
           name: string
+          og_image_url?: string | null
           price: number
           rating?: number
           reviews?: number
           short_description?: string | null
+          slug?: string | null
         }
         Update: {
           category?: string
@@ -528,11 +536,15 @@ export type Database = {
           image_emoji?: string | null
           image_url?: string | null
           is_limited?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
           name?: string
+          og_image_url?: string | null
           price?: number
           rating?: number
           reviews?: number
           short_description?: string | null
+          slug?: string | null
         }
         Relationships: []
       }

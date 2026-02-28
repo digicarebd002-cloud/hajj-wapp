@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useProduct } from "@/hooks/use-supabase-data";
+import { useProduct, useProductBySlug } from "@/hooks/use-supabase-data";
 import { useCart } from "@/contexts/CartContext";
 import { CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { toast } from "@/hooks/use-toast";
@@ -18,11 +18,62 @@ const guarantees = [
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: product, loading, error, refetch } = useProduct(id || "");
+  // Try slug first, fallback to UUID
+  const isUuid = id ? /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) : false;
+  const byId = useProduct(isUuid ? (id || "") : "");
+  const bySlug = useProductBySlug(!isUuid ? (id || "") : "");
+  const { data: product, loading, error, refetch } = isUuid ? byId : bySlug;
+
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  // Dynamic SEO meta tags
+  useEffect(() => {
+    if (!product) return;
+    const p = product as any;
+    const metaTitle = p.meta_title || `${product.name} — Hajj Wallet Store`;
+    const metaDesc = p.meta_description || p.short_description || `Shop ${product.name} at Hajj Wallet Store.`;
+    const ogImage = p.og_image_url || p.image_url || "";
+
+    document.title = metaTitle;
+
+    const setMeta = (attr: string, key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, key); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+
+    setMeta("name", "description", metaDesc);
+    setMeta("property", "og:title", metaTitle);
+    setMeta("property", "og:description", metaDesc);
+    setMeta("property", "og:type", "product");
+    setMeta("property", "og:url", window.location.href);
+    if (ogImage) setMeta("property", "og:image", ogImage);
+    setMeta("name", "twitter:title", metaTitle);
+    setMeta("name", "twitter:description", metaDesc);
+    if (ogImage) setMeta("name", "twitter:image", ogImage);
+
+    // JSON-LD structured data
+    let ldScript = document.getElementById("product-jsonld");
+    if (!ldScript) { ldScript = document.createElement("script"); ldScript.id = "product-jsonld"; ldScript.setAttribute("type", "application/ld+json"); document.head.appendChild(ldScript); }
+    ldScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: metaDesc,
+      image: ogImage || undefined,
+      offers: { "@type": "Offer", price: Number(product.price).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock" },
+      aggregateRating: product.reviews > 0 ? { "@type": "AggregateRating", ratingValue: Number(product.rating).toFixed(1), reviewCount: product.reviews } : undefined,
+    });
+
+    return () => {
+      document.title = "Hajj Wallet — Your Sacred Journey Starts Here";
+      const ldEl = document.getElementById("product-jsonld");
+      if (ldEl) ldEl.remove();
+    };
+  }, [product]);
 
   if (loading) return (
     <div className="section-padding min-h-screen">

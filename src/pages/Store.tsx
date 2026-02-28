@@ -137,7 +137,7 @@ const Store = () => {
                       className="bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-shadow duration-300 group"
                     >
                       {/* Product Image */}
-                      <Link to={`/store/${product.id}`} className="block relative">
+                      <Link to={`/store/${(product as any).slug || product.id}`} className="block relative">
                         <div className="relative h-64 overflow-hidden bg-secondary/30">
                           {imageUrl ? (
                             <img
@@ -162,7 +162,7 @@ const Store = () => {
                       {/* Product Info */}
                       <div className="p-5 space-y-3">
                         <div className="flex items-start justify-between gap-2">
-                          <Link to={`/store/${product.id}`} className="hover:text-primary transition-colors">
+                          <Link to={`/store/${(product as any).slug || product.id}`} className="hover:text-primary transition-colors">
                             <h3 className="font-bold text-lg text-card-foreground">{product.name}</h3>
                           </Link>
                           <Badge variant="secondary" className="text-xs shrink-0">{product.category}</Badge>
