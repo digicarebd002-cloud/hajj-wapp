@@ -12,9 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag, MessageCircle, Package, FileText,
   Phone, CreditCard, Lock, LogOut, Edit, Check, X,
+  TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare,
 } from "lucide-react";
 
 const tierBadgeClass: Record<string, string> = {
@@ -33,12 +35,13 @@ const notificationTypes = [
   { key: "store" as const, label: "Store", desc: "Order and shipping updates" },
 ];
 
-const actionIcons: Record<string, string> = {
-  create_discussion: "💬",
-  create_reply: "💬",
-  receive_like: "👍",
-  best_answer: "⭐",
-  wallet_contribution: "💰",
+const actionLabels: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  create_discussion: { label: "Created a Discussion", icon: <MessageSquare className="h-4 w-4" />, color: "bg-blue-500/15 text-blue-400" },
+  create_reply: { label: "Replied to a Thread", icon: <MessageCircle className="h-4 w-4" />, color: "bg-violet-500/15 text-violet-400" },
+  receive_like: { label: "Received a Like", icon: <ThumbsUp className="h-4 w-4" />, color: "bg-pink-500/15 text-pink-400" },
+  best_answer: { label: "Best Answer Award", icon: <Star className="h-4 w-4" />, color: "bg-amber-500/15 text-amber-400" },
+  admin_adjustment: { label: "Admin Adjustment", icon: <Zap className="h-4 w-4" />, color: "bg-primary/15 text-primary" },
+  wallet_contribution: { label: "Wallet Contribution", icon: <CreditCard className="h-4 w-4" />, color: "bg-emerald-500/15 text-emerald-400" },
 };
 
 function timeAgo(date: string) {
@@ -100,24 +103,161 @@ const NotifToggle = ({ notifKey, defaultVal, userId }: { notifKey: string; defau
   return <Switch checked={checked} onCheckedChange={handleChange} />;
 };
 
+// --- Points Showcase Section ---
+const PointsShowcase = ({ pointsTotal, tier }: { pointsTotal: number; tier: string }) => {
+  const { data: points, loading } = usePointsLedger(50);
+  const [pointRules, setPointRules] = useState<{ label: string; points: number }[]>([]);
+
+  useEffect(() => {
+    supabase.from("points_rules").select("label, points").order("created_at").then(({ data }) => {
+      setPointRules((data as any[]) || []);
+    });
+  }, []);
+
+  // Calculate stats from history
+  const stats = (() => {
+    if (!points) return { total: pointsTotal, thisMonth: 0, discussions: 0, replies: 0, likes: 0, bestAnswers: 0 };
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    let thisMonth = 0, discussions = 0, replies = 0, likes = 0, bestAnswers = 0;
+    points.forEach(p => {
+      if (new Date(p.created_at) >= monthStart) thisMonth += p.points;
+      if (p.action === "create_discussion") discussions++;
+      if (p.action === "create_reply") replies++;
+      if (p.action === "receive_like") likes++;
+      if (p.action === "best_answer") bestAnswers++;
+    });
+    return { total: pointsTotal, thisMonth, discussions, replies, likes, bestAnswers };
+  })();
+
+  if (loading) return <CardSkeleton />;
+
+  return (
+    <div className="space-y-6">
+      {/* Points Overview Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-5 border border-primary/20 col-span-2 md:col-span-1">
+          <div className="flex items-center gap-2 mb-2">
+            <Award className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium text-muted-foreground">Total Points</span>
+          </div>
+          <p className="text-3xl font-bold text-primary">{stats.total.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground mt-1">{tier} Member</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card rounded-xl p-5 card-shadow">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="h-4 w-4 text-emerald-400" />
+            <span className="text-xs font-medium text-muted-foreground">This Month</span>
+          </div>
+          <p className="text-2xl font-bold">+{stats.thisMonth}</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl p-5 card-shadow">
+          <div className="flex items-center gap-2 mb-2">
+            <Star className="h-4 w-4 text-amber-400" />
+            <span className="text-xs font-medium text-muted-foreground">Best Answers</span>
+          </div>
+          <p className="text-2xl font-bold">{stats.bestAnswers}</p>
+        </motion.div>
+      </div>
+
+      {/* Engagement Breakdown */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-card rounded-xl card-shadow p-6">
+        <h3 className="font-semibold mb-4 flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Engagement Breakdown</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: "Discussions", value: stats.discussions, icon: <MessageSquare className="h-4 w-4" />, color: "text-blue-400" },
+            { label: "Replies", value: stats.replies, icon: <MessageCircle className="h-4 w-4" />, color: "text-violet-400" },
+            { label: "Likes Received", value: stats.likes, icon: <ThumbsUp className="h-4 w-4" />, color: "text-pink-400" },
+            { label: "Best Answers", value: stats.bestAnswers, icon: <Star className="h-4 w-4" />, color: "text-amber-400" },
+          ].map((item, i) => (
+            <div key={item.label} className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
+              <span className={item.color}>{item.icon}</span>
+              <div>
+                <p className="text-lg font-bold">{item.value}</p>
+                <p className="text-xs text-muted-foreground">{item.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* How to Earn */}
+      {pointRules.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-secondary/50 rounded-xl p-6">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">✨ How to Earn Points</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {pointRules.map((r) => (
+              <div key={r.label} className="flex items-center justify-between bg-card/50 rounded-lg px-4 py-3">
+                <span className="text-sm">{r.label}</span>
+                <Badge className="bg-primary/15 text-primary border-primary/30 font-bold">+{r.points}</Badge>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Points History */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-card rounded-xl card-shadow p-6">
+        <h3 className="font-semibold mb-4">Points History</h3>
+        {!points || points.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">No points activity yet. Start engaging in the community!</p>
+        ) : (
+          <div className="space-y-3">
+            <AnimatePresence>
+              {points.map((p, i) => {
+                const meta = actionLabels[p.action] || { label: p.action.replace(/_/g, " "), icon: <Zap className="h-4 w-4" />, color: "bg-muted text-muted-foreground" };
+                return (
+                  <motion.div
+                    key={p.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.03 }}
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors"
+                  >
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${meta.color}`}>
+                      {meta.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{meta.label}</p>
+                      <p className="text-xs text-muted-foreground">{timeAgo(p.created_at)}</p>
+                    </div>
+                    <span className={`font-bold text-sm ${p.points >= 0 ? "text-primary" : "text-destructive"}`}>
+                      {p.points >= 0 ? "+" : ""}{p.points} pts
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+};
+
 // --- Activity Feed (merged from points_ledger + wallet_transactions) ---
 const ActivityFeed = ({ userId }: { userId: string }) => {
   const { data: points, loading: pLoading, error: pError, refetch } = usePointsLedger(30);
   const { data: txs, loading: tLoading } = useWalletTransactions();
   const loading = pLoading || tLoading;
 
-  // Merge into a single timeline
   const merged = (() => {
-    const items: { id: string; icon: string; text: string; date: string }[] = [];
-    (points ?? []).forEach((p) => items.push({
-      id: p.id,
-      icon: actionIcons[p.action] || "⭐",
-      text: `${p.action.replace(/_/g, " ")} — +${p.points} pts`,
-      date: p.created_at,
-    }));
+    const items: { id: string; icon: React.ReactNode; iconColor: string; text: string; date: string; points?: string }[] = [];
+    (points ?? []).forEach((p) => {
+      const meta = actionLabels[p.action] || { label: p.action.replace(/_/g, " "), icon: <Zap className="h-4 w-4" />, color: "bg-muted text-muted-foreground" };
+      items.push({
+        id: p.id,
+        icon: meta.icon,
+        iconColor: meta.color,
+        text: meta.label,
+        date: p.created_at,
+        points: `${p.points >= 0 ? "+" : ""}${p.points} pts`,
+      });
+    });
     (txs ?? []).filter(t => t.status === "completed" && t.amount > 0).forEach((t) => items.push({
       id: t.id,
-      icon: "💰",
+      icon: <CreditCard className="h-4 w-4" />,
+      iconColor: "bg-emerald-500/15 text-emerald-400",
       text: `Wallet contribution — $${Number(t.amount).toLocaleString()}`,
       date: t.created_at,
     }));
@@ -134,12 +274,15 @@ const ActivityFeed = ({ userId }: { userId: string }) => {
   return (
     <div className="space-y-3">
       {merged.map((item) => (
-        <div key={item.id} className="flex items-start gap-3">
-          <span className="text-lg mt-0.5">{item.icon}</span>
-          <div className="flex-1">
-            <p className="text-sm">{item.text}</p>
+        <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/30 transition-colors">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${item.iconColor}`}>
+            {item.icon}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{item.text}</p>
             <p className="text-xs text-muted-foreground">{timeAgo(item.date)}</p>
           </div>
+          {item.points && <span className="text-sm font-semibold text-primary">{item.points}</span>}
         </div>
       ))}
     </div>
@@ -224,6 +367,7 @@ const AccountContent = () => {
         <Tabs defaultValue="overview">
           <TabsList className="mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -241,7 +385,7 @@ const AccountContent = () => {
               )}
             </div>
 
-            {/* Savings Goal with editable goal */}
+            {/* Savings Goal */}
             <div className="bg-card rounded-xl card-shadow p-6">
               <h3 className="font-semibold mb-2">Hajj Savings Goal</h3>
               <Progress value={savingsProgress} className="h-3 mb-2" />
@@ -285,6 +429,11 @@ const AccountContent = () => {
               <h3 className="font-semibold mb-1">Need Help?</h3>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4" /> 1-800-HAJJ-HELP</p>
             </div>
+          </TabsContent>
+
+          {/* Points Tab */}
+          <TabsContent value="points">
+            <PointsShowcase pointsTotal={p.points_total} tier={p.tier} />
           </TabsContent>
 
           <TabsContent value="activity">
