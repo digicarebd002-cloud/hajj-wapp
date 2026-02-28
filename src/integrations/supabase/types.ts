@@ -461,6 +461,7 @@ export type Database = {
           color_name: string
           color_value: string
           id: string
+          price: number | null
           product_id: string
           size: string
         }
@@ -468,6 +469,7 @@ export type Database = {
           color_name: string
           color_value: string
           id?: string
+          price?: number | null
           product_id: string
           size: string
         }
@@ -475,6 +477,7 @@ export type Database = {
           color_name?: string
           color_value?: string
           id?: string
+          price?: number | null
           product_id?: string
           size?: string
         }

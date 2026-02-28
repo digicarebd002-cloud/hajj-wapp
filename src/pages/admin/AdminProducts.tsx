@@ -26,7 +26,7 @@ interface Category {
 }
 
 interface Variant {
-  id: string; product_id: string; size: string; color_name: string; color_value: string;
+  id: string; product_id: string; size: string; color_name: string; color_value: string; price: number | null;
 }
 
 const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0" };
@@ -51,7 +51,7 @@ export default function AdminProducts() {
   const [variantProduct, setVariantProduct] = useState<Product | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
   const [variantLoading, setVariantLoading] = useState(false);
-  const [newVariant, setNewVariant] = useState({ size: "", color_name: "", color_value: "#000000" });
+  const [newVariant, setNewVariant] = useState({ size: "", color_name: "", color_value: "#000000", price: "" });
 
   const fetchData = async () => {
     const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
@@ -89,7 +89,7 @@ export default function AdminProducts() {
     setVariantProduct(p);
     setVariantDialogOpen(true);
     fetchVariants(p.id);
-    setNewVariant({ size: "", color_name: "", color_value: "#000000" });
+    setNewVariant({ size: "", color_name: "", color_value: "#000000", price: "" });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,11 +166,12 @@ export default function AdminProducts() {
       size: newVariant.size.trim(),
       color_name: newVariant.color_name.trim(),
       color_value: newVariant.color_value,
+      price: newVariant.price ? Number(newVariant.price) : null,
     } as any);
     if (error) toast.error(error.message);
     else {
       toast.success("Variant added");
-      setNewVariant({ size: "", color_name: "", color_value: "#000000" });
+      setNewVariant({ size: "", color_name: "", color_value: "#000000", price: "" });
       fetchVariants(variantProduct.id);
     }
   };
@@ -398,7 +399,7 @@ export default function AdminProducts() {
             {/* Add new variant */}
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Add Variant</p>
-              <div className="grid grid-cols-[1fr_1fr_80px_auto] gap-2 items-end">
+              <div className="grid grid-cols-[1fr_1fr_80px_100px_auto] gap-2 items-end">
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Size</Label>
                   <Input
@@ -426,6 +427,16 @@ export default function AdminProducts() {
                     className="w-full h-9 rounded-md border border-border cursor-pointer bg-secondary/50"
                   />
                 </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Price ($)</Label>
+                  <Input
+                    type="number"
+                    value={newVariant.price}
+                    onChange={e => setNewVariant(v => ({ ...v, price: e.target.value }))}
+                    placeholder="Optional"
+                    className="bg-secondary/50 h-9"
+                  />
+                </div>
                 <Button size="sm" onClick={addVariant} className="h-9 gap-1">
                   <Plus className="h-3.5 w-3.5" /> Add
                 </Button>
@@ -445,9 +456,10 @@ export default function AdminProducts() {
                 <div className="rounded-xl border border-border/50 overflow-hidden">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-card/50 hover:bg-card/50">
+                       <TableRow className="bg-card/50 hover:bg-card/50">
                         <TableHead className="font-semibold text-foreground/70">Size</TableHead>
                         <TableHead className="font-semibold text-foreground/70">Color</TableHead>
+                        <TableHead className="font-semibold text-foreground/70">Price</TableHead>
                         <TableHead className="w-16"></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -466,6 +478,13 @@ export default function AdminProducts() {
                               <span className="text-foreground font-medium">{v.color_name}</span>
                               <span className="text-muted-foreground text-xs">{v.color_value}</span>
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            {v.price != null ? (
+                              <span className="font-semibold text-primary">${Number(v.price).toFixed(2)}</span>
+                            ) : (
+                              <span className="text-muted-foreground text-xs">Base price</span>
+                            )}
                           </TableCell>
                           <TableCell>
                             <Button variant="ghost" size="icon" onClick={() => deleteVariant(v.id)} className="hover:bg-destructive/10 h-8 w-8">
