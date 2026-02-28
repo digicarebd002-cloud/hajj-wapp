@@ -184,9 +184,9 @@ const SavingsCalculator = () => {
           </motion.div>
 
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="text-center">
-            <Button asChild size="lg" className="gap-2 px-8">
+            <Button asChild size="lg" className="gap-2.5 rounded-full btn-glow">
               <Link to="/auth">
-                Start Saving Now <ArrowRight className="h-4 w-4" />
+                Start Saving Now <ArrowRight className="h-5 w-5" />
               </Link>
             </Button>
           </motion.div>
@@ -402,7 +402,7 @@ const MembershipTiers = () => (
               ))}
             </ul>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button asChild variant={tier.popular ? "default" : "outline"} className="w-full gap-2">
+              <Button asChild variant={tier.popular ? "default" : "outline"} className={`w-full gap-2 rounded-full ${tier.popular ? 'btn-glow' : ''}`}>
                 <Link to="/auth">
                   Join Now <ArrowRight className="h-4 w-4" />
                 </Link>

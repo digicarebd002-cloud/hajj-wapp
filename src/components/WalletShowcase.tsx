@@ -265,8 +265,8 @@ const WalletShowcase = () => {
             >
               <Link to="/wallet">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button size="lg" className="gap-2 rounded-full px-8 shadow-lg shadow-primary/20">
-                    Start Saving Now <ArrowRight className="h-4 w-4" />
+                  <Button size="lg" className="gap-2.5 rounded-full btn-glow">
+                    Start Saving Now <ArrowRight className="h-5 w-5" />
                   </Button>
                 </motion.div>
               </Link>

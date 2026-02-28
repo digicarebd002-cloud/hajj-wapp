@@ -178,12 +178,12 @@ const Sponsorship = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
-                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 gap-2 shadow-xl shadow-accent/20">
-                  Join Hajj Wallet <ArrowRight className="h-4 w-4" />
+                <Button size="lg" className="rounded-full gap-2.5 btn-glow">
+                  Join Hajj Wallet <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/community">
-                <Button size="lg" variant="outline" className="rounded-full px-8 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
+                <Button size="lg" variant="outline" className="rounded-full border-foreground/20 text-foreground hover:bg-foreground/10">
                   Explore Community
                 </Button>
               </Link>
