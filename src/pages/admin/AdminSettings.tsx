@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image } from "lucide-react";
+import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image, CreditCard, Eye, EyeOff, ToggleLeft, ToggleRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { Switch } from "@/components/ui/switch";
 
 interface SettingField {
   key: string;
@@ -86,6 +87,7 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
+  const [showSecrets, setShowSecrets] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     (async () => {
@@ -212,6 +214,33 @@ export default function AdminSettings() {
     );
   };
 
+  const renderSecretField = (key: string, label: string, placeholder: string) => {
+    const val = form[key] || "";
+    const isVisible = showSecrets[key];
+    return (
+      <div className="space-y-1.5" key={key}>
+        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</Label>
+        <div className="flex gap-2 items-center">
+          <Input
+            type={isVisible ? "text" : "password"}
+            value={val}
+            onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+            placeholder={placeholder}
+            className="bg-secondary/50 font-mono text-sm"
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 shrink-0"
+            onClick={() => setShowSecrets(s => ({ ...s, [key]: !s[key] }))}
+          >
+            {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -276,6 +305,122 @@ export default function AdminSettings() {
           />
           <p className="text-xs text-muted-foreground">⚠️ Advanced: Custom CSS will be injected globally. Use carefully.</p>
         </div>
+      </Section>
+
+      {/* ===== STRIPE ===== */}
+      <Section icon={CreditCard} title="💳 Stripe Integration">
+        <div className="flex items-center justify-between">
+          <div>
+            <Label className="text-sm font-semibold">Enable Stripe</Label>
+            <p className="text-xs text-muted-foreground">Accept payments via Stripe</p>
+          </div>
+          <Switch
+            checked={form.stripe_enabled === "true"}
+            onCheckedChange={v => setForm(f => ({ ...f, stripe_enabled: v ? "true" : "false" }))}
+          />
+        </div>
+
+        {form.stripe_enabled === "true" && (
+          <div className="space-y-4 pt-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Mode</Label>
+              <div className="flex gap-2">
+                {["test", "live"].map(mode => (
+                  <Button
+                    key={mode}
+                    variant={form.stripe_mode === mode ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setForm(f => ({ ...f, stripe_mode: mode }))}
+                    className="capitalize"
+                  >
+                    {mode === "test" ? "🧪 Test" : "🟢 Live"}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {form.stripe_mode === "test" ? (
+              <>
+                {renderSecretField("stripe_test_publishable_key", "Test Publishable Key", "pk_test_...")}
+                {renderSecretField("stripe_test_secret_key", "Test Secret Key", "sk_test_...")}
+              </>
+            ) : (
+              <>
+                {renderSecretField("stripe_live_publishable_key", "Live Publishable Key", "pk_live_...")}
+                {renderSecretField("stripe_live_secret_key", "Live Secret Key", "sk_live_...")}
+              </>
+            )}
+            {renderSecretField("stripe_webhook_secret", "Webhook Secret", "whsec_...")}
+          </div>
+        )}
+      </Section>
+
+      {/* ===== PAYPAL ===== */}
+      <Section icon={CreditCard} title="🅿️ PayPal Integration">
+        <div className="flex items-center justify-between">
+          <div>
+            <Label className="text-sm font-semibold">Enable PayPal</Label>
+            <p className="text-xs text-muted-foreground">Accept payments via PayPal</p>
+          </div>
+          <Switch
+            checked={form.paypal_enabled === "true"}
+            onCheckedChange={v => setForm(f => ({ ...f, paypal_enabled: v ? "true" : "false" }))}
+          />
+        </div>
+
+        {form.paypal_enabled === "true" && (
+          <div className="space-y-4 pt-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Mode</Label>
+              <div className="flex gap-2">
+                {["sandbox", "live"].map(mode => (
+                  <Button
+                    key={mode}
+                    variant={form.paypal_mode === mode ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setForm(f => ({ ...f, paypal_mode: mode }))}
+                    className="capitalize"
+                  >
+                    {mode === "sandbox" ? "🧪 Sandbox" : "🟢 Live"}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {form.paypal_mode === "sandbox" ? (
+              <>
+                {renderSecretField("paypal_sandbox_client_id", "Sandbox Client ID", "AXxx...")}
+                {renderSecretField("paypal_sandbox_secret", "Sandbox Secret", "ELxx...")}
+              </>
+            ) : (
+              <>
+                {renderSecretField("paypal_live_client_id", "Live Client ID", "AXxx...")}
+                {renderSecretField("paypal_live_secret", "Live Secret", "ELxx...")}
+              </>
+            )}
+          </div>
+        )}
+      </Section>
+
+      {/* ===== PAYMENT OPTIONS ===== */}
+      <Section icon={ToggleLeft} title="⚙️ Payment Features">
+        <p className="text-xs text-muted-foreground">Enable or disable payment for specific features</p>
+        {[
+          { key: "payment_wallet_topup", label: "Wallet Top-up", desc: "Allow users to add funds to their Hajj wallet" },
+          { key: "payment_store_checkout", label: "Store Checkout", desc: "Accept payments for store purchases" },
+          { key: "payment_package_booking", label: "Package Booking", desc: "Accept payments for Hajj package bookings" },
+        ].map(opt => (
+          <div key={opt.key} className="flex items-center justify-between py-1">
+            <div>
+              <Label className="text-sm font-semibold">{opt.label}</Label>
+              <p className="text-xs text-muted-foreground">{opt.desc}</p>
+            </div>
+            <Switch
+              checked={form[opt.key] !== "false"}
+              onCheckedChange={v => setForm(f => ({ ...f, [opt.key]: v ? "true" : "false" }))}
+            />
+          </div>
+        ))}
       </Section>
 
       <div className="flex justify-end pb-8">
