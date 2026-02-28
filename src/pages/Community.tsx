@@ -16,7 +16,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
-const CATEGORIES = ["All Discussions", "Hajj Preparation", "Savings Tips", "Travel Planning", "Spiritual Guidance", "Success Stories"];
 const PAGE_SIZE = 10;
 
 const tierLabel: Record<string, string> = { Silver: "Silver Member", Gold: "Gold Member", Platinum: "Platinum Member" };
@@ -44,12 +43,7 @@ function getAvatarUrl(name: string) {
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
 }
 
-const pointRules = [
-  { action: "Create a discussion", pts: "+10 pts" },
-  { action: "Reply to a thread", pts: "+5 pts" },
-  { action: "Receive a like", pts: "+2 pts" },
-  { action: "Best answer", pts: "+25 pts" },
-];
+// Dynamic point rules and categories will be fetched from Supabase
 
 /* ─── Discussion Card ─── */
 const DiscussionCard = ({
@@ -177,14 +171,14 @@ const StatsSidebar = ({ stats, statsLoading }: { stats: any; statsLoading: boole
   </motion.div>
 );
 
-const PointsSidebar = () => (
+const PointsSidebar = ({ rules }: { rules: { label: string; points: number }[] }) => (
   <motion.div variants={slideRight} className="bg-secondary rounded-xl p-5">
     <h3 className="font-semibold mb-3 text-base">✨ Earn Points</h3>
     <div className="space-y-2.5">
-      {pointRules.map((r) => (
-        <div key={r.action} className="flex items-center justify-between text-sm">
-          <span>{r.action}</span>
-          <span className="font-semibold text-primary">{r.pts}</span>
+      {rules.map((r) => (
+        <div key={r.label} className="flex items-center justify-between text-sm">
+          <span>{r.label}</span>
+          <span className="font-semibold text-primary">+{r.points} pts</span>
         </div>
       ))}
     </div>
@@ -193,7 +187,7 @@ const PointsSidebar = () => (
 );
 
 /* ─── New Discussion Modal ─── */
-const NewDiscussionModal = ({ open, onOpenChange, onSubmit, posting }: { open: boolean; onOpenChange: (v: boolean) => void; onSubmit: (e: React.FormEvent<HTMLFormElement>) => void; posting: boolean }) => (
+const NewDiscussionModal = ({ open, onOpenChange, onSubmit, posting, categories }: { open: boolean; onOpenChange: (v: boolean) => void; onSubmit: (e: React.FormEvent<HTMLFormElement>) => void; posting: boolean; categories: string[] }) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-w-lg">
       <DialogHeader>
@@ -206,7 +200,7 @@ const NewDiscussionModal = ({ open, onOpenChange, onSubmit, posting }: { open: b
           <Label>Category</Label>
           <Select name="category" required>
             <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
-            <SelectContent>{CATEGORIES.slice(1).map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+            <SelectContent>{categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="space-y-2"><Label htmlFor="disc-body">Body</Label><Textarea id="disc-body" name="body" placeholder="Share your thoughts (min 50 characters)..." className="resize-none min-h-[120px]" required minLength={50} /></div>
@@ -229,6 +223,20 @@ const Community = () => {
   const [authGateOpen, setAuthGateOpen] = useState(false);
   const [posting, setPosting] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
+  const [pointRules, setPointRules] = useState<{ label: string; points: number }[]>([]);
+
+  useEffect(() => {
+    const fetchMeta = async () => {
+      const [catRes, rulesRes] = await Promise.all([
+        supabase.from("discussion_categories").select("name").order("sort_order"),
+        supabase.from("points_rules").select("label, points").order("created_at"),
+      ]);
+      setDynamicCategories((catRes.data as any[])?.map((c: any) => c.name) || []);
+      setPointRules((rulesRes.data as any[]) || []);
+    };
+    fetchMeta();
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -282,7 +290,8 @@ const Community = () => {
   const visible = sorted.slice(0, visibleCount);
   const hasMore = visibleCount < sorted.length;
 
-  const catCounts = CATEGORIES.map((c) => ({
+  const allCategories = ["All Discussions", ...dynamicCategories];
+  const catCounts = allCategories.map((c) => ({
     name: c,
     count: c === "All Discussions" ? (discussions?.length ?? 0) : (discussions?.filter((d) => d.category === c).length ?? 0),
   }));
@@ -343,13 +352,13 @@ const Community = () => {
             <CategoriesSidebar catCounts={catCounts} activeCategory={activeCategory} onSelect={(c) => { setActiveCategory(c); setVisibleCount(PAGE_SIZE); }} />
             {leaderboard && leaderboard.length > 0 && <LeaderboardSidebar leaderboard={leaderboard} />}
             <StatsSidebar stats={stats} statsLoading={statsLoading} />
-            <PointsSidebar />
+            <PointsSidebar rules={pointRules} />
           </motion.aside>
         </div>
       </div>
 
       {/* Modals */}
-      <NewDiscussionModal open={modalOpen} onOpenChange={setModalOpen} onSubmit={handleSubmitDiscussion} posting={posting} />
+      <NewDiscussionModal open={modalOpen} onOpenChange={setModalOpen} onSubmit={handleSubmitDiscussion} posting={posting} categories={dynamicCategories} />
       <AuthGate open={authGateOpen} onClose={() => setAuthGateOpen(false)} message="Sign in to start a new discussion and earn points!" />
     </div>
   );

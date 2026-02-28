@@ -67,6 +67,27 @@ export type Database = {
           },
         ]
       }
+      discussion_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       discussions: {
         Row: {
           body: string
@@ -348,6 +369,30 @@ export type Database = {
           points?: number
           reference_id?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      points_rules: {
+        Row: {
+          action_key: string
+          created_at: string
+          id: string
+          label: string
+          points: number
+        }
+        Insert: {
+          action_key: string
+          created_at?: string
+          id?: string
+          label: string
+          points?: number
+        }
+        Update: {
+          action_key?: string
+          created_at?: string
+          id?: string
+          label?: string
+          points?: number
         }
         Relationships: []
       }
