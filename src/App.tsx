@@ -28,6 +28,7 @@ import AdminBookings from "./pages/admin/AdminBookings";
 import AdminCommunity from "./pages/admin/AdminCommunity";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
                   <Route path="bookings" element={<AdminBookings />} />
                   <Route path="community" element={<AdminCommunity />} />
                   <Route path="notifications" element={<AdminNotifications />} />
+                  <Route path="pages" element={<AdminPageManagement />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 

@@ -9,6 +9,7 @@ import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { usePageContent } from "@/hooks/use-page-content";
 
 const steps = [
   {
@@ -52,9 +53,10 @@ const features = [
 const MotionLink = motion.create(Link);
 
 const Index = () => {
-  const stat1 = useCountUp(1200);
-  const stat2 = useCountUp(350);
-  const stat3 = useCountUp(12);
+  const { get: c } = usePageContent("home");
+  const stat1 = useCountUp(parseInt(c("stat1_value", "1200")) || 1200);
+  const stat2 = useCountUp(parseInt(c("stat2_value", "350")) || 350);
+  const stat3 = useCountUp(parseInt(c("stat3_value", "12")) || 12);
   const stepsReveal = useScrollReveal();
   const packagesReveal = useScrollReveal();
   const communityReveal = useScrollReveal();
@@ -82,7 +84,7 @@ const Index = () => {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover scale-105"
-          src="/videos/hajj-bg.mp4"
+          src={c("hero_video", "/videos/hajj-bg.mp4")}
         />
         <div className="absolute inset-0" style={{
           background: "linear-gradient(135deg, hsl(186 41% 18% / 0.65) 0%, hsl(180 80% 24% / 0.5) 50%, hsl(180 80% 24% / 0.3) 100%)"
@@ -120,7 +122,7 @@ const Index = () => {
                 className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-medium mb-8 border border-white/10"
               >
                 <Sparkles className="h-4 w-4 text-accent" />
-                The Hajj Savings Platform
+                {c("hero_badge", "The Hajj Savings Platform")}
               </motion.span>
 
               <motion.h1
@@ -129,10 +131,10 @@ const Index = () => {
                 transition={{ duration: 0.7, delay: 0.4 }}
                 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.1]"
               >
-                Save Together,
+                {c("hero_title_line1", "Save Together,")}
                 <br />
                 <span className="relative">
-                  Journey Together
+                  {c("hero_title_line2", "Journey Together")}
                   <motion.div
                     className="absolute -bottom-2 left-0 h-1 bg-accent rounded-full"
                     initial={{ width: 0 }}
@@ -148,8 +150,7 @@ const Index = () => {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="text-lg text-white/85 mb-10 leading-relaxed max-w-xl"
               >
-                Join a supportive community saving for the sacred pilgrimage to Mecca.
-                Build your Hajj fund, earn rewards, and fulfill your spiritual journey.
+                {c("hero_description", "Join a supportive community saving for the sacred pilgrimage to Mecca. Build your Hajj fund, earn rewards, and fulfill your spiritual journey.")}
               </motion.p>
 
               <motion.div
@@ -217,7 +218,7 @@ const Index = () => {
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    🕌
+                    {c("hero_emoji", "🕌")}
                   </motion.span>
                 </div>
               </div>
@@ -262,7 +263,7 @@ const Index = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-4xl font-bold mb-4"
             >
-              Your Path to Hajj
+              {c("how_it_works_title", "Your Path to Hajj")}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -271,7 +272,7 @@ const Index = () => {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground max-w-xl mx-auto text-lg"
             >
-              A simple, supportive way to save for your pilgrimage
+              {c("how_it_works_subtitle", "A simple, supportive way to save for your pilgrimage")}
             </motion.p>
           </div>
 
@@ -326,7 +327,7 @@ const Index = () => {
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold text-foreground mb-4"
             >
-              Hajj Packages
+              {c("packages_title", "Hajj Packages")}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -335,7 +336,7 @@ const Index = () => {
               transition={{ delay: 0.1 }}
               className="text-muted-foreground max-w-xl mx-auto text-lg"
             >
-              Choose the package that fits your needs
+              {c("packages_subtitle", "Choose the package that fits your needs")}
             </motion.p>
           </div>
 
@@ -436,7 +437,7 @@ const Index = () => {
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold mb-4"
             >
-              Thriving Community
+              {c("community_title", "Thriving Community")}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -445,7 +446,7 @@ const Index = () => {
               transition={{ delay: 0.1 }}
               className="text-muted-foreground max-w-xl mx-auto text-lg"
             >
-              Connect, share, and support each other
+              {c("community_subtitle", "Connect, share, and support each other")}
             </motion.p>
           </div>
 
@@ -496,9 +497,9 @@ const Index = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
             {[
-              { ref: stat1.ref, count: stat1.count, label: "Active Members", suffix: "+" },
-              { ref: stat2.ref, count: stat2.count, label: "Successful Pilgrimages", suffix: "+" },
-              { ref: stat3.ref, count: stat3.count, label: "Monthly Sponsorships", suffix: "" },
+              { ref: stat1.ref, count: stat1.count, label: c("stat1_label", "Active Members"), suffix: "+" },
+              { ref: stat2.ref, count: stat2.count, label: c("stat2_label", "Successful Pilgrimages"), suffix: "+" },
+              { ref: stat3.ref, count: stat3.count, label: c("stat3_label", "Monthly Sponsorships"), suffix: "" },
             ].map((s, i) => (
               <motion.div
                 key={s.label}
@@ -546,10 +547,9 @@ const Index = () => {
             >
               <Heart className="h-12 w-12 text-accent mx-auto mb-6" />
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">Monthly Sponsorship Program</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-5">{c("sponsor_title", "Monthly Sponsorship Program")}</h2>
             <p className="text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
-              Every month, we select a community member to travel to Mecca fully sponsored —
-              chosen by engagement, dedication, and faith.
+              {c("sponsor_desc", "Every month, we select a community member to travel to Mecca fully sponsored — chosen by engagement, dedication, and faith.")}
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link to="/sponsorship">
@@ -572,10 +572,10 @@ const Index = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-5">
-              Begin Your Sacred Journey Today
+              {c("cta_title", "Begin Your Sacred Journey Today")}
             </h2>
             <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg">
-              Join our community and take the first step toward fulfilling your spiritual obligation.
+              {c("cta_desc", "Join our community and take the first step toward fulfilling your spiritual obligation.")}
             </p>
             <Link to="/account">
               <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
