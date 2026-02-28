@@ -46,13 +46,21 @@ const ProductDetail = () => {
   const description = (product as any).description;
   const canAdd = !!selectedColor && !!selectedSize;
 
+  // Find the selected variant's price override
+  const selectedVariant = variants.find(
+    (v) => v.size === selectedSize && v.color_name === selectedColor
+  );
+  const displayPrice = selectedVariant?.price != null
+    ? Number(selectedVariant.price)
+    : Number(product.price);
+
   const handleAddToCart = () => {
     if (!canAdd) return;
     for (let i = 0; i < quantity; i++) {
       addToCart({
         productId: product.id,
         name: product.name,
-        price: Number(product.price),
+        price: displayPrice,
         size: selectedSize!,
         color: selectedColor!,
         image: product.image_emoji || "🛍️",
@@ -139,7 +147,10 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div>
-              <span className="text-4xl font-bold text-primary">${Number(product.price).toFixed(2)}</span>
+              <span className="text-4xl font-bold text-primary">${displayPrice.toFixed(2)}</span>
+              {selectedVariant?.price != null && Number(product.price) !== displayPrice && (
+                <span className="ml-3 text-lg text-muted-foreground line-through">${Number(product.price).toFixed(2)}</span>
+              )}
             </div>
 
             {/* Description */}
