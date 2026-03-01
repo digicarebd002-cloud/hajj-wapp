@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import logoImg from "@/assets/logo.png";
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
@@ -39,9 +40,7 @@ function AdminSidebar() {
         {/* Logo area */}
         <div className="p-4 border-b border-border/30">
           <Link to="/admin" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-              <Shield className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img src={logoImg} alt="Hajj Wallet" className="w-9 h-9 rounded-lg object-contain shrink-0 shadow-lg shadow-primary/20" />
             {!collapsed && (
               <div>
                 <h2 className="text-base font-bold text-foreground tracking-tight">Admin</h2>
