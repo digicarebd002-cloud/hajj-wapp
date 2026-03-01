@@ -11,6 +11,8 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { usePageContent } from "@/hooks/use-page-content";
+import packageMadinah from "@/assets/package-madinah.jpg";
+import packageMakkah from "@/assets/package-makkah.jpg";
 
 const steps = [
   {
@@ -352,30 +354,36 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               whileHover={{ y: -8 }}
-              className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-xl transition-shadow duration-500"
+              className="bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-shadow duration-500"
             >
-              <h3 className="text-xl font-bold text-card-foreground mb-1">Essential Package</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-primary">$2,500</span>
-                <span className="text-muted-foreground text-sm"> / person</span>
+              <div className="relative h-48 overflow-hidden">
+                <img src={packageMadinah} alt="Essential Hajj Package" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
               </div>
-              <ul className="space-y-3 mb-8">
-                {["Airfare included", "Shared accommodation (3-star)", "Ground transport", "English-speaking guide", "Group support"].map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm">
-                    <div className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
-                    <span className="text-card-foreground">{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to="/packages">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full gap-2 rounded-xl h-12">
-                    Compare Packages <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </motion.div>
-              </Link>
+              <div className="p-8">
+                <h3 className="text-xl font-bold text-card-foreground mb-1">Essential Package</h3>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-primary">$2,500</span>
+                  <span className="text-muted-foreground text-sm"> / person</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {["Airfare included", "Shared accommodation (3-star)", "Ground transport", "English-speaking guide", "Group support"].map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <div className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="h-3 w-3 text-primary" />
+                      </div>
+                      <span className="text-card-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/packages">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button variant="outline" className="w-full gap-2 rounded-xl h-12">
+                      Compare Packages <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                </Link>
+              </div>
             </motion.div>
 
             {/* Premium */}
@@ -385,10 +393,10 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
               whileHover={{ y: -8 }}
-              className="bg-card rounded-2xl p-8 relative border-2 border-accent/50 shadow-lg shadow-accent/5 hover:shadow-xl hover:shadow-accent/10 transition-shadow duration-500"
+              className="bg-card rounded-2xl overflow-hidden relative border-2 border-accent/50 shadow-lg shadow-accent/5 hover:shadow-xl hover:shadow-accent/10 transition-shadow duration-500"
             >
               <motion.span
-                className="absolute -top-3 right-6 bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full shadow-lg"
+                className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full shadow-lg"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
@@ -396,28 +404,34 @@ const Index = () => {
               >
                 ⭐ MOST POPULAR
               </motion.span>
-              <h3 className="text-xl font-bold text-card-foreground mb-1">Premium Package</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-primary">$3,500</span>
-                <span className="text-muted-foreground text-sm"> / person</span>
+              <div className="relative h-48 overflow-hidden">
+                <img src={packageMakkah} alt="Premium Hajj Package" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
               </div>
-              <ul className="space-y-3 mb-8">
-                {["Premium airfare", "Private accommodation (4-star near Haram)", "Private transport", "Dedicated scholar + guide", "Extended stay", "VIP support"].map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm">
-                    <div className="w-5 h-5 bg-accent/15 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="h-3 w-3 text-accent" />
-                    </div>
-                    <span className="text-card-foreground">{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to="/packages">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full gap-2 rounded-xl btn-glow">
-                    Compare Packages <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </motion.div>
-              </Link>
+              <div className="p-8">
+                <h3 className="text-xl font-bold text-card-foreground mb-1">Premium Package</h3>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-primary">$3,500</span>
+                  <span className="text-muted-foreground text-sm"> / person</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {["Premium airfare", "Private accommodation (4-star near Haram)", "Private transport", "Dedicated scholar + guide", "Extended stay", "VIP support"].map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <div className="w-5 h-5 bg-accent/15 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="h-3 w-3 text-accent" />
+                      </div>
+                      <span className="text-card-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/packages">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button className="w-full gap-2 rounded-xl btn-glow">
+                      Compare Packages <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                </Link>
+              </div>
             </motion.div>
           </div>
         </div>

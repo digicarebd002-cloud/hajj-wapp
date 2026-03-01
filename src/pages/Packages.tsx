@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle } from "lucide-react";
+import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -16,6 +16,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import packageMadinah from "@/assets/package-madinah.jpg";
+import packageMakkah from "@/assets/package-makkah.jpg";
+
+const packageImages = [packageMadinah, packageMakkah];
 
 const trustBadges = [
   { icon: "✅", label: "Fully Licensed" },
@@ -240,28 +244,35 @@ const Packages = () => {
           <EmptyState icon="📦" title="No packages available" description="Hajj packages will be listed here soon. Check back later!" />
         ) : (
           <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-            {packages.map((pkg) => {
+            {packages.map((pkg, index) => {
               const features = pkg.package_features?.sort((a, b) => a.sort_order - b.sort_order) ?? [];
+              const imgSrc = packageImages[index % packageImages.length];
               return (
                 <motion.div key={pkg.id} variants={fadeUp} whileHover={{ y: -8, boxShadow: "0 25px 50px -12px hsl(var(--primary) / 0.15)" }} className={`bg-card rounded-xl card-shadow relative overflow-hidden ${pkg.is_popular ? "ring-2 ring-accent" : ""}`}>
                   {pkg.is_popular && (
                     <motion.div initial={{ scale: 0, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: 0.4, type: "spring", stiffness: 300 }}>
-                      <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground border-0">⭐ Most Popular</Badge>
+                      <Badge className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground border-0">⭐ Most Popular</Badge>
                     </motion.div>
                   )}
+                  {/* Package Image */}
+                  <div className="relative h-56 overflow-hidden">
+                    <img src={imgSrc} alt={pkg.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+                  </div>
                   <div className="p-6 space-y-5">
                     <div>
                       <h2 className="text-2xl font-bold text-card-foreground">{pkg.name}</h2>
-                      <div className="mt-2">
+                      <p className="text-sm text-muted-foreground mt-1">Complete your sacred pilgrimage with comfort and guidance.</p>
+                      <div className="mt-3">
                         <motion.span className="text-4xl font-bold text-primary" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
                           ${Number(pkg.price).toLocaleString()}
                         </motion.span>
-                        <span className="text-muted-foreground text-sm"> / person</span>
+                        <span className="text-muted-foreground text-sm"> /person</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div><span className="text-muted-foreground">Duration</span><p className="font-medium">{pkg.duration}</p></div>
-                      <div><span className="text-muted-foreground">Group Size</span><p className="font-medium">{pkg.group_size}</p></div>
+                      <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><div><span className="text-muted-foreground">Duration</span><p className="font-medium">{pkg.duration}</p></div></div>
+                      <div className="flex items-center gap-2"><Users className="h-4 w-4 text-muted-foreground" /><div><span className="text-muted-foreground">Group Size</span><p className="font-medium">{pkg.group_size}</p></div></div>
                       <div><span className="text-muted-foreground">Departure</span><p className="font-medium">{pkg.departure}</p></div>
                       <div><span className="text-muted-foreground">Meals</span><p className="font-medium">{pkg.meals}</p></div>
                     </div>
@@ -280,7 +291,7 @@ const Packages = () => {
                     )}
                     <div className="flex gap-3 pt-2">
                       <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1">
-                        <Button className="w-full" onClick={() => handleBook(pkg)}>Book This Package</Button>
+                        <Button className="w-full btn-glow" onClick={() => handleBook(pkg)}>Book This Package</Button>
                       </motion.div>
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Button variant="outline" className="gap-1.5"><Download className="h-4 w-4" /> Itinerary</Button>
