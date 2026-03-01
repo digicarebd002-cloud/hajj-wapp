@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock } from "lucide-react";
+import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock, Plane, Building2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -270,24 +270,40 @@ const Packages = () => {
                         <span className="text-muted-foreground text-sm"> /person</span>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><div><span className="text-muted-foreground">Duration</span><p className="font-medium">{pkg.duration}</p></div></div>
-                      <div className="flex items-center gap-2"><Users className="h-4 w-4 text-muted-foreground" /><div><span className="text-muted-foreground">Group Size</span><p className="font-medium">{pkg.group_size}</p></div></div>
-                      <div><span className="text-muted-foreground">Departure</span><p className="font-medium">{pkg.departure}</p></div>
-                      <div><span className="text-muted-foreground">Meals</span><p className="font-medium">{pkg.meals}</p></div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><Clock className="h-4 w-4 text-primary" /></div>
+                        <div><span className="text-muted-foreground text-xs">Duration</span><p className="font-semibold">{pkg.duration}</p></div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><Users className="h-4 w-4 text-primary" /></div>
+                        <div><span className="text-muted-foreground text-xs">Group Size</span><p className="font-semibold">{pkg.group_size}</p></div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><Plane className="h-4 w-4 text-primary" /></div>
+                        <div><span className="text-muted-foreground text-xs">Departure</span><p className="font-semibold">{pkg.departure}</p></div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><Building2 className="h-4 w-4 text-primary" /></div>
+                        <div><span className="text-muted-foreground text-xs">Accommodation</span><p className="font-semibold">{pkg.accommodation}</p></div>
+                      </div>
                     </div>
-                    <div className="text-sm"><span className="text-muted-foreground">Accommodation</span><p className="font-medium">{pkg.accommodation}</p></div>
-                    <div className="text-sm"><span className="text-muted-foreground">Guide</span><p className="font-medium">{pkg.guide}</p></div>
                     <Separator />
                     {features.length > 0 && (
-                      <ul className="space-y-2">
-                        {features.map((f, i) => (
-                          <motion.li key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.05 }} className="flex items-start gap-2 text-sm">
-                            <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                            <span className="text-card-foreground">{f.feature}</span>
-                          </motion.li>
-                        ))}
-                      </ul>
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <span className="font-bold text-card-foreground">Package Features</span>
+                        </div>
+                        <ul className="space-y-2">
+                          {features.map((f, i) => (
+                            <motion.li key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.05 }} className="flex items-start gap-2 text-sm">
+                              <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                              <span className="text-card-foreground">{f.feature}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                     <div className="flex gap-3 pt-2">
                       <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1">
