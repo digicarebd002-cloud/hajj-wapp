@@ -23,7 +23,7 @@ import { Link, useNavigate } from "react-router-dom";
 type CheckoutStep = "cart" | "shipping" | "confirmed";
 
 const CartDrawer = () => {
-  const { items, removeFromCart, updateQuantity, itemCount, subtotal, clearCart } = useCart();
+  const { items, removeFromCart, updateQuantity, itemCount, subtotal, clearCart, isOpen, setIsOpen } = useCart();
   const { user } = useAuth();
   const { data: profile } = useProfile();
   const navigate = useNavigate();
@@ -31,7 +31,6 @@ const CartDrawer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
-  const [open, setOpen] = useState(false);
 
   const tier = profile?.tier ?? "Silver";
   const discountPct = (tier === "Gold" || tier === "Platinum") ? 10 : 0;
@@ -87,12 +86,12 @@ const CartDrawer = () => {
   const resetToCart = () => { setStep("cart"); setOrderId(null); };
 
   const handleSignInRedirect = () => {
-    setOpen(false);
+    setIsOpen(false);
     navigate("/auth");
   };
 
   return (
-    <Sheet open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetToCart(); }}>
+    <Sheet open={isOpen} onOpenChange={(o) => { setIsOpen(o); if (!o) resetToCart(); }}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <ShoppingBag className="h-5 w-5" />
@@ -137,10 +136,10 @@ const CartDrawer = () => {
               <p className="text-sm text-muted-foreground">You can track your order from your Account page.</p>
             </motion.div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-col gap-2 w-full max-w-xs">
-              <Button onClick={() => { setOpen(false); navigate("/account"); }} className="w-full gap-2">
+              <Button onClick={() => { setIsOpen(false); navigate("/account"); }} className="w-full gap-2">
                 View My Orders
               </Button>
-              <Button variant="outline" onClick={() => { setOpen(false); navigate("/store"); }} className="w-full">
+              <Button variant="outline" onClick={() => { setIsOpen(false); navigate("/store"); }} className="w-full">
                 Continue Shopping
               </Button>
             </motion.div>
@@ -154,7 +153,7 @@ const CartDrawer = () => {
               <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground gap-3">
                 <ShoppingBag className="h-12 w-12" />
                 <p className="font-medium">Your cart is empty</p>
-                <Button variant="outline" size="sm" onClick={() => { setOpen(false); navigate("/store"); }}>
+                <Button variant="outline" size="sm" onClick={() => { setIsOpen(false); navigate("/store"); }}>
                   Browse Store
                 </Button>
               </div>

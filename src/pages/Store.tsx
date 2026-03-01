@@ -29,7 +29,7 @@ const Store = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [selections, setSelections] = useState<ProductSelections>({});
-  const { addToCart } = useCart();
+  const { addToCart, setIsOpen } = useCart();
 
   useEffect(() => {
     supabase.from("product_categories").select("name").order("sort_order").then(({ data }) => {
@@ -58,6 +58,7 @@ const Store = () => {
       category: product.category,
     });
     toast({ title: "Added to cart", description: `${product.name} (${sel.size}, ${sel.color})` });
+    setIsOpen(true);
   };
 
   return (
