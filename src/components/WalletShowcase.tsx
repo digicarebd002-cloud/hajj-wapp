@@ -188,6 +188,20 @@ const WalletShowcase = () => {
               >
                 Current Balance
               </motion.p>
+              {/* Progress badge — inline below balance */}
+              <motion.div
+                className="mt-2 rounded-full px-4 py-1.5 shadow-lg mx-auto"
+                style={{
+                  background: "linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--primary) / 0.1))",
+                  border: "1px solid hsl(var(--primary) / 0.3)",
+                }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.9, type: "spring" }}
+              >
+                <p className="text-sm font-semibold text-primary">50% to Goal</p>
+              </motion.div>
             </div>
 
             {/* Monthly badge — top right */}
@@ -216,22 +230,6 @@ const WalletShowcase = () => {
               <p className="text-lg font-bold text-foreground">$2,500</p>
             </motion.div>
 
-            {/* Progress badge */}
-            <motion.div
-              className="absolute z-10 rounded-full px-4 py-1.5 shadow-lg"
-              style={{
-                bottom: "20%",
-                left: "32%",
-                background: "linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--primary) / 0.1))",
-                border: "1px solid hsl(var(--primary) / 0.3)",
-              }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.9, type: "spring" }}
-            >
-              <p className="text-sm font-semibold text-primary">50% to Goal</p>
-            </motion.div>
           </motion.div>
 
           {/* RIGHT — Step cards */}
