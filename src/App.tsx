@@ -16,6 +16,7 @@ import DiscussionDetail from "./pages/DiscussionDetail";
 import Account from "./pages/Account";
 import Auth from "./pages/Auth";
 import Sponsorship from "./pages/Sponsorship";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -70,6 +71,7 @@ const App = () => (
                       <Route path="/community/:id" element={<DiscussionDetail />} />
                       <Route path="/account" element={<Account />} />
                       <Route path="/auth" element={<Auth />} />
+                      <Route path="/checkout" element={<Checkout />} />
                       <Route path="/sponsorship" element={<Sponsorship />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
