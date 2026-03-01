@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Sparkles } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
 import NotificationBell from "@/components/NotificationBell";
@@ -46,13 +47,13 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <motion.span
-            className="text-2xl"
+          <motion.img
+            src={logoImg}
+            alt="Hajj Wallet"
+            className="h-8 w-8 rounded-lg object-contain"
             whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
             transition={{ duration: 0.5 }}
-          >
-            🕌
-          </motion.span>
+          />
           <span className="font-bold text-xl text-foreground tracking-tight">
             Hajj <span className="text-primary">Wallet</span>
           </span>

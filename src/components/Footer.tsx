@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Heart } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 
 const footerLinks = {
   Platform: [
@@ -31,7 +32,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 text-xl font-bold mb-4">
-              <span className="text-2xl">🕌</span>
+              <img src={logoImg} alt="Hajj Wallet" className="h-8 w-8 rounded-lg object-contain" />
               Hajj <span className="text-primary">Wallet</span>
             </div>
             <p className="text-sm text-foreground/70 leading-relaxed max-w-xs">
