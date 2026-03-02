@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
@@ -29,6 +30,7 @@ const Store = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [selections, setSelections] = useState<ProductSelections>({});
+  const [searchQuery, setSearchQuery] = useState("");
   const { addToCart, setIsOpen } = useCart();
 
   useEffect(() => {
@@ -38,7 +40,14 @@ const Store = () => {
   }, []);
 
   const categories = ["All", ...dynamicCategories];
-  const filtered = activeCategory === "All" ? products : products?.filter((p) => p.category === activeCategory);
+  const filtered = useMemo(() => {
+    let list = activeCategory === "All" ? products : products?.filter((p) => p.category === activeCategory);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list?.filter((p) => p.name.toLowerCase().includes(q) || (p as any).description?.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+    }
+    return list;
+  }, [products, activeCategory, searchQuery]);
 
   const getSelection = (id: string) => selections[id] || { color: null, size: null };
   const setSelection = (id: string, field: "color" | "size", value: string) => {
@@ -76,6 +85,17 @@ const Store = () => {
             <p className="text-muted-foreground text-lg">
               Represent the Hajj Wallet community with premium merchandise. Every purchase supports our mission.
             </p>
+
+            {/* Search bar */}
+            <div className="relative max-w-md mx-auto mt-6">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 rounded-full bg-secondary/50 border-border"
+              />
+            </div>
           </motion.div>
 
           {/* Category pills */}

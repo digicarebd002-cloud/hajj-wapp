@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft, CheckCircle, CreditCard, Banknote, ShoppingBag,
-  Minus, Plus, Trash2, LogIn, Shield, Truck, Package
+  Minus, Plus, Trash2, LogIn, Shield, Truck, Package, Tag, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,10 +24,58 @@ const Checkout = () => {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
 
+  // Coupon state
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
   const tier = profile?.tier ?? "Silver";
   const discountPct = (tier === "Gold" || tier === "Platinum") ? 10 : 0;
-  const discountAmount = subtotal * (discountPct / 100);
-  const total = subtotal - discountAmount;
+  const tierDiscount = subtotal * (discountPct / 100);
+
+  // Coupon discount calculation
+  const couponDiscount = appliedCoupon
+    ? appliedCoupon.discount_percent > 0
+      ? (subtotal - tierDiscount) * (appliedCoupon.discount_percent / 100)
+      : Math.min(Number(appliedCoupon.discount_amount), subtotal - tierDiscount)
+    : 0;
+
+  const totalDiscount = tierDiscount + couponDiscount;
+  const total = subtotal - totalDiscount;
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponLoading(true);
+    setCouponError("");
+    const { data, error } = await supabase
+      .from("coupon_codes")
+      .select("*")
+      .eq("code", couponInput.trim().toUpperCase())
+      .eq("is_active", true)
+      .single();
+
+    setCouponLoading(false);
+    if (error || !data) {
+      setCouponError("Invalid or expired coupon code");
+      return;
+    }
+    if (data.expires_at && new Date(data.expires_at) < new Date()) {
+      setCouponError("This coupon has expired");
+      return;
+    }
+    if (data.max_uses && data.used_count >= data.max_uses) {
+      setCouponError("This coupon has reached its usage limit");
+      return;
+    }
+    if (subtotal < Number(data.min_order_amount)) {
+      setCouponError(`Minimum order amount is $${Number(data.min_order_amount).toFixed(2)}`);
+      return;
+    }
+    setAppliedCoupon(data);
+    setCouponInput("");
+    toast({ title: "🎟️ Coupon applied!", description: data.discount_percent > 0 ? `${data.discount_percent}% off` : `$${Number(data.discount_amount).toFixed(2)} off` });
+  };
 
   const handleCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +85,7 @@ const Checkout = () => {
     const { data: order, error: orderErr } = await supabase.from("orders").insert({
       user_id: user.id,
       subtotal,
-      discount: discountAmount,
+      discount: totalDiscount,
       total,
       status: "confirmed",
     }).select("id").single();
@@ -228,6 +276,40 @@ const Checkout = () => {
                   <p className="text-xs text-muted-foreground mt-3">💡 Stripe payment integration coming soon. Order will be placed and you'll be contacted for payment.</p>
                 )}
               </div>
+
+              {/* Coupon Code */}
+              <div className="bg-card rounded-2xl border border-border/50 p-6">
+                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <Tag className="h-5 w-5 text-primary" /> Coupon Code
+                </h2>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-primary/10 rounded-xl p-3">
+                    <div className="flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-primary" />
+                      <span className="font-medium text-primary">{appliedCoupon.code}</span>
+                      <span className="text-sm text-muted-foreground">
+                        ({appliedCoupon.discount_percent > 0 ? `${appliedCoupon.discount_percent}% off` : `$${Number(appliedCoupon.discount_amount).toFixed(2)} off`})
+                      </span>
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setAppliedCoupon(null)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter coupon code"
+                      value={couponInput}
+                      onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                      className="flex-1"
+                    />
+                    <Button variant="outline" onClick={handleApplyCoupon} disabled={couponLoading || !couponInput.trim()}>
+                      {couponLoading ? "Checking..." : "Apply"}
+                    </Button>
+                  </div>
+                )}
+                {couponError && <p className="text-sm text-destructive mt-2">{couponError}</p>}
+              </div>
             </form>
           </motion.div>
 
@@ -255,7 +337,13 @@ const Checkout = () => {
                 {discountPct > 0 && (
                   <div className="flex justify-between text-primary">
                     <span>{tier} Discount ({discountPct}%)</span>
-                    <span className="font-medium">-${discountAmount.toFixed(2)} 🎉</span>
+                    <span className="font-medium">-${tierDiscount.toFixed(2)} 🎉</span>
+                  </div>
+                )}
+                {appliedCoupon && couponDiscount > 0 && (
+                  <div className="flex justify-between text-primary">
+                    <span>Coupon ({appliedCoupon.code})</span>
+                    <span className="font-medium">-${couponDiscount.toFixed(2)} 🎟️</span>
                   </div>
                 )}
                 <div className="flex justify-between">
