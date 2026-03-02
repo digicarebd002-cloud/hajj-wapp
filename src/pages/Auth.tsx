@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImg from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,24 @@ const Auth = () => {
   const { signIn, signUp, user, returnTo } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail.trim()) return;
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetLoading(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Reset link sent!", description: "Check your email for the password reset link." });
+      setForgotMode(false);
+    }
+  };
 
   // Redirect if already logged in
   useEffect(() => {
@@ -88,7 +107,16 @@ const Auth = () => {
                   <Input id="login-email" name="email" type="email" placeholder="you@example.com" required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="login-password">Password</Label>
+                    <button
+                      type="button"
+                      onClick={() => setForgotMode(true)}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
                   <Input id="login-password" name="password" type="password" placeholder="••••••••" required />
                 </div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -97,6 +125,32 @@ const Auth = () => {
                   </Button>
                 </motion.div>
               </form>
+
+              {/* Forgot Password Modal */}
+              {forgotMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 rounded-xl bg-secondary/50 border border-border space-y-3"
+                >
+                  <h3 className="font-semibold text-sm">Reset Password</h3>
+                  <p className="text-xs text-muted-foreground">Enter your email and we'll send you a reset link.</p>
+                  <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleForgotPassword} disabled={resetLoading || !resetEmail.trim()}>
+                      {resetLoading ? "Sending..." : "Send Reset Link"}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setForgotMode(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
             </TabsContent>
 
             <TabsContent value="register">
