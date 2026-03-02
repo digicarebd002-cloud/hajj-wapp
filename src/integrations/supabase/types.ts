@@ -67,6 +67,45 @@ export type Database = {
           },
         ]
       }
+      coupon_codes: {
+        Row: {
+          code: string
+          created_at: string
+          discount_amount: number
+          discount_percent: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_order_amount: number
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_amount?: number
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_amount?: number
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number
+          used_count?: number
+        }
+        Relationships: []
+      }
       discussion_categories: {
         Row: {
           created_at: string
@@ -491,6 +530,44 @@ export type Database = {
           sort_order?: number
         }
         Relationships: []
+      }
+      product_reviews: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          product_id: string
+          rating: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          product_id: string
+          rating: number
+          title?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+          rating?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_variants: {
         Row: {

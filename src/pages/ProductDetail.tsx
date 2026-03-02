@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { useProduct, useProductBySlug } from "@/hooks/use-supabase-data";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
@@ -18,6 +21,7 @@ const guarantees = [
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   // Try slug first, fallback to UUID
   const isUuid = id ? /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) : false;
   const byId = useProduct(isUuid ? (id || "") : "");
@@ -28,6 +32,55 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  // Reviews state
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [newRating, setNewRating] = useState(5);
+  const [newReviewBody, setNewReviewBody] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  const fetchReviews = useCallback(async () => {
+    if (!product?.id) return;
+    setReviewsLoading(true);
+    const { data: revs } = await supabase
+      .from("product_reviews")
+      .select("*")
+      .eq("product_id", product.id)
+      .order("created_at", { ascending: false });
+
+    if (revs && revs.length > 0) {
+      const userIds = [...new Set(revs.map((r: any) => r.user_id))];
+      const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", userIds);
+      const pMap = new Map((profiles ?? []).map((p: any) => [p.user_id, p]));
+      setReviews(revs.map((r: any) => ({ ...r, profile: pMap.get(r.user_id) })));
+    } else {
+      setReviews([]);
+    }
+    setReviewsLoading(false);
+  }, [product?.id]);
+
+  useEffect(() => { fetchReviews(); }, [fetchReviews]);
+
+  const handleSubmitReview = async () => {
+    if (!user || !product) return;
+    setSubmittingReview(true);
+    const { error } = await supabase.from("product_reviews").insert({
+      product_id: product.id,
+      user_id: user.id,
+      rating: newRating,
+      body: newReviewBody.trim(),
+    });
+    setSubmittingReview(false);
+    if (error) {
+      toast({ title: "Error", description: error.message.includes("duplicate") ? "You already reviewed this product" : error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "⭐ Review submitted!", description: "Thanks for your feedback." });
+    setNewReviewBody("");
+    setNewRating(5);
+    fetchReviews();
+  };
 
   // Dynamic SEO meta tags
   useEffect(() => {
@@ -325,6 +378,75 @@ const ProductDetail = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Reviews Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-16"
+        >
+          <h2 className="text-2xl font-bold mb-6">Customer Reviews ({reviews.length})</h2>
+
+          {/* Write a review */}
+          {user ? (
+            <div className="bg-card rounded-2xl border border-border/50 p-6 mb-8">
+              <h3 className="font-semibold mb-4">Write a Review</h3>
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button key={star} onClick={() => setNewRating(star)}>
+                    <Star className={`h-6 w-6 transition-colors ${star <= newRating ? "fill-primary text-primary" : "text-muted-foreground/30 hover:text-primary/50"}`} />
+                  </button>
+                ))}
+                <span className="ml-2 text-sm text-muted-foreground">{newRating}/5</span>
+              </div>
+              <Textarea
+                placeholder="Share your experience with this product..."
+                value={newReviewBody}
+                onChange={(e) => setNewReviewBody(e.target.value)}
+                className="mb-3"
+                rows={3}
+              />
+              <Button onClick={handleSubmitReview} disabled={submittingReview || !newReviewBody.trim()} className="gap-2">
+                <Send className="h-4 w-4" /> {submittingReview ? "Submitting..." : "Submit Review"}
+              </Button>
+            </div>
+          ) : (
+            <div className="bg-secondary/50 rounded-2xl p-6 mb-8 text-center">
+              <p className="text-muted-foreground mb-3">Sign in to write a review</p>
+              <Link to="/auth"><Button variant="outline" size="sm">Sign In</Button></Link>
+            </div>
+          )}
+
+          {/* Reviews list */}
+          {reviewsLoading ? (
+            <div className="space-y-4"><CardSkeleton /><CardSkeleton /></div>
+          ) : reviews.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No reviews yet. Be the first to review!</p>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="bg-card rounded-xl border border-border/50 p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                        {(review.profile?.full_name || "U")[0].toUpperCase()}
+                      </div>
+                      <span className="font-medium text-sm">{review.profile?.full_name || "User"}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex items-center gap-0.5 mb-2">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star key={s} className={`h-4 w-4 ${s <= review.rating ? "fill-primary text-primary" : "text-muted-foreground/30"}`} />
+                    ))}
+                  </div>
+                  {review.body && <p className="text-sm text-muted-foreground">{review.body}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );
