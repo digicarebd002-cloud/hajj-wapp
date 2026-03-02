@@ -197,33 +197,87 @@ const Index = () => {
               </motion.div>
             </div>
 
-            {/* Right side decorative */}
+            {/* Right side — Animated Savings Ring */}
             <motion.div
               className="hidden lg:flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.5, type: "spring" }}
             >
               <div className="relative w-80 h-80">
+                {/* Glow effects */}
                 <motion.div
                   className="absolute inset-0 bg-accent/20 rounded-full blur-[80px]"
                   animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
                   transition={{ duration: 4, repeat: Infinity }}
                 />
-                <motion.div
-                  className="absolute inset-4 bg-primary/20 rounded-full blur-[60px]"
-                  animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-                  transition={{ duration: 5, repeat: Infinity }}
-                />
-                <div className="relative flex items-center justify-center w-full h-full">
-                  <motion.span
-                    className="text-[120px] drop-shadow-2xl"
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+
+                {/* Outer rotating ring */}
+                <motion.svg
+                  viewBox="0 0 200 200"
+                  className="absolute inset-0 w-full h-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                >
+                  <circle cx="100" cy="100" r="90" fill="none" stroke="hsl(var(--accent) / 0.1)" strokeWidth="1" strokeDasharray="4 8" />
+                </motion.svg>
+
+                {/* Progress ring */}
+                <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full -rotate-90">
+                  <circle cx="100" cy="100" r="78" fill="none" stroke="hsl(var(--accent) / 0.15)" strokeWidth="4" />
+                  <motion.circle
+                    cx="100" cy="100" r="78"
+                    fill="none"
+                    stroke="hsl(var(--accent))"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 78}
+                    initial={{ strokeDashoffset: 2 * Math.PI * 78 }}
+                    animate={{ strokeDashoffset: 2 * Math.PI * 78 * 0.35 }}
+                    transition={{ duration: 2, delay: 1, ease: "easeOut" }}
+                    style={{ filter: "drop-shadow(0 0 8px hsl(var(--accent) / 0.5))" }}
+                  />
+                </svg>
+
+                {/* Inner content */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 }}
+                    className="text-center"
                   >
-                    {c("hero_emoji", "🕌")}
-                  </motion.span>
+                    <Wallet className="h-8 w-8 text-accent mx-auto mb-2" />
+                    <p className="text-white/50 text-xs uppercase tracking-widest mb-1">Hajj Savings</p>
+                    <motion.p
+                      className="text-4xl font-bold text-white"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.5 }}
+                    >
+                      $1,625
+                    </motion.p>
+                    <p className="text-accent text-sm font-medium mt-1">65% to Goal</p>
+                    <p className="text-white/40 text-xs mt-0.5">of $2,500</p>
+                  </motion.div>
                 </div>
+
+                {/* Orbiting dots */}
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2.5 h-2.5 bg-accent rounded-full"
+                    style={{
+                      top: "50%", left: "50%",
+                      filter: "drop-shadow(0 0 6px hsl(var(--accent) / 0.8))",
+                    }}
+                    animate={{
+                      x: [Math.cos(i * 2.1) * 90, Math.cos(i * 2.1 + Math.PI) * 90, Math.cos(i * 2.1) * 90],
+                      y: [Math.sin(i * 2.1) * 90, Math.sin(i * 2.1 + Math.PI) * 90, Math.sin(i * 2.1) * 90],
+                    }}
+                    transition={{ duration: 8 + i * 2, repeat: Infinity, ease: "linear" }}
+                  />
+                ))}
               </div>
             </motion.div>
           </div>
