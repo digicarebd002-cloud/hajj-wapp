@@ -1,4 +1,4 @@
-import { Minus, Plus, Trash2, ShoppingBag, LogIn } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -10,21 +10,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCart } from "@/contexts/CartContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { useProfile } from "@/hooks/use-supabase-data";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const CartDrawer = () => {
   const { items, removeFromCart, updateQuantity, itemCount, subtotal, isOpen, setIsOpen } = useCart();
-  const { user } = useAuth();
-  const { data: profile } = useProfile();
   const navigate = useNavigate();
-
-  const tier = profile?.tier ?? "Silver";
-  const discountPct = (tier === "Gold" || tier === "Platinum") ? 10 : 0;
-  const discountAmount = subtotal * (discountPct / 100);
-  const total = subtotal - discountAmount;
+  
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -91,30 +83,15 @@ const CartDrawer = () => {
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
               </div>
-              {discountPct > 0 && (
-                <div className="flex justify-between text-sm text-primary">
-                  <span>{tier} Member Discount ({discountPct}%)</span>
-                  <span className="font-semibold">-${discountAmount.toFixed(2)} 🎉</span>
-                </div>
-              )}
               <Separator />
               <div className="flex justify-between text-base font-bold">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${subtotal.toFixed(2)}</span>
               </div>
 
-              {user ? (
-                <Button className="w-full gap-2 btn-glow" size="lg" onClick={() => { setIsOpen(false); navigate("/checkout"); }}>
-                  Proceed to Checkout
-                </Button>
-              ) : (
-                <div className="space-y-2">
-                  <Button className="w-full gap-2" size="lg" onClick={() => { setIsOpen(false); navigate("/auth"); }}>
-                    <LogIn className="h-4 w-4" /> Sign In to Checkout
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">You need to sign in before placing an order</p>
-                </div>
-              )}
+              <Button className="w-full gap-2 btn-glow" size="lg" onClick={() => { setIsOpen(false); navigate("/checkout"); }}>
+                Proceed to Checkout
+              </Button>
             </div>
           </>
         )}
