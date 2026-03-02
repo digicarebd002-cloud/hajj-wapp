@@ -18,6 +18,7 @@ import Auth from "./pages/Auth";
 import Sponsorship from "./pages/Sponsorship";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
+import ResetPassword from "./pages/ResetPassword";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -72,6 +73,7 @@ const App = () => (
                       <Route path="/account" element={<Account />} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/sponsorship" element={<Sponsorship />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
