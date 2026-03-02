@@ -36,7 +36,7 @@ const ProductDetail = () => {
   const bySlug = useProductBySlug(!isUuid ? (id || "") : "");
   const { data: product, loading, error, refetch } = isUuid ? byId : bySlug;
 
-  const { addToCart } = useCart();
+  const { addToCart, setIsOpen } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -203,6 +203,7 @@ const ProductDetail = () => {
       title: "Added to cart",
       description: `${quantity}x ${product.name} (${selectedSize}, ${selectedColor})`,
     });
+    setIsOpen(true);
   };
 
   return (
