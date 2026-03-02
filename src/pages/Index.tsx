@@ -23,7 +23,7 @@ const steps = [
   },
   {
     icon: Wallet,
-    emoji: "👛",
+    emoji: "💰",
     title: "Build Your Wallet",
     description: "Contribute any amount to your personal Hajj savings wallet whenever you can.",
   },
