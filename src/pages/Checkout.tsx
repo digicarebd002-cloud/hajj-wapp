@@ -137,7 +137,7 @@ const Checkout = () => {
       subtotal,
       discount: totalDiscount,
       total,
-      status: "confirmed",
+      status: "pending",
     }).select("id").single();
 
     if (orderErr || !order) {
