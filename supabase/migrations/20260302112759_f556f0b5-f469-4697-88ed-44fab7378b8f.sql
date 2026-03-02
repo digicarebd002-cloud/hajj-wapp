@@ -1,0 +1,1 @@
+UPDATE products SET image_url = 'https://images.unsplash.com/photo-1590076082261-3ae013ded63e?w=800&q=80' WHERE id = '4d35863a-f525-4a18-815a-a3e2c06ed62f';
