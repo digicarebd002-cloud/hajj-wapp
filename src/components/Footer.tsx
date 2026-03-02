@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Heart } from "lucide-react";
+import { ArrowUpRight, Heart, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 
 const footerLinks = {
@@ -39,15 +39,24 @@ const Footer = () => {
               Save Together, Journey Together. A community-driven savings platform helping Muslims reach their Hajj goals.
             </p>
             <div className="flex items-center gap-3 mt-6">
-              {["𝕏", "📘", "📸"].map((icon, i) => (
-                <motion.div
-                  key={i}
+              {[
+                { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+                { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+                { icon: Twitter, href: "https://x.com", label: "X" },
+                { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+              ].map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.15, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center text-sm cursor-pointer hover:bg-primary/30 transition-colors"
+                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center cursor-pointer hover:bg-primary/30 transition-colors"
+                  aria-label={social.label}
                 >
-                  {icon}
-                </motion.div>
+                  <social.icon className="h-4 w-4" />
+                </motion.a>
               ))}
             </div>
           </div>
