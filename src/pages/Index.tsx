@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import {
   Users, Wallet, Star, ArrowRight, Handshake, Award,
-  Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe
+  Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe, User
 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
 
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
 import { usePageContent } from "@/hooks/use-page-content";
 import packageMadinah from "@/assets/package-madinah.jpg";
 import packageMakkah from "@/assets/package-makkah.jpg";
@@ -41,11 +42,14 @@ const steps = [
   },
 ];
 
-const communityPosts = [
-  { author: "Fatima A.", points: 245, title: "Tips for first-time pilgrims", replies: 23, avatar: "👩" },
-  { author: "Ahmed K.", points: 189, title: "Reached my savings goal!", replies: 47, avatar: "👨" },
-  { author: "Aisha M.", points: 312, title: "Best duas during Hajj", replies: 31, avatar: "👩‍🦱" },
-];
+interface CommunityPost {
+  id: string;
+  title: string;
+  author_name: string;
+  avatar_url: string | null;
+  points: number;
+  reply_count: number;
+}
 
 const features = [
   { icon: Shield, title: "Secure Savings", desc: "Bank-grade encryption protects your funds" },
@@ -64,12 +68,55 @@ const Index = () => {
   const packagesReveal = useScrollReveal();
   const communityReveal = useScrollReveal();
   const sponsorReveal = useScrollReveal();
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      // Get top 3 discussions with reply counts and author info
+      const { data: discussions } = await supabase
+        .from("discussions")
+        .select("id, title, user_id, created_at")
+        .order("views", { ascending: false })
+        .limit(3);
+
+      if (!discussions || discussions.length === 0) return;
+
+      const userIds = [...new Set(discussions.map(d => d.user_id))];
+      
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url, points_total")
+        .in("user_id", userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+
+      // Get reply counts
+      const { data: replies } = await supabase
+        .from("replies")
+        .select("discussion_id")
+        .in("discussion_id", discussions.map(d => d.id));
+
+      const replyCounts = new Map<string, number>();
+      replies?.forEach(r => {
+        replyCounts.set(r.discussion_id, (replyCounts.get(r.discussion_id) || 0) + 1);
+      });
+
+      setCommunityPosts(discussions.map(d => {
+        const profile = profileMap.get(d.user_id);
+        return {
+          id: d.id,
+          title: d.title,
+          author_name: profile?.full_name || "Member",
+          avatar_url: profile?.avatar_url || null,
+          points: profile?.points_total || 0,
+          reply_count: replyCounts.get(d.id) || 0,
+        };
+      }));
+    };
+    fetchPosts();
+  }, []);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
@@ -494,9 +541,11 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {communityPosts.map((post, i) => (
+            {communityPosts.length === 0 ? (
+              <p className="col-span-3 text-center text-muted-foreground py-8">No discussions yet. Be the first to start one!</p>
+            ) : communityPosts.map((post, i) => (
               <motion.div
-                key={post.author}
+                key={post.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -504,25 +553,28 @@ const Index = () => {
                 whileHover={{ y: -6, scale: 1.02 }}
                 className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <motion.div
-                    className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center text-xl"
-                    whileHover={{ rotate: 10 }}
-                  >
-                    {post.avatar}
-                  </motion.div>
-                  <div>
-                    <p className="font-semibold text-card-foreground text-sm">{post.author}</p>
-                    <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
+                <Link to={`/community/${post.id}`}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center overflow-hidden">
+                      {post.avatar_url ? (
+                        <img src={post.avatar_url} alt={post.author_name} className="w-full h-full object-cover rounded-full" />
+                      ) : (
+                        <User className="h-5 w-5 text-primary" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-card-foreground text-sm">{post.author_name}</p>
+                      <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
+                    </div>
                   </div>
-                </div>
-                <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
-                  {post.title}
-                </h3>
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MessageCircle className="h-4 w-4" />
-                  {post.replies} replies
-                </div>
+                  <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h3>
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <MessageCircle className="h-4 w-4" />
+                    {post.reply_count} replies
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
