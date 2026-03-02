@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft, CheckCircle, CreditCard, Banknote, ShoppingBag,
-  Minus, Plus, Trash2, LogIn, Shield, Truck, Package, Tag, X
+  Minus, Plus, Trash2, Shield, Truck, Package, Tag, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,11 +79,61 @@ const Checkout = () => {
 
   const handleCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!user) return;
     setSubmitting(true);
 
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = (formData.get("name") as string).trim();
+    const email = (formData.get("email") as string).trim();
+    const phone = (formData.get("phone") as string).trim();
+
+    let currentUserId = user?.id;
+
+    // If not logged in, auto-create account
+    if (!currentUserId) {
+      // Generate a random password for the auto-created account
+      const autoPassword = crypto.randomUUID();
+
+      const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
+        email,
+        password: autoPassword,
+        options: {
+          data: { full_name: name },
+        },
+      });
+
+      if (signUpErr || !signUpData.user) {
+        // If user already exists, try to sign in with magic link approach
+        // or just create a guest order
+        if (signUpErr?.message?.includes("already registered")) {
+          toast({
+            title: "Account exists",
+            description: "An account with this email already exists. Please sign in first.",
+            variant: "destructive",
+          });
+          setSubmitting(false);
+          return;
+        }
+        toast({
+          title: "Error creating account",
+          description: signUpErr?.message ?? "Unknown error",
+          variant: "destructive",
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      currentUserId = signUpData.user.id;
+
+      // Update profile with phone if provided
+      if (phone) {
+        await supabase.from("profiles").update({ phone }).eq("user_id", currentUserId);
+      }
+    }
+
+    // Place order
     const { data: order, error: orderErr } = await supabase.from("orders").insert({
-      user_id: user.id,
+      user_id: currentUserId,
       subtotal,
       discount: totalDiscount,
       total,
@@ -137,10 +187,7 @@ const Checkout = () => {
             <p className="text-muted-foreground mb-8">Your order has been confirmed successfully. You'll receive a confirmation email shortly.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button onClick={() => navigate("/account")} className="gap-2 btn-glow">
-              View My Orders
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/store")}>
+            <Button onClick={() => navigate("/store")} variant="outline">
               Continue Shopping
             </Button>
           </motion.div>
@@ -159,22 +206,6 @@ const Checkout = () => {
           <p className="text-muted-foreground mb-6">Add some items from the store to get started.</p>
           <Link to="/store">
             <Button className="gap-2">Browse Store <ArrowLeft className="h-4 w-4 rotate-180" /></Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  // ---- NOT LOGGED IN ----
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center px-4 py-20">
-          <LogIn className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Sign in to checkout</h1>
-          <p className="text-muted-foreground mb-6">You need to sign in before placing an order.</p>
-          <Link to="/auth">
-            <Button className="gap-2 btn-glow"><LogIn className="h-4 w-4" /> Sign In</Button>
           </Link>
         </div>
       </div>
@@ -205,7 +236,11 @@ const Checkout = () => {
                 <div className="space-y-4">
                   {items.map((item) => (
                     <div key={`${item.productId}-${item.size}-${item.color}`} className="flex gap-4 items-center">
-                      <div className="h-16 w-16 rounded-xl bg-secondary flex items-center justify-center text-2xl shrink-0">{item.image}</div>
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.name} className="h-16 w-16 rounded-xl object-cover shrink-0" />
+                      ) : (
+                        <div className="h-16 w-16 rounded-xl bg-secondary flex items-center justify-center text-2xl shrink-0">{item.image}</div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium truncate">{item.name}</h4>
                         <p className="text-xs text-muted-foreground">{item.size} · {item.color}</p>
@@ -229,15 +264,20 @@ const Checkout = () => {
                 <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <Truck className="h-5 w-5 text-primary" /> Shipping Information
                 </h2>
+                {!user && (
+                  <p className="text-xs text-muted-foreground mb-4 bg-primary/5 border border-primary/20 rounded-lg p-3">
+                    📝 Your information will be used to automatically create an account for order tracking.
+                  </p>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label>Full Name</Label><Input name="name" defaultValue={profile?.full_name ?? ""} required /></div>
-                  <div className="space-y-1.5"><Label>Email</Label><Input name="email" type="email" defaultValue={profile?.email ?? ""} required /></div>
+                  <div className="space-y-1.5"><Label>Full Name *</Label><Input name="name" defaultValue={profile?.full_name ?? ""} required /></div>
+                  <div className="space-y-1.5"><Label>Email *</Label><Input name="email" type="email" defaultValue={profile?.email ?? user?.email ?? ""} required /></div>
                   <div className="space-y-1.5"><Label>Phone</Label><Input name="phone" defaultValue={profile?.phone ?? ""} placeholder="+1 234 567 8900" /></div>
-                  <div className="space-y-1.5"><Label>Address</Label><Input name="address" placeholder="Street address" required /></div>
-                  <div className="space-y-1.5"><Label>City</Label><Input name="city" required /></div>
-                  <div className="space-y-1.5"><Label>State</Label><Input name="state" required /></div>
-                  <div className="space-y-1.5"><Label>Postal Code</Label><Input name="postal" required /></div>
-                  <div className="space-y-1.5"><Label>Country</Label><Input name="country" defaultValue="United States" required /></div>
+                  <div className="space-y-1.5"><Label>Address *</Label><Input name="address" placeholder="Street address" required /></div>
+                  <div className="space-y-1.5"><Label>City *</Label><Input name="city" required /></div>
+                  <div className="space-y-1.5"><Label>State *</Label><Input name="state" required /></div>
+                  <div className="space-y-1.5"><Label>Postal Code *</Label><Input name="postal" required /></div>
+                  <div className="space-y-1.5"><Label>Country *</Label><Input name="country" defaultValue="United States" required /></div>
                 </div>
               </div>
 
