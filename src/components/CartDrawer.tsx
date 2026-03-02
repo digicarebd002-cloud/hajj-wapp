@@ -62,7 +62,11 @@ const CartDrawer = () => {
                   animate={{ opacity: 1, x: 0 }}
                   className="flex gap-3"
                 >
-                  <div className="h-16 w-16 rounded-lg bg-secondary flex items-center justify-center text-2xl shrink-0">{item.image}</div>
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} className="h-16 w-16 rounded-lg object-cover shrink-0" />
+                  ) : (
+                    <div className="h-16 w-16 rounded-lg bg-secondary flex items-center justify-center text-2xl shrink-0">{item.image}</div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-medium truncate">{item.name}</h4>
                     <p className="text-xs text-muted-foreground">{item.size} · {item.color}</p>

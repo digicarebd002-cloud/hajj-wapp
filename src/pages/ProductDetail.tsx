@@ -196,6 +196,7 @@ const ProductDetail = () => {
         size: selectedSize!,
         color: selectedColor!,
         image: product.image_emoji || "🛍️",
+        imageUrl: imageUrl || undefined,
         category: product.category,
       });
     }

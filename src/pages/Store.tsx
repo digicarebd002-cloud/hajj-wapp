@@ -64,6 +64,7 @@ const Store = () => {
       size: sel.size,
       color: sel.color,
       image: product.image_emoji || "🛍️",
+      imageUrl: product.image_url || undefined,
       category: product.category,
     });
     toast({ title: "Added to cart", description: `${product.name} (${sel.size}, ${sel.color})` });
