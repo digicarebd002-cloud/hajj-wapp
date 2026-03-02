@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +11,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { toast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface ProductImage {
+  id: string;
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+  color_name: string | null;
+}
 
 const guarantees = [
   { icon: Shield, label: "Secure Payment" },
@@ -33,12 +41,32 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
+  // Product images state
+  const [productImages, setProductImages] = useState<ProductImage[]>([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
   // Reviews state
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [newRating, setNewRating] = useState(5);
   const [newReviewBody, setNewReviewBody] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+
+  // Fetch product images
+  useEffect(() => {
+    if (!product?.id) return;
+    supabase
+      .from("product_images")
+      .select("*")
+      .eq("product_id", product.id)
+      .order("sort_order")
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setProductImages(data);
+          setActiveImageIndex(0);
+        }
+      });
+  }, [product?.id]);
 
   const fetchReviews = useCallback(async () => {
     if (!product?.id) return;
@@ -192,30 +220,75 @@ const ProductDetail = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Image */}
+          {/* Image Gallery */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative"
+            className="relative space-y-3"
           >
-            <div className="rounded-2xl overflow-hidden bg-secondary/30 aspect-square">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={product.name}
+            {/* Main Image */}
+            <div className="rounded-2xl overflow-hidden bg-secondary/30 aspect-square relative group">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={productImages[activeImageIndex]?.image_url || imageUrl}
+                  src={productImages[activeImageIndex]?.image_url || imageUrl}
+                  alt={productImages[activeImageIndex]?.alt_text || product.name}
                   className="w-full h-full object-cover"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[120px]">{product.image_emoji || "🛍️"}</span>
-                </div>
+              </AnimatePresence>
+
+              {/* Navigation arrows */}
+              {productImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                  >
+                    <ChevronLeft className="h-5 w-5 text-foreground" />
+                  </button>
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                  >
+                    <ChevronRight className="h-5 w-5 text-foreground" />
+                  </button>
+                </>
+              )}
+
+              {product.is_limited && (
+                <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground border-0 text-sm px-4 py-1">
+                  LIMITED EDITION
+                </Badge>
               )}
             </div>
-            {product.is_limited && (
-              <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground border-0 text-sm px-4 py-1">
-                LIMITED EDITION
-              </Badge>
+
+            {/* Thumbnails */}
+            {productImages.length > 1 && (
+              <div className="flex gap-2">
+                {productImages.map((img, i) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setActiveImageIndex(i)}
+                    className={`relative rounded-xl overflow-hidden w-20 h-20 border-2 transition-all flex-shrink-0 ${
+                      i === activeImageIndex
+                        ? "border-primary shadow-md shadow-primary/20"
+                        : "border-border/50 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img.image_url} alt={img.alt_text} className="w-full h-full object-cover" loading="lazy" />
+                    {img.color_name && (
+                      <span className="absolute bottom-0 inset-x-0 bg-background/80 text-[10px] text-center py-0.5 font-medium truncate">
+                        {img.color_name}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
             )}
           </motion.div>
 
@@ -297,7 +370,12 @@ const ProductDetail = () => {
                   {colors.map((c) => (
                     <button
                       key={c.color_name}
-                      onClick={() => setSelectedColor(c.color_name)}
+                      onClick={() => {
+                        setSelectedColor(c.color_name);
+                        // Auto-switch to image matching this color
+                        const colorImageIdx = productImages.findIndex(img => img.color_name === c.color_name);
+                        if (colorImageIdx >= 0) setActiveImageIndex(colorImageIdx);
+                      }}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
                         selectedColor === c.color_name
                           ? "bg-primary text-primary-foreground border-primary shadow-md"
