@@ -151,7 +151,7 @@ const Navbar = () => {
                         : "text-foreground/70 hover:bg-secondary active:scale-[0.98]"
                     }`}
                   >
-                    <span className="text-lg">{link.icon}</span>
+                    <link.icon className="h-5 w-5" />
                     {link.label}
                   </Link>
                 </motion.div>
