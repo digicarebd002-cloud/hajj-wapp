@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, Sparkles } from "lucide-react";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
@@ -9,11 +9,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Home", path: "/", icon: "🏠" },
-  { label: "Wallet", path: "/wallet", icon: "👛" },
-  { label: "Store", path: "/store", icon: "🛍️" },
-  { label: "Packages", path: "/packages", icon: "✈️" },
-  { label: "Community", path: "/community", icon: "💬" },
+  { label: "Home", path: "/", icon: Home },
+  { label: "Wallet", path: "/wallet", icon: Wallet },
+  { label: "Store", path: "/store", icon: ShoppingBag },
+  { label: "Packages", path: "/packages", icon: Plane },
+  { label: "Community", path: "/community", icon: MessageCircle },
 ];
 
 const Navbar = () => {
