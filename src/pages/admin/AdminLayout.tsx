@@ -23,6 +23,7 @@ const navItems = [
   { title: "Products", url: "/admin/products", icon: ShoppingBag },
   { title: "Packages", url: "/admin/packages", icon: Package },
   { title: "Orders", url: "/admin/orders", icon: ClipboardList },
+  { title: "Coupons", url: "/admin/coupons", icon: Tag },
   { title: "Bookings", url: "/admin/bookings", icon: CalendarCheck },
   { title: "Community", url: "/admin/community", icon: MessageSquare },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
