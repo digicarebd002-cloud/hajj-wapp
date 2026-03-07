@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler, Package } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Product {
@@ -20,6 +20,7 @@ interface Product {
   short_description: string | null; description: string | null; image_url: string | null; is_limited: boolean;
   rating: number; reviews: number; image_emoji: string | null;
   slug: string | null; meta_title: string | null; meta_description: string | null; og_image_url: string | null;
+  stock: number;
 }
 
 interface Category {
@@ -30,7 +31,7 @@ interface Variant {
   id: string; product_id: string; size: string; color_name: string; color_value: string; price: number | null;
 }
 
-const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0", slug: "", meta_title: "", meta_description: "", og_image_url: "" };
+const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0", slug: "", meta_title: "", meta_description: "", og_image_url: "", stock: "-1" };
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -82,7 +83,7 @@ export default function AdminProducts() {
   };
   const openEdit = (p: Product) => {
     setEditId(p.id);
-    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews), slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", og_image_url: p.og_image_url || "" });
+    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews), slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", og_image_url: p.og_image_url || "", stock: String(p.stock ?? -1) });
     setDialogOpen(true);
   };
 
@@ -113,6 +114,7 @@ export default function AdminProducts() {
       short_description: form.short_description, description: form.description, image_url: form.image_url,
       is_limited: form.is_limited, rating: Number(form.rating), reviews: Number(form.reviews),
       slug: form.slug || null, meta_title: form.meta_title || null, meta_description: form.meta_description || null, og_image_url: form.og_image_url || null,
+      stock: Number(form.stock),
     };
     let error;
     if (editId) {
@@ -226,8 +228,8 @@ export default function AdminProducts() {
                   <TableHead className="font-semibold text-foreground/70">Category</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Price</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Variants</TableHead>
+                  <TableHead className="font-semibold text-foreground/70">Stock</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Limited</TableHead>
-                  <TableHead className="w-32"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -245,6 +247,15 @@ export default function AdminProducts() {
                       <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
                         <Palette className="h-3.5 w-3.5" /> Variants
                       </Button>
+                    </TableCell>
+                    <TableCell>
+                      {p.stock < 0 ? (
+                        <Badge variant="outline" className="bg-secondary/30 text-muted-foreground">Unlimited</Badge>
+                      ) : p.stock === 0 ? (
+                        <Badge className="bg-destructive/20 text-destructive border-destructive/30">Out of Stock</Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">{p.stock} in stock</Badge>
+                      )}
                     </TableCell>
                     <TableCell>{p.is_limited ? <Badge className="bg-primary/20 text-primary border-primary/30">Limited</Badge> : <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell>
@@ -325,8 +336,13 @@ export default function AdminProducts() {
           <DialogHeader><DialogTitle className="text-xl font-bold">{editId ? "Edit Product" : "New Product"}</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Name</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="bg-secondary/50" /></div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5"><Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price</Label><Input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} className="bg-secondary/50" /></div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Stock</Label>
+                <Input type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} className="bg-secondary/50" placeholder="-1 = unlimited" />
+                <p className="text-xs text-muted-foreground">-1 = unlimited</p>
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</Label>
                 <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>

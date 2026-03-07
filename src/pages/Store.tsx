@@ -173,7 +173,9 @@ const Store = () => {
               >
                 {filtered.map((product) => {
                   const sel = getSelection(product.id);
-                  const canAdd = !!sel.color && !!sel.size;
+                  const stock = (product as any).stock ?? -1;
+                  const isOutOfStock = stock === 0;
+                  const canAdd = !!sel.color && !!sel.size && !isOutOfStock;
                   const variants = product.product_variants ?? [];
                   const colors = [...new Map(variants.map((v) => [v.color_name, v])).values()];
                   const sizes = [...new Set(variants.map((v) => v.size))];
@@ -204,6 +206,18 @@ const Store = () => {
                           {product.is_limited && (
                             <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground border-0">
                               LIMITED EDITION
+                            </Badge>
+                          )}
+                          {isOutOfStock && (
+                            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                              <Badge className="bg-destructive text-destructive-foreground border-0 text-sm px-4 py-1.5">
+                                Out of Stock
+                              </Badge>
+                            </div>
+                          )}
+                          {!isOutOfStock && stock > 0 && stock <= 5 && (
+                            <Badge className="absolute top-3 left-3 bg-orange-500/90 text-white border-0 text-xs">
+                              Only {stock} left
                             </Badge>
                           )}
                         </div>
