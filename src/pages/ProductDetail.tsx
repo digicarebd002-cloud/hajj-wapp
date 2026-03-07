@@ -27,9 +27,21 @@ const guarantees = [
   { icon: RotateCcw, label: "30-Day Returns" },
 ];
 
+interface RelatedProduct {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  image_emoji: string | null;
+  slug: string | null;
+  rating: number;
+  category: string;
+}
+
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
   // Try slug first, fallback to UUID
   const isUuid = id ? /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) : false;
   const byId = useProduct(isUuid ? (id || "") : "");
@@ -51,6 +63,9 @@ const ProductDetail = () => {
   const [newRating, setNewRating] = useState(5);
   const [newReviewBody, setNewReviewBody] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+
+  // Related products
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
 
   // Fetch product images
   useEffect(() => {
