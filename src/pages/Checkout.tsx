@@ -172,8 +172,6 @@ const Checkout = () => {
     }
 
     // Store invoice data and auto-download PDF
-    const form2 = e.currentTarget;
-    const fd2 = new FormData(form2);
     const invoiceData = {
       orderId: order.id,
       date: new Date(),
