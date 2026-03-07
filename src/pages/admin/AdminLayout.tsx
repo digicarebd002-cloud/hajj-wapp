@@ -118,6 +118,15 @@ function AdminSidebar() {
               {!collapsed && "Back to Site"}
             </Button>
           </Link>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+            size="sm"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            {!collapsed && "Logout"}
+          </Button>
         </div>
       </SidebarContent>
     </Sidebar>
