@@ -134,7 +134,6 @@ const Index = () => {
           muted
           playsInline
           preload="auto"
-          poster="/videos/hajj-bg-poster.jpg"
           className="absolute inset-0 w-full h-full object-cover scale-105"
           src={c("hero_video", "/videos/hajj-bg.mp4")}
         />
