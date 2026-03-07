@@ -83,7 +83,7 @@ export default function AdminProducts() {
   };
   const openEdit = (p: Product) => {
     setEditId(p.id);
-    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews), slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", og_image_url: p.og_image_url || "" });
+    setForm({ name: p.name, price: String(p.price), category: p.category, short_description: p.short_description || "", description: p.description || "", is_limited: p.is_limited, image_url: p.image_url || "", rating: String(p.rating), reviews: String(p.reviews), slug: p.slug || "", meta_title: p.meta_title || "", meta_description: p.meta_description || "", og_image_url: p.og_image_url || "", stock: String(p.stock ?? -1) });
     setDialogOpen(true);
   };
 
