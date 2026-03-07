@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -488,6 +488,58 @@ const ProductDetail = () => {
                   <span className="text-xs text-muted-foreground font-medium">{g.label}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Share */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+                <Share2 className="h-4 w-4" /> Share:
+              </span>
+              {[
+                {
+                  icon: Facebook,
+                  label: "Facebook",
+                  href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+                  color: "hover:text-[#1877F2]",
+                },
+                {
+                  icon: Twitter,
+                  label: "X",
+                  href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.name)}`,
+                  color: "hover:text-foreground",
+                },
+                {
+                  icon: MessageCircle,
+                  label: "WhatsApp",
+                  href: `https://wa.me/?text=${encodeURIComponent(product.name + " — " + window.location.href)}`,
+                  color: "hover:text-[#25D366]",
+                },
+              ].map((s) => (
+                <motion.a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground transition-colors ${s.color}`}
+                  aria-label={`Share on ${s.label}`}
+                >
+                  <s.icon className="h-4 w-4" />
+                </motion.a>
+              ))}
+              <motion.button
+                whileHover={{ scale: 1.15, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: "Link copied!", description: "Product link copied to clipboard." });
+                }}
+                className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Copy link"
+              >
+                <LinkIcon className="h-4 w-4" />
+              </motion.button>
             </div>
 
             {/* Features */}
