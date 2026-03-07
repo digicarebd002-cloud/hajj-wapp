@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,9 +27,21 @@ const guarantees = [
   { icon: RotateCcw, label: "30-Day Returns" },
 ];
 
+interface RelatedProduct {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  image_emoji: string | null;
+  slug: string | null;
+  rating: number;
+  category: string;
+}
+
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
   // Try slug first, fallback to UUID
   const isUuid = id ? /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) : false;
   const byId = useProduct(isUuid ? (id || "") : "");
@@ -52,6 +64,9 @@ const ProductDetail = () => {
   const [newReviewBody, setNewReviewBody] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
+  // Related products
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
+
   // Fetch product images
   useEffect(() => {
     if (!product?.id) return;
@@ -67,6 +82,40 @@ const ProductDetail = () => {
         }
       });
   }, [product?.id]);
+
+  // Fetch related products (admin-set first, fallback to same category)
+  useEffect(() => {
+    if (!product?.id) return;
+    (async () => {
+      // 1. Try admin-curated related products
+      const { data: rels } = await supabase
+        .from("related_products")
+        .select("related_product_id")
+        .eq("product_id", product.id)
+        .order("sort_order");
+
+      let relatedIds = (rels ?? []).map((r: any) => r.related_product_id);
+
+      if (relatedIds.length > 0) {
+        const { data: prods } = await supabase
+          .from("products")
+          .select("id, name, price, image_url, image_emoji, slug, rating, category")
+          .in("id", relatedIds);
+        // Preserve sort order
+        const prodMap = new Map((prods ?? []).map((p: any) => [p.id, p]));
+        setRelatedProducts(relatedIds.map((rid: string) => prodMap.get(rid)).filter(Boolean) as RelatedProduct[]);
+      } else {
+        // 2. Fallback: same category products
+        const { data: sameCat } = await supabase
+          .from("products")
+          .select("id, name, price, image_url, image_emoji, slug, rating, category")
+          .eq("category", product.category)
+          .neq("id", product.id)
+          .limit(4);
+        setRelatedProducts((sameCat as RelatedProduct[]) ?? []);
+      }
+    })();
+  }, [product?.id, product?.category]);
 
   const fetchReviews = useCallback(async () => {
     if (!product?.id) return;
@@ -527,6 +576,43 @@ const ProductDetail = () => {
             </div>
           )}
         </motion.div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-16"
+          >
+            <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map((rp) => (
+                <Link
+                  key={rp.id}
+                  to={`/store/${rp.slug || rp.id}`}
+                  className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="aspect-square bg-secondary/30 overflow-hidden">
+                    {rp.image_url ? (
+                      <img src={rp.image_url} alt={rp.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-4xl">{rp.image_emoji || "🛍️"}</div>
+                    )}
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <h3 className="font-medium text-sm text-card-foreground truncate group-hover:text-primary transition-colors">{rp.name}</h3>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                      <span className="text-xs text-muted-foreground">{Number(rp.rating).toFixed(1)}</span>
+                    </div>
+                    <p className="text-primary font-bold">${Number(rp.price).toFixed(2)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

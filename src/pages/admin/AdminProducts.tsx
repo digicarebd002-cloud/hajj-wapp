@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler, Package } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler, Package, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Product {
@@ -54,6 +54,12 @@ export default function AdminProducts() {
   const [variants, setVariants] = useState<Variant[]>([]);
   const [variantLoading, setVariantLoading] = useState(false);
   const [newVariant, setNewVariant] = useState({ size: "", color_name: "", color_value: "#000000", price: "" });
+
+  // Related products
+  const [relatedDialogOpen, setRelatedDialogOpen] = useState(false);
+  const [relatedProduct, setRelatedProduct] = useState<Product | null>(null);
+  const [relatedIds, setRelatedIds] = useState<string[]>([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
 
   const fetchData = async () => {
     const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
@@ -187,6 +193,30 @@ export default function AdminProducts() {
     else { toast.success("Variant removed"); fetchVariants(variantProduct.id); }
   };
 
+  // Related products functions
+  const fetchRelated = async (productId: string) => {
+    setRelatedLoading(true);
+    const { data } = await supabase.from("related_products").select("related_product_id").eq("product_id", productId).order("sort_order");
+    setRelatedIds((data as any[] ?? []).map((r: any) => r.related_product_id));
+    setRelatedLoading(false);
+  };
+
+  const openRelated = (p: Product) => {
+    setRelatedProduct(p);
+    setRelatedDialogOpen(true);
+    fetchRelated(p.id);
+  };
+
+  const toggleRelated = async (targetProductId: string) => {
+    if (!relatedProduct) return;
+    if (relatedIds.includes(targetProductId)) {
+      await supabase.from("related_products").delete().eq("product_id", relatedProduct.id).eq("related_product_id", targetProductId);
+    } else {
+      await supabase.from("related_products").insert({ product_id: relatedProduct.id, related_product_id: targetProductId, sort_order: relatedIds.length } as any);
+    }
+    fetchRelated(relatedProduct.id);
+  };
+
   // Group variants for display
   const uniqueSizes = [...new Set(variants.map(v => v.size))];
   const uniqueColors = [...new Map(variants.map(v => [v.color_name, v])).values()];
@@ -244,9 +274,14 @@ export default function AdminProducts() {
                     <TableCell><Badge variant="outline" className="bg-secondary/30">{p.category}</Badge></TableCell>
                     <TableCell className="font-semibold text-primary">${p.price}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
-                        <Palette className="h-3.5 w-3.5" /> Variants
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
+                          <Palette className="h-3.5 w-3.5" /> Variants
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => openRelated(p)} className="gap-1.5 text-xs">
+                          <Link2 className="h-3.5 w-3.5" /> Related
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell>
                       {p.stock < 0 ? (
@@ -558,6 +593,53 @@ export default function AdminProducts() {
                 </div>
               </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Related Products Dialog */}
+      <Dialog open={relatedDialogOpen} onOpenChange={setRelatedDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Link2 className="h-5 w-5 text-primary" />
+              Related Products — {relatedProduct?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Select products to recommend alongside this product. If none selected, same-category products will be shown automatically.</p>
+          <div className="space-y-2 mt-2">
+            {relatedLoading ? (
+              <p className="text-center text-muted-foreground py-6">Loading...</p>
+            ) : products.filter(p => p.id !== relatedProduct?.id).map(p => {
+              const isSelected = relatedIds.includes(p.id);
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => toggleRelated(p.id)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                    isSelected
+                      ? "bg-primary/10 border-primary/40"
+                      : "bg-secondary/30 border-border/50 hover:border-primary/30"
+                  }`}
+                >
+                  {p.image_url ? (
+                    <img src={p.image_url} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  ) : (
+                    <span className="text-xl shrink-0">{p.image_emoji || "📦"}</span>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate text-foreground">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{p.category} · ${p.price}</p>
+                  </div>
+                  {isSelected && (
+                    <Badge className="bg-primary/20 text-primary border-primary/30 shrink-0">Selected</Badge>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="pt-2 border-t border-border/50">
+            <p className="text-xs text-muted-foreground">{relatedIds.length} product(s) selected</p>
           </div>
         </DialogContent>
       </Dialog>
