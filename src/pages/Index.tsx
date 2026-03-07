@@ -162,7 +162,7 @@ const Index = () => {
           />
         ))}
 
-        <motion.div style={{ opacity: heroOpacity }} className="relative container mx-auto px-4 py-20">
+        <motion.div style={{ opacity: heroOpacity }} className="relative container mx-auto px-4 py-20 [text-shadow:_0_2px_12px_rgba(0,0,0,0.7),_0_1px_4px_rgba(0,0,0,0.5)]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <motion.span
