@@ -156,6 +156,12 @@ const Checkout = () => {
     }));
 
     const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
+
+    // Increment coupon used_count
+    if (appliedCoupon) {
+      await supabase.from("coupon_codes").update({ used_count: appliedCoupon.used_count + 1 } as any).eq("id", appliedCoupon.id);
+    }
+
     setSubmitting(false);
 
     if (itemsErr) {
