@@ -200,6 +200,19 @@ const Checkout = () => {
     } catch (e) {
       console.error("PDF generation error:", e);
     }
+  };
+
+  const handleDownloadInvoice = () => {
+    if (!invoiceDataRef.current) return;
+    try {
+      const doc = generateInvoicePDF(invoiceDataRef.current);
+      doc.save(`hajj-wallet-invoice-${invoiceDataRef.current.orderId.slice(0, 8).toUpperCase()}.pdf`);
+    } catch (e) {
+      console.error("PDF generation error:", e);
+    }
+  };
+
+  // ---- ORDER CONFIRMED ----
   if (orderId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
