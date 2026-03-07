@@ -208,6 +208,18 @@ const Store = () => {
                               LIMITED EDITION
                             </Badge>
                           )}
+                          {isOutOfStock && (
+                            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                              <Badge className="bg-destructive text-destructive-foreground border-0 text-sm px-4 py-1.5">
+                                Out of Stock
+                              </Badge>
+                            </div>
+                          )}
+                          {!isOutOfStock && stock > 0 && stock <= 5 && (
+                            <Badge className="absolute top-3 left-3 bg-orange-500/90 text-white border-0 text-xs">
+                              Only {stock} left
+                            </Badge>
+                          )}
                         </div>
                       </Link>
 
