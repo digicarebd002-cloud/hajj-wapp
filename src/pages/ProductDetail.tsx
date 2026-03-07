@@ -83,6 +83,40 @@ const ProductDetail = () => {
       });
   }, [product?.id]);
 
+  // Fetch related products (admin-set first, fallback to same category)
+  useEffect(() => {
+    if (!product?.id) return;
+    (async () => {
+      // 1. Try admin-curated related products
+      const { data: rels } = await supabase
+        .from("related_products")
+        .select("related_product_id")
+        .eq("product_id", product.id)
+        .order("sort_order");
+
+      let relatedIds = (rels ?? []).map((r: any) => r.related_product_id);
+
+      if (relatedIds.length > 0) {
+        const { data: prods } = await supabase
+          .from("products")
+          .select("id, name, price, image_url, image_emoji, slug, rating, category")
+          .in("id", relatedIds);
+        // Preserve sort order
+        const prodMap = new Map((prods ?? []).map((p: any) => [p.id, p]));
+        setRelatedProducts(relatedIds.map((rid: string) => prodMap.get(rid)).filter(Boolean) as RelatedProduct[]);
+      } else {
+        // 2. Fallback: same category products
+        const { data: sameCat } = await supabase
+          .from("products")
+          .select("id, name, price, image_url, image_emoji, slug, rating, category")
+          .eq("category", product.category)
+          .neq("id", product.id)
+          .limit(4);
+        setRelatedProducts((sameCat as RelatedProduct[]) ?? []);
+      }
+    })();
+  }, [product?.id, product?.category]);
+
   const fetchReviews = useCallback(async () => {
     if (!product?.id) return;
     setReviewsLoading(true);
