@@ -72,7 +72,7 @@ const Footer = () => {
                   <li key={link.label}>
                     <Link
                       to={link.path}
-                      className="group flex items-center gap-1.5 text-sm text-foreground/70 hover:text-foreground transition-all"
+                      className="group flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-all"
                     >
                       {link.label}
                       <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
