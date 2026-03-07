@@ -31,7 +31,7 @@ interface Variant {
   id: string; product_id: string; size: string; color_name: string; color_value: string; price: number | null;
 }
 
-const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0", slug: "", meta_title: "", meta_description: "", og_image_url: "" };
+const emptyForm = { name: "", price: "", category: "", short_description: "", description: "", is_limited: false, image_url: "", rating: "0", reviews: "0", slug: "", meta_title: "", meta_description: "", og_image_url: "", stock: "-1" };
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
