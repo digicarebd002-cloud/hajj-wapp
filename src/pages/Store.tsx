@@ -31,6 +31,8 @@ const Store = () => {
   const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [selections, setSelections] = useState<ProductSelections>({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>("newest");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
   const { addToCart, setIsOpen } = useCart();
 
   useEffect(() => {
