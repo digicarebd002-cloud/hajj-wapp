@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-admin";
 import { NavLink } from "@/components/NavLink";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import logoImg from "@/assets/logo.png";
+import { useAdminTheme } from "@/hooks/use-admin-theme";
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
@@ -33,12 +34,13 @@ function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { isDark, toggle } = useAdminTheme();
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50">
-      <SidebarContent className="bg-gradient-to-b from-[hsl(186,41%,10%)] to-[hsl(186,41%,8%)]">
+      <SidebarContent className="bg-sidebar-background">
         {/* Logo area */}
-        <div className="p-4 border-b border-border/30">
+        <div className="p-4 border-b border-sidebar-border">
           <Link to="/admin" className="flex items-center gap-3">
             <img src={logoImg} alt="Hajj Wallet" className="w-9 h-9 rounded-lg object-contain shrink-0 shadow-lg shadow-primary/20" />
             {!collapsed && (
@@ -87,7 +89,16 @@ function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="mt-auto p-3 border-t border-border/30">
+        <div className="mt-auto p-3 border-t border-sidebar-border space-y-1">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+            size="sm"
+            onClick={toggle}
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {!collapsed && (isDark ? "Light Mode" : "Dark Mode")}
+          </Button>
           <Link to="/">
             <Button
               variant="ghost"
@@ -107,6 +118,7 @@ function AdminSidebar() {
 export default function AdminLayout() {
   const { isAdmin, loading } = useIsAdmin();
   const navigate = useNavigate();
+  const { isDark } = useAdminTheme();
 
   useEffect(() => {
     if (!loading && !isAdmin) navigate("/", { replace: true });
@@ -135,30 +147,32 @@ export default function AdminLayout() {
   if (!isAdmin) return null;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-[hsl(186,41%,7%)]">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center border-b border-border/30 px-4 shrink-0 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-            <SidebarTrigger />
-            <div className="ml-3 flex items-center gap-2">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="text-sm font-semibold text-foreground/80">Hajj Together</span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-primary font-medium">Admin</span>
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Outlet />
-            </motion.div>
-          </main>
+    <div className={isDark ? "dark" : ""}>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <AdminSidebar />
+          <div className="flex-1 flex flex-col min-w-0">
+            <header className="h-14 flex items-center border-b border-border/30 px-4 shrink-0 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+              <SidebarTrigger />
+              <div className="ml-3 flex items-center gap-2">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span className="text-sm font-semibold text-foreground/80">Hajj Together</span>
+                <span className="text-xs text-muted-foreground">•</span>
+                <span className="text-xs text-primary font-medium">Admin</span>
+              </div>
+            </header>
+            <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Outlet />
+              </motion.div>
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </div>
   );
 }
