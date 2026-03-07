@@ -48,8 +48,16 @@ const Store = () => {
       const q = searchQuery.toLowerCase();
       list = list?.filter((p) => p.name.toLowerCase().includes(q) || (p as any).description?.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
     }
+    // Price filter
+    list = list?.filter((p) => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]);
+    // Sort
+    if (sortBy === "price-asc") list = [...(list || [])].sort((a, b) => Number(a.price) - Number(b.price));
+    else if (sortBy === "price-desc") list = [...(list || [])].sort((a, b) => Number(b.price) - Number(a.price));
+    else if (sortBy === "rating") list = [...(list || [])].sort((a, b) => Number(b.rating) - Number(a.rating));
+    else if (sortBy === "name") list = [...(list || [])].sort((a, b) => a.name.localeCompare(b.name));
+    else list = [...(list || [])].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     return list;
-  }, [products, activeCategory, searchQuery]);
+  }, [products, activeCategory, searchQuery, sortBy, priceRange]);
 
   const getSelection = (id: string) => selections[id] || { color: null, size: null };
   const setSelection = (id: string, field: "color" | "size", value: string) => {
