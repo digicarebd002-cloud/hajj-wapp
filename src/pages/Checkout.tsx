@@ -14,6 +14,7 @@ import { useProfile } from "@/hooks/use-supabase-data";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { generateInvoicePDF } from "@/lib/generate-invoice";
 
 const Checkout = () => {
   const { items, removeFromCart, updateQuantity, itemCount, subtotal, clearCart } = useCart();
