@@ -114,6 +114,7 @@ export default function AdminProducts() {
       short_description: form.short_description, description: form.description, image_url: form.image_url,
       is_limited: form.is_limited, rating: Number(form.rating), reviews: Number(form.reviews),
       slug: form.slug || null, meta_title: form.meta_title || null, meta_description: form.meta_description || null, og_image_url: form.og_image_url || null,
+      stock: Number(form.stock),
     };
     let error;
     if (editId) {
