@@ -193,6 +193,30 @@ export default function AdminProducts() {
     else { toast.success("Variant removed"); fetchVariants(variantProduct.id); }
   };
 
+  // Related products functions
+  const fetchRelated = async (productId: string) => {
+    setRelatedLoading(true);
+    const { data } = await supabase.from("related_products").select("related_product_id").eq("product_id", productId).order("sort_order");
+    setRelatedIds((data as any[] ?? []).map((r: any) => r.related_product_id));
+    setRelatedLoading(false);
+  };
+
+  const openRelated = (p: Product) => {
+    setRelatedProduct(p);
+    setRelatedDialogOpen(true);
+    fetchRelated(p.id);
+  };
+
+  const toggleRelated = async (targetProductId: string) => {
+    if (!relatedProduct) return;
+    if (relatedIds.includes(targetProductId)) {
+      await supabase.from("related_products").delete().eq("product_id", relatedProduct.id).eq("related_product_id", targetProductId);
+    } else {
+      await supabase.from("related_products").insert({ product_id: relatedProduct.id, related_product_id: targetProductId, sort_order: relatedIds.length } as any);
+    }
+    fetchRelated(relatedProduct.id);
+  };
+
   // Group variants for display
   const uniqueSizes = [...new Set(variants.map(v => v.size))];
   const uniqueColors = [...new Map(variants.map(v => [v.color_name, v])).values()];
