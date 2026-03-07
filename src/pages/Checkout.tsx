@@ -228,9 +228,13 @@ const Checkout = () => {
               <p className="text-xs text-muted-foreground mb-1">Order Reference</p>
               <p className="font-mono font-bold text-2xl text-primary">{orderId.slice(0, 8).toUpperCase()}</p>
             </div>
-            <p className="text-muted-foreground mb-8">Your order has been confirmed successfully. You'll receive a confirmation email shortly.</p>
+            <p className="text-muted-foreground mb-4">Your order has been confirmed successfully. Your invoice has been downloaded automatically.</p>
+            <p className="text-sm text-muted-foreground mb-8">Didn't get the download? Click below to download again.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={handleDownloadInvoice} className="gap-2">
+              <Download className="h-4 w-4" /> Download Invoice
+            </Button>
             <Button onClick={() => navigate("/store")} variant="outline">
               Continue Shopping
             </Button>
