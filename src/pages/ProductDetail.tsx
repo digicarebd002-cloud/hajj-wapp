@@ -576,6 +576,43 @@ const ProductDetail = () => {
             </div>
           )}
         </motion.div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-16"
+          >
+            <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map((rp) => (
+                <Link
+                  key={rp.id}
+                  to={`/store/${rp.slug || rp.id}`}
+                  className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="aspect-square bg-secondary/30 overflow-hidden">
+                    {rp.image_url ? (
+                      <img src={rp.image_url} alt={rp.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-4xl">{rp.image_emoji || "🛍️"}</div>
+                    )}
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <h3 className="font-medium text-sm text-card-foreground truncate group-hover:text-primary transition-colors">{rp.name}</h3>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                      <span className="text-xs text-muted-foreground">{Number(rp.rating).toFixed(1)}</span>
+                    </div>
+                    <p className="text-primary font-bold">${Number(rp.price).toFixed(2)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
