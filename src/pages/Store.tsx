@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, Star, Search, Truck, Shield, Heart, Award } from "lucide-react";
+import { ShoppingCart, Star, Search, Truck, Shield, Heart, Award, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,8 @@ const Store = () => {
   const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [selections, setSelections] = useState<ProductSelections>({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>("newest");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
   const { addToCart, setIsOpen } = useCart();
 
   useEffect(() => {
@@ -46,8 +48,16 @@ const Store = () => {
       const q = searchQuery.toLowerCase();
       list = list?.filter((p) => p.name.toLowerCase().includes(q) || (p as any).description?.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
     }
+    // Price filter
+    list = list?.filter((p) => Number(p.price) >= priceRange[0] && Number(p.price) <= priceRange[1]);
+    // Sort
+    if (sortBy === "price-asc") list = [...(list || [])].sort((a, b) => Number(a.price) - Number(b.price));
+    else if (sortBy === "price-desc") list = [...(list || [])].sort((a, b) => Number(b.price) - Number(a.price));
+    else if (sortBy === "rating") list = [...(list || [])].sort((a, b) => Number(b.rating) - Number(a.rating));
+    else if (sortBy === "name") list = [...(list || [])].sort((a, b) => a.name.localeCompare(b.name));
+    else list = [...(list || [])].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     return list;
-  }, [products, activeCategory, searchQuery]);
+  }, [products, activeCategory, searchQuery, sortBy, priceRange]);
 
   const getSelection = (id: string) => selections[id] || { color: null, size: null };
   const setSelection = (id: string, field: "color" | "size", value: string) => {
@@ -87,15 +97,33 @@ const Store = () => {
               Represent the Hajj Wallet community with premium merchandise. Every purchase supports our mission.
             </p>
 
-            {/* Search bar */}
-            <div className="relative max-w-md mx-auto mt-6">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 rounded-full bg-secondary/50 border-border"
-              />
+            {/* Search bar + Sort/Filter */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 max-w-2xl mx-auto mt-6">
+              <div className="relative flex-1 w-full">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 rounded-full bg-secondary/50 border-border"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="pl-9 pr-4 py-2.5 rounded-full text-sm bg-secondary/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="price-asc">Price: Low → High</option>
+                    <option value="price-desc">Price: High → Low</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="name">Name A-Z</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </motion.div>
 
