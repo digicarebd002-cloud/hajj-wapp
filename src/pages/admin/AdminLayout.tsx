@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag, LogOut
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/use-admin";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -36,6 +37,13 @@ function AdminSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { isDark, toggle } = useAdminTheme();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/admin/login", { replace: true });
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50">
@@ -110,6 +118,15 @@ function AdminSidebar() {
               {!collapsed && "Back to Site"}
             </Button>
           </Link>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+            size="sm"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            {!collapsed && "Logout"}
+          </Button>
         </div>
       </SidebarContent>
     </Sidebar>
@@ -122,7 +139,7 @@ export default function AdminLayout() {
   const { isDark } = useAdminTheme();
 
   useEffect(() => {
-    if (!loading && !isAdmin) navigate("/", { replace: true });
+    if (!loading && !isAdmin) navigate("/admin/login", { replace: true });
   }, [isAdmin, loading, navigate]);
 
   if (loading) {

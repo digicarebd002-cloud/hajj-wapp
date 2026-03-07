@@ -23,6 +23,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
 import AdminLayout from "./pages/admin/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -49,6 +50,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 {/* Admin routes - no main Layout */}
+                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminDashboard />} />
                   <Route path="users" element={<AdminUsers />} />
