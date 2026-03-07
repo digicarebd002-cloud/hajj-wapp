@@ -228,8 +228,8 @@ export default function AdminProducts() {
                   <TableHead className="font-semibold text-foreground/70">Category</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Price</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Variants</TableHead>
+                  <TableHead className="font-semibold text-foreground/70">Stock</TableHead>
                   <TableHead className="font-semibold text-foreground/70">Limited</TableHead>
-                  <TableHead className="w-32"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
