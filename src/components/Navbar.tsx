@@ -40,8 +40,8 @@ const Navbar = () => {
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl shadow-lg border-b border-border/50"
-          : "bg-background/95 backdrop-blur-sm border-b border-transparent"
+          ? "bg-background/95 backdrop-blur-xl shadow-md border-b border-border"
+          : "bg-background backdrop-blur-sm border-b border-transparent"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4">

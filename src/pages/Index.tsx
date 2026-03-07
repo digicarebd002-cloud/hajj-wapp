@@ -137,7 +137,7 @@ const Index = () => {
           src={c("hero_video", "/videos/hajj-bg.mp4")}
         />
         <div className="absolute inset-0" style={{
-          background: "linear-gradient(135deg, hsl(186 41% 18% / 0.65) 0%, hsl(180 80% 24% / 0.5) 50%, hsl(180 80% 24% / 0.3) 100%)"
+          background: "linear-gradient(135deg, hsl(142 40% 12% / 0.75) 0%, hsl(142 50% 20% / 0.6) 50%, hsl(142 60% 25% / 0.4) 100%)"
         }} />
 
         {/* Floating particles */}
