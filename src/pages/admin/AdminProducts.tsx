@@ -55,6 +55,12 @@ export default function AdminProducts() {
   const [variantLoading, setVariantLoading] = useState(false);
   const [newVariant, setNewVariant] = useState({ size: "", color_name: "", color_value: "#000000", price: "" });
 
+  // Related products
+  const [relatedDialogOpen, setRelatedDialogOpen] = useState(false);
+  const [relatedProduct, setRelatedProduct] = useState<Product | null>(null);
+  const [relatedIds, setRelatedIds] = useState<string[]>([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
+
   const fetchData = async () => {
     const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
     setProducts(data || []);
