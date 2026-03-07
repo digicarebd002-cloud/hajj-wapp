@@ -123,13 +123,13 @@
 
   .tier-badge-gold {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-    background: linear-gradient(135deg, hsl(168, 76%, 50%), hsl(168, 76%, 40%));
+    background: linear-gradient(135deg, hsl(142, 79%, 44%), hsl(142, 79%, 34%));
     color: white;
   }
 
   .tier-badge-platinum {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-    background: linear-gradient(135deg, hsl(186, 41%, 18%), hsl(180, 60%, 25%));
+    background: linear-gradient(135deg, hsl(142, 40%, 18%), hsl(142, 50%, 28%));
     color: white;
   }
 
