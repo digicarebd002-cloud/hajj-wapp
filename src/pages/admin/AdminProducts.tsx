@@ -248,6 +248,15 @@ export default function AdminProducts() {
                         <Palette className="h-3.5 w-3.5" /> Variants
                       </Button>
                     </TableCell>
+                    <TableCell>
+                      {p.stock < 0 ? (
+                        <Badge variant="outline" className="bg-secondary/30 text-muted-foreground">Unlimited</Badge>
+                      ) : p.stock === 0 ? (
+                        <Badge className="bg-destructive/20 text-destructive border-destructive/30">Out of Stock</Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">{p.stock} in stock</Badge>
+                      )}
+                    </TableCell>
                     <TableCell>{p.is_limited ? <Badge className="bg-primary/20 text-primary border-primary/30">Limited</Badge> : <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
