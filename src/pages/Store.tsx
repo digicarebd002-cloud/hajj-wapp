@@ -97,15 +97,33 @@ const Store = () => {
               Represent the Hajj Wallet community with premium merchandise. Every purchase supports our mission.
             </p>
 
-            {/* Search bar */}
-            <div className="relative max-w-md mx-auto mt-6">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 rounded-full bg-secondary/50 border-border"
-              />
+            {/* Search bar + Sort/Filter */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 max-w-2xl mx-auto mt-6">
+              <div className="relative flex-1 w-full">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 rounded-full bg-secondary/50 border-border"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="pl-9 pr-4 py-2.5 rounded-full text-sm bg-secondary/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="price-asc">Price: Low → High</option>
+                    <option value="price-desc">Price: High → Low</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="name">Name A-Z</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </motion.div>
 
