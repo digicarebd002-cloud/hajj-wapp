@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft, CheckCircle, CreditCard, Banknote, ShoppingBag,
-  Minus, Plus, Trash2, Shield, Truck, Package, Tag, X
+  Minus, Plus, Trash2, Shield, Truck, Package, Tag, X, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import { useProfile } from "@/hooks/use-supabase-data";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { generateInvoicePDF } from "@/lib/generate-invoice";
 
 const Checkout = () => {
   const { items, removeFromCart, updateQuantity, itemCount, subtotal, clearCart } = useCart();
@@ -23,6 +24,7 @@ const Checkout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
+  const invoiceDataRef = useRef<any>(null);
 
   // Coupon state
   const [couponInput, setCouponInput] = useState("");
@@ -169,9 +171,43 @@ const Checkout = () => {
       return;
     }
 
+    // Store invoice data and auto-download PDF
+    const invoiceData = {
+      orderId: order.id,
+      date: new Date(),
+      customerName: name,
+      customerEmail: email,
+      items: items.map(item => ({ name: item.name, size: item.size, color: item.color, quantity: item.quantity, price: item.price })),
+      subtotal,
+      tierDiscount,
+      couponDiscount,
+      total,
+      paymentMethod,
+      couponCode: appliedCoupon?.code,
+    };
+    invoiceDataRef.current = invoiceData;
+
     setOrderId(order.id);
     clearCart();
     toast({ title: "🛍️ Order placed!", description: "Your order has been confirmed." });
+
+    // Auto-download invoice
+    try {
+      const doc = generateInvoicePDF(invoiceData);
+      doc.save(`hajj-wallet-invoice-${order.id.slice(0, 8).toUpperCase()}.pdf`);
+    } catch (e) {
+      console.error("PDF generation error:", e);
+    }
+  };
+
+  const handleDownloadInvoice = () => {
+    if (!invoiceDataRef.current) return;
+    try {
+      const doc = generateInvoicePDF(invoiceDataRef.current);
+      doc.save(`hajj-wallet-invoice-${invoiceDataRef.current.orderId.slice(0, 8).toUpperCase()}.pdf`);
+    } catch (e) {
+      console.error("PDF generation error:", e);
+    }
   };
 
   // ---- ORDER CONFIRMED ----
@@ -190,9 +226,13 @@ const Checkout = () => {
               <p className="text-xs text-muted-foreground mb-1">Order Reference</p>
               <p className="font-mono font-bold text-2xl text-primary">{orderId.slice(0, 8).toUpperCase()}</p>
             </div>
-            <p className="text-muted-foreground mb-8">Your order has been confirmed successfully. You'll receive a confirmation email shortly.</p>
+            <p className="text-muted-foreground mb-4">Your order has been confirmed successfully. Your invoice has been downloaded automatically.</p>
+            <p className="text-sm text-muted-foreground mb-8">Didn't get the download? Click below to download again.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={handleDownloadInvoice} className="gap-2">
+              <Download className="h-4 w-4" /> Download Invoice
+            </Button>
             <Button onClick={() => navigate("/store")} variant="outline">
               Continue Shopping
             </Button>
