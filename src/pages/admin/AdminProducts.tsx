@@ -274,9 +274,14 @@ export default function AdminProducts() {
                     <TableCell><Badge variant="outline" className="bg-secondary/30">{p.category}</Badge></TableCell>
                     <TableCell className="font-semibold text-primary">${p.price}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
-                        <Palette className="h-3.5 w-3.5" /> Variants
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="outline" size="sm" onClick={() => openVariants(p)} className="gap-1.5 text-xs">
+                          <Palette className="h-3.5 w-3.5" /> Variants
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => openRelated(p)} className="gap-1.5 text-xs">
+                          <Link2 className="h-3.5 w-3.5" /> Related
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell>
                       {p.stock < 0 ? (
