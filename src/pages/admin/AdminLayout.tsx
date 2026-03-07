@@ -37,6 +37,13 @@ function AdminSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { isDark, toggle } = useAdminTheme();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/admin/login", { replace: true });
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50">
