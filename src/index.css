@@ -98,7 +98,7 @@
     border-radius: 999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.35);
+    background: hsl(var(--primary) / 0.35);
   }
 
   /* Selection color */
