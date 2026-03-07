@@ -50,6 +50,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 {/* Admin routes - no main Layout */}
+                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminDashboard />} />
                   <Route path="users" element={<AdminUsers />} />

@@ -139,7 +139,7 @@ export default function AdminLayout() {
   const { isDark } = useAdminTheme();
 
   useEffect(() => {
-    if (!loading && !isAdmin) navigate("/", { replace: true });
+    if (!loading && !isAdmin) navigate("/admin/login", { replace: true });
   }, [isAdmin, loading, navigate]);
 
   if (loading) {
