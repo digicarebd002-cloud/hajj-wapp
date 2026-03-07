@@ -171,12 +171,35 @@ const Checkout = () => {
       return;
     }
 
+    // Store invoice data and auto-download PDF
+    const form2 = e.currentTarget;
+    const fd2 = new FormData(form2);
+    const invoiceData = {
+      orderId: order.id,
+      date: new Date(),
+      customerName: name,
+      customerEmail: email,
+      items: items.map(item => ({ name: item.name, size: item.size, color: item.color, quantity: item.quantity, price: item.price })),
+      subtotal,
+      tierDiscount,
+      couponDiscount,
+      total,
+      paymentMethod,
+      couponCode: appliedCoupon?.code,
+    };
+    invoiceDataRef.current = invoiceData;
+
     setOrderId(order.id);
     clearCart();
     toast({ title: "🛍️ Order placed!", description: "Your order has been confirmed." });
-  };
 
-  // ---- ORDER CONFIRMED ----
+    // Auto-download invoice
+    try {
+      const doc = generateInvoicePDF(invoiceData);
+      doc.save(`hajj-wallet-invoice-${order.id.slice(0, 8).toUpperCase()}.pdf`);
+    } catch (e) {
+      console.error("PDF generation error:", e);
+    }
   if (orderId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
