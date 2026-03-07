@@ -35,7 +35,7 @@ const Footer = () => {
               <img src={logoImg} alt="Hajj Wallet" className="h-8 w-8 rounded-lg object-contain" />
               Hajj <span className="text-primary">Wallet</span>
             </div>
-            <p className="text-sm text-foreground/70 leading-relaxed max-w-xs">
+            <p className="text-sm text-white/70 leading-relaxed max-w-xs">
               Save Together, Journey Together. A community-driven savings platform helping Muslims reach their Hajj goals.
             </p>
             <div className="flex items-center gap-3 mt-6">
