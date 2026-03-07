@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler, Package } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, ShoppingBag, FolderOpen, Save, X, Palette, Ruler, Package, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Product {
