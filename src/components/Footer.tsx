@@ -84,7 +84,7 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-foreground/50">
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <p>© {new Date().getFullYear()} Hajj Wallet. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Made with <Heart className="h-3 w-3 text-accent fill-accent" /> for the Ummah
