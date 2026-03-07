@@ -596,6 +596,53 @@ export default function AdminProducts() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Related Products Dialog */}
+      <Dialog open={relatedDialogOpen} onOpenChange={setRelatedDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Link2 className="h-5 w-5 text-primary" />
+              Related Products — {relatedProduct?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Select products to recommend alongside this product. If none selected, same-category products will be shown automatically.</p>
+          <div className="space-y-2 mt-2">
+            {relatedLoading ? (
+              <p className="text-center text-muted-foreground py-6">Loading...</p>
+            ) : products.filter(p => p.id !== relatedProduct?.id).map(p => {
+              const isSelected = relatedIds.includes(p.id);
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => toggleRelated(p.id)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                    isSelected
+                      ? "bg-primary/10 border-primary/40"
+                      : "bg-secondary/30 border-border/50 hover:border-primary/30"
+                  }`}
+                >
+                  {p.image_url ? (
+                    <img src={p.image_url} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  ) : (
+                    <span className="text-xl shrink-0">{p.image_emoji || "📦"}</span>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate text-foreground">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{p.category} · ${p.price}</p>
+                  </div>
+                  {isSelected && (
+                    <Badge className="bg-primary/20 text-primary border-primary/30 shrink-0">Selected</Badge>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="pt-2 border-t border-border/50">
+            <p className="text-xs text-muted-foreground">{relatedIds.length} product(s) selected</p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
