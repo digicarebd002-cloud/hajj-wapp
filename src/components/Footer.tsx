@@ -16,8 +16,8 @@ const footerLinks = {
     { label: "FAQs", path: "#" },
   ],
   Legal: [
-    { label: "Privacy Policy", path: "#" },
-    { label: "Terms of Service", path: "#" },
+    { label: "Privacy Policy", path: "/privacy" },
+    { label: "Terms of Service", path: "/terms" },
   ],
 };
 
