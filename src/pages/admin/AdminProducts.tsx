@@ -20,6 +20,7 @@ interface Product {
   short_description: string | null; description: string | null; image_url: string | null; is_limited: boolean;
   rating: number; reviews: number; image_emoji: string | null;
   slug: string | null; meta_title: string | null; meta_description: string | null; og_image_url: string | null;
+  stock: number;
 }
 
 interface Category {
