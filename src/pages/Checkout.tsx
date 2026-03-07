@@ -24,6 +24,7 @@ const Checkout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
+  const invoiceDataRef = useRef<any>(null);
 
   // Coupon state
   const [couponInput, setCouponInput] = useState("");
