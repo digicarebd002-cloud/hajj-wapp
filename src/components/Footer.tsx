@@ -32,7 +32,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 text-xl font-bold mb-4">
-              <img src={logoImg} alt="Hajj Wallet" className="h-8 w-8 rounded-lg object-contain" />
+              <img src={logoImg} alt="Hajj Wallet" className="h-10 w-10 rounded-lg object-contain" />
               Hajj <span className="text-primary">Wallet</span>
             </div>
             <p className="text-sm text-white/70 leading-relaxed max-w-xs">

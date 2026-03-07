@@ -87,7 +87,7 @@ const Auth = () => {
             animate={{ rotate: [0, -5, 5, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
           >
-            <img src={logoImg} alt="Hajj Wallet" className="h-10 w-10 rounded-lg object-contain" />
+            <img src={logoImg} alt="Hajj Wallet" className="h-14 w-14 rounded-lg object-contain" />
           </motion.span>
           <h1 className="text-2xl font-bold mt-3">Welcome to Hajj Wallet</h1>
           <p className="text-muted-foreground mt-1">Start your sacred journey today</p>
