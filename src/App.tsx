@@ -31,6 +31,7 @@ import AdminCommunity from "./pages/admin/AdminCommunity";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminPageManagement from "./pages/admin/AdminPageManagement";
+import AdminCoupons from "./pages/admin/AdminCoupons";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 
 const queryClient = new QueryClient();
