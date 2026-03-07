@@ -173,7 +173,9 @@ const Store = () => {
               >
                 {filtered.map((product) => {
                   const sel = getSelection(product.id);
-                  const canAdd = !!sel.color && !!sel.size;
+                  const stock = (product as any).stock ?? -1;
+                  const isOutOfStock = stock === 0;
+                  const canAdd = !!sel.color && !!sel.size && !isOutOfStock;
                   const variants = product.product_variants ?? [];
                   const colors = [...new Map(variants.map((v) => [v.color_name, v])).values()];
                   const sizes = [...new Set(variants.map((v) => v.size))];
