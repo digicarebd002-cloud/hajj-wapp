@@ -236,8 +236,8 @@ const Index = () => {
                 className="flex flex-wrap gap-6 mt-12"
               >
                 {features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
-                    <f.icon className="h-4 w-4 text-accent" />
+                  <div key={i} className="flex items-center gap-2 text-white text-sm font-medium">
+                    <f.icon className="h-4 w-4 text-white" />
                     {f.title}
                   </div>
                 ))}
