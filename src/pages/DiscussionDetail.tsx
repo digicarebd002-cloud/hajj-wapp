@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle } from "lucide-react";
+import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle, Share2, Facebook, Twitter, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -118,9 +118,28 @@ const DiscussionDetail = () => {
           <Badge variant="outline" className="text-xs border-primary/30 text-primary mb-3">{discussion.category}</Badge>
           <h1 className="text-2xl font-bold mb-4">{discussion.title}</h1>
           <div className="text-foreground/90 whitespace-pre-line leading-relaxed mb-4">{discussion.body}</div>
-          <button onClick={toggleDiscussionLike} className={`flex items-center gap-1.5 text-sm transition-colors ${discLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
-            <Heart className={`h-4 w-4 ${discLiked ? "fill-primary" : ""}`} /> {discussion.like_count ?? 0} likes
-          </button>
+          <div className="flex items-center justify-between">
+            <button onClick={toggleDiscussionLike} className={`flex items-center gap-1.5 text-sm transition-colors ${discLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
+              <Heart className={`h-4 w-4 ${discLiked ? "fill-primary" : ""}`} /> {discussion.like_count ?? 0} likes
+            </button>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-muted-foreground mr-1 flex items-center gap-1"><Share2 className="h-3.5 w-3.5" /> Share:</span>
+              {[
+                { icon: Facebook, href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, label: "Facebook" },
+                { icon: Twitter, href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(discussion.title)}`, label: "X" },
+              ].map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
+                  <s.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                </a>
+              ))}
+              <button
+                onClick={() => { navigator.clipboard.writeText(window.location.href); toast({ title: "Link copied!", description: "Discussion link copied to clipboard." }); }}
+                className="w-8 h-8 rounded-full bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors"
+              >
+                <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
+            </div>
+          </div>
         </motion.div>
 
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
