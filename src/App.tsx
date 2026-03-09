@@ -82,6 +82,7 @@ const App = () => (
                       <Route path="/checkout" element={<Checkout />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/sponsorship" element={<Sponsorship />} />
+                      <Route path="/messages" element={<Messages />} />
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="*" element={<NotFound />} />

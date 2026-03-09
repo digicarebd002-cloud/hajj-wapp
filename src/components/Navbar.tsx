@@ -89,6 +89,13 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-2">
+          <Link to="/messages">
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="ghost" size="icon" className="rounded-full relative">
+                <Mail className="h-4.5 w-4.5" />
+              </Button>
+            </motion.div>
+          </Link>
           <NotificationBell />
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
