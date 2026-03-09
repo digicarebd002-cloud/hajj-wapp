@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Camera, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
@@ -12,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag, MessageCircle, Package, FileText,
@@ -294,6 +296,56 @@ const AccountContent = () => {
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "শুধু ইমেজ ফাইল আপলোড করুন", variant: "destructive" });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "ফাইল সাইজ ৫MB এর বেশি হতে পারবে না", variant: "destructive" });
+      return;
+    }
+
+    setAvatarUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+
+      // Upload (upsert)
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true, cacheControl: "0" });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
+      const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({ title: "প্রোফাইল ছবি আপডেট হয়েছে!" });
+      refetchProfile();
+    } catch (err: any) {
+      toast({ title: "আপলোড ব্যর্থ", description: err.message, variant: "destructive" });
+    } finally {
+      setAvatarUploading(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -333,8 +385,32 @@ const AccountContent = () => {
         <div className="bg-card rounded-xl card-shadow p-6 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold">
-                {initials}
+              {/* Avatar with upload */}
+              <div className="relative group">
+                <Avatar className="h-20 w-20 border-2 border-primary/20">
+                  <AvatarImage src={p.avatar_url || ""} alt={p.full_name} />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <button
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={avatarUploading}
+                  className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                >
+                  {avatarUploading ? (
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-6 w-6 text-white" />
+                  )}
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                />
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
