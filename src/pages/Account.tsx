@@ -381,6 +381,7 @@ const AccountContent = () => {
 
   return (
     <div className="section-padding min-h-screen">
+      <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
       <div className="container mx-auto max-w-4xl">
         {/* Profile Header */}
         <div className="bg-card rounded-xl card-shadow p-6 mb-6">
