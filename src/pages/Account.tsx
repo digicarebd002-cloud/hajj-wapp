@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Gift, Copy, Users, Share2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
+import { useReferral } from "@/hooks/use-referral";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,8 @@ const actionLabels: Record<string, { label: string; icon: React.ReactNode; color
   best_answer: { label: "Best Answer Award", icon: <Star className="h-4 w-4" />, color: "bg-amber-500/15 text-amber-400" },
   admin_adjustment: { label: "Admin Adjustment", icon: <Zap className="h-4 w-4" />, color: "bg-primary/15 text-primary" },
   wallet_contribution: { label: "Wallet Contribution", icon: <CreditCard className="h-4 w-4" />, color: "bg-emerald-500/15 text-emerald-400" },
+  referral_bonus: { label: "Referral Bonus", icon: <Gift className="h-4 w-4" />, color: "bg-orange-500/15 text-orange-400" },
+  referral_welcome: { label: "Welcome Bonus", icon: <Gift className="h-4 w-4" />, color: "bg-teal-500/15 text-teal-400" },
 };
 
 function timeAgo(date: string) {
@@ -297,6 +300,7 @@ const AccountContent = () => {
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const { code: referralCode, stats: referralStats, getReferralLink } = useReferral();
   const [avatarUploading, setAvatarUploading] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -504,6 +508,68 @@ const AccountContent = () => {
               )}
               <Link to="/membership" className="text-sm text-primary hover:underline mt-3 inline-block">Manage Membership →</Link>
             </div>
+
+            {/* Referral Card */}
+            {referralCode && (
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Gift className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Invite Friends, Earn Points</h3>
+                    <p className="text-xs text-muted-foreground">You earn <strong>50 pts</strong> per referral, they get <strong>25 pts</strong></p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex-1 bg-secondary rounded-lg px-4 py-2.5 font-mono text-sm font-bold tracking-wider text-foreground">
+                    {referralCode}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 shrink-0"
+                    onClick={() => {
+                      navigator.clipboard.writeText(getReferralLink());
+                      toast({ title: "Link copied!", description: "Share it with your friends." });
+                    }}
+                  >
+                    <Copy className="h-3.5 w-3.5" /> Copy Link
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 shrink-0"
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({ title: "Join Hajj Wallet", text: "Join Hajj Wallet and get 25 bonus points!", url: getReferralLink() });
+                      } else {
+                        navigator.clipboard.writeText(getReferralLink());
+                        toast({ title: "Link copied!" });
+                      }
+                    }}
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <p className="text-lg font-bold text-primary">{referralStats.completed}</p>
+                    <p className="text-xs text-muted-foreground">Referrals</p>
+                  </div>
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <p className="text-lg font-bold text-primary">{referralStats.totalPoints}</p>
+                    <p className="text-xs text-muted-foreground">Points Earned</p>
+                  </div>
+                  <div className="bg-secondary rounded-lg p-3 text-center">
+                    <p className="text-lg font-bold text-primary">{referralStats.total - referralStats.completed}</p>
+                    <p className="text-xs text-muted-foreground">Pending</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             <div className="bg-secondary rounded-xl p-6 text-center">
               <h3 className="font-semibold mb-1">Need Help?</h3>

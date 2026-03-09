@@ -1,24 +1,29 @@
 import { useState, useEffect } from "react";
 import SEOHead from "@/components/SEOHead";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import logoImg from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { processReferralCode } from "@/hooks/use-referral";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { Gift } from "lucide-react";
 
 const Auth = () => {
   const { signIn, signUp, user, returnTo } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const refCode = searchParams.get("ref") || "";
 
   const handleForgotPassword = async () => {
     if (!resetEmail.trim()) return;
@@ -60,6 +65,7 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     const form = new FormData(e.currentTarget);
+    const referralInput = (form.get("referral_code") as string || "").trim();
     const { error } = await signUp(
       form.get("email") as string,
       form.get("password") as string,
@@ -71,8 +77,26 @@ const Auth = () => {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Account created!", description: "Check your email to confirm your account." });
+      // Store referral code to process after email confirmation
+      if (referralInput) {
+        localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
+      }
     }
   };
+
+  // Process pending referral after login
+  useEffect(() => {
+    if (!user) return;
+    const pendingCode = localStorage.getItem("pending_referral_code");
+    if (pendingCode) {
+      localStorage.removeItem("pending_referral_code");
+      processReferralCode(pendingCode, user.id).then((success) => {
+        if (success) {
+          toast({ title: "🎁 Referral bonus!", description: "You earned 25 bonus points for using a referral code!" });
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <div className="section-padding min-h-screen flex items-center justify-center">
@@ -96,7 +120,13 @@ const Auth = () => {
         </div>
 
         <div className="bg-card rounded-xl card-shadow p-6">
-          <Tabs defaultValue="login">
+          {refCode && (
+            <div className="mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20 flex items-center gap-2">
+              <Gift className="h-4 w-4 text-primary shrink-0" />
+              <p className="text-sm text-primary font-medium">You've been referred! Sign up to earn <strong>25 bonus points</strong>.</p>
+            </div>
+          )}
+          <Tabs defaultValue={refCode ? "register" : "login"}>
             <TabsList className="w-full">
               <TabsTrigger value="login" className="flex-1">Login</TabsTrigger>
               <TabsTrigger value="register" className="flex-1">Register</TabsTrigger>
@@ -172,6 +202,12 @@ const Auth = () => {
                 <div className="space-y-2">
                   <Label htmlFor="reg-password">Password</Label>
                   <Input id="reg-password" name="password" type="password" placeholder="Min 6 characters" required minLength={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-referral" className="flex items-center gap-1.5">
+                    <Gift className="h-3.5 w-3.5 text-primary" /> Referral Code <span className="text-xs text-muted-foreground">(optional)</span>
+                  </Label>
+                  <Input id="reg-referral" name="referral_code" placeholder="e.g. ABC12345" defaultValue={refCode} className="uppercase" />
                 </div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button type="submit" className="w-full" disabled={loading}>
