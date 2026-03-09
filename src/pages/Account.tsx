@@ -46,6 +46,8 @@ const actionLabels: Record<string, { label: string; icon: React.ReactNode; color
   best_answer: { label: "Best Answer Award", icon: <Star className="h-4 w-4" />, color: "bg-amber-500/15 text-amber-400" },
   admin_adjustment: { label: "Admin Adjustment", icon: <Zap className="h-4 w-4" />, color: "bg-primary/15 text-primary" },
   wallet_contribution: { label: "Wallet Contribution", icon: <CreditCard className="h-4 w-4" />, color: "bg-emerald-500/15 text-emerald-400" },
+  referral_bonus: { label: "Referral Bonus", icon: <Gift className="h-4 w-4" />, color: "bg-orange-500/15 text-orange-400" },
+  referral_welcome: { label: "Welcome Bonus", icon: <Gift className="h-4 w-4" />, color: "bg-teal-500/15 text-teal-400" },
 };
 
 function timeAgo(date: string) {
