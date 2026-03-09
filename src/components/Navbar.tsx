@@ -54,8 +54,9 @@ const Navbar = () => {
             whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
             transition={{ duration: 0.5 }}
           />
-          <span className="font-bold text-xl text-foreground tracking-tight">
-            Hajj <span className="text-primary">Wallet</span>
+          <span className="font-extrabold text-xl tracking-tight uppercase">
+            <span className="text-foreground">HAJJ</span>{" "}
+            <span className="text-primary">WALLET</span>
           </span>
         </Link>
 
