@@ -76,11 +76,7 @@ const Wishlist = () => {
               <CardSkeleton /><CardSkeleton /><CardSkeleton />
             </div>
           ) : products.length === 0 ? (
-            <EmptyState icon="❤️" title="Your wishlist is empty" description="Browse the store and tap the heart icon to save items.">
-              <Link to="/store">
-                <Button className="rounded-full px-8 mt-4">Browse Store</Button>
-              </Link>
-            </EmptyState>
+            <EmptyState icon="❤️" title="Your wishlist is empty" description="Browse the store and tap the heart icon to save items." actionLabel="Browse Store" actionTo="/store" />
           ) : (
             <AnimatePresence>
               <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
