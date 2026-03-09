@@ -203,6 +203,12 @@ const Auth = () => {
                   <Label htmlFor="reg-password">Password</Label>
                   <Input id="reg-password" name="password" type="password" placeholder="Min 6 characters" required minLength={6} />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-referral" className="flex items-center gap-1.5">
+                    <Gift className="h-3.5 w-3.5 text-primary" /> Referral Code <span className="text-xs text-muted-foreground">(optional)</span>
+                  </Label>
+                  <Input id="reg-referral" name="referral_code" placeholder="e.g. ABC12345" defaultValue={refCode} className="uppercase" />
+                </div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Creating account..." : "Create Account"}
