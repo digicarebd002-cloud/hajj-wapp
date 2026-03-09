@@ -476,6 +476,17 @@ const ProductDetail = () => {
                   <ShoppingCart className="h-5 w-5" /> Add to Cart
                 </Button>
               </motion.div>
+
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-12 w-12 rounded-xl p-0"
+                  onClick={() => toggleWishlist(product.id, product.name)}
+                >
+                  <Heart className={`h-5 w-5 transition-colors ${isSaved(product.id) ? "fill-destructive text-destructive" : ""}`} />
+                </Button>
+              </motion.div>
             </div>
 
             {!canAdd && (

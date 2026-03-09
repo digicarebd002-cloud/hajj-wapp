@@ -236,6 +236,13 @@ const Store = () => {
                           )}
                         </div>
                       </Link>
+                      {/* Wishlist heart button */}
+                      <button
+                        onClick={() => toggleWishlist(product.id, product.name)}
+                        className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
+                      >
+                        <Heart className={`h-4.5 w-4.5 transition-colors ${isSaved(product.id) ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                      </button>
 
                       {/* Product Info */}
                       <div className="p-5 space-y-3">
