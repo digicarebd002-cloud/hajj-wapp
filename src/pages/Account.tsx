@@ -385,8 +385,32 @@ const AccountContent = () => {
         <div className="bg-card rounded-xl card-shadow p-6 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold">
-                {initials}
+              {/* Avatar with upload */}
+              <div className="relative group">
+                <Avatar className="h-20 w-20 border-2 border-primary/20">
+                  <AvatarImage src={p.avatar_url || ""} alt={p.full_name} />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <button
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={avatarUploading}
+                  className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                >
+                  {avatarUploading ? (
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-6 w-6 text-white" />
+                  )}
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                />
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
