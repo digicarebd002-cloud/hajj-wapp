@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Camera, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
