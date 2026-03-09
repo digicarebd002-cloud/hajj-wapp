@@ -90,6 +90,7 @@ const App = () => (
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
                       <Route path="/orders" element={<MyOrders />} />
+                      <Route path="/bookings" element={<MyBookings />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
