@@ -12,3 +12,11 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /account
+Disallow: /orders
+Disallow: /bookings
+Disallow: /messages
+
+Sitemap: https://hajj-wapp.lovable.app/sitemap.xml
