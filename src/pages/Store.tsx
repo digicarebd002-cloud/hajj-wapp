@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart, Star, Search, Truck, Shield, Heart, Award, SlidersHorizontal, ArrowUpDown } from "lucide-react";

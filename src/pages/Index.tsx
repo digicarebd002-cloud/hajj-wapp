@@ -127,6 +127,19 @@ const Index = () => {
 
   return (
     <div className="overflow-hidden">
+      <SEOHead
+        title="Hajj Wallet — Your Sacred Journey Starts Here"
+        description="Save for Hajj, book packages, shop community merch, and connect with fellow pilgrims — all in one app."
+        canonical={BASE_URL}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Hajj Wallet",
+          url: BASE_URL,
+          description: "Save for Hajj, book packages, shop community merch, and connect with fellow pilgrims.",
+          potentialAction: { "@type": "SearchAction", target: `${BASE_URL}/store?q={search_term_string}`, "query-input": "required name=search_term_string" },
+        }}
+      />
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
         <video

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import WalletPublicLanding from "@/components/wallet/WalletPublicLanding";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
