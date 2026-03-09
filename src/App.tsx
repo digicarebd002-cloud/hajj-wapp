@@ -25,6 +25,7 @@ import Messages from "./pages/Messages";
 import Install from "./pages/Install";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
+import Membership from "./pages/Membership";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -91,6 +92,7 @@ const App = () => (
                       <Route path="/install" element={<Install />} />
                       <Route path="/orders" element={<MyOrders />} />
                       <Route path="/bookings" element={<MyBookings />} />
+                      <Route path="/membership" element={<Membership />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
