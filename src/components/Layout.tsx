@@ -19,6 +19,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <OfflineBanner />
       <Navbar />
       {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
       <AnimatePresence mode="wait">
