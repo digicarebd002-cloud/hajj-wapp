@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
