@@ -50,7 +50,7 @@ const Navbar = () => {
           <motion.img
             src={logoImg}
             alt="Hajj Wallet"
-            className="h-10 w-10 rounded-lg object-contain"
+            className="h-12 w-12 object-contain"
             whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
             transition={{ duration: 0.5 }}
           />
