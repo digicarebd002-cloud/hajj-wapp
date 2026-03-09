@@ -124,6 +124,25 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
       refetchWallet();
     }
 
+    // If installment plan, generate installment rows
+    if (paymentMethod === "plan" && booking) {
+      const months = parseInt(installmentPlan);
+      const monthlyAmount = parseFloat((price / months).toFixed(2));
+      const installments = Array.from({ length: months }, (_, i) => {
+        const dueDate = new Date();
+        dueDate.setMonth(dueDate.getMonth() + i + 1);
+        return {
+          booking_id: booking.id,
+          user_id: user.id,
+          installment_number: i + 1,
+          amount: i === months - 1 ? parseFloat((price - monthlyAmount * (months - 1)).toFixed(2)) : monthlyAmount,
+          due_date: dueDate.toISOString(),
+          status: "upcoming",
+        };
+      });
+      await supabase.from("booking_installments").insert(installments);
+    }
+
     setSubmitting(false);
     setConfirmedBookingId(booking.id);
   };

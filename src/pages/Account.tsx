@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ShoppingBag, MessageCircle, Package, FileText,
+  ShoppingBag, MessageCircle, Package, FileText, Plane,
   Phone, CreditCard, Lock, LogOut, Edit, Check, X,
   TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare,
 } from "lucide-react";
@@ -477,6 +477,7 @@ const AccountContent = () => {
               {[
                 { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "Member discount", to: "/store" },
                 { icon: <Package className="h-5 w-5" />, title: "My Orders", desc: "Track shipping", to: "/orders" },
+                { icon: <Plane className="h-5 w-5" />, title: "My Bookings", desc: "Installments", to: "/bookings" },
                 { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points", to: "/community" },
                 { icon: <FileText className="h-5 w-5" />, title: "My Wallet", desc: "View transactions", to: "/wallet" },
               ].map((a) => (

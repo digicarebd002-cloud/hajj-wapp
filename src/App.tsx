@@ -24,6 +24,7 @@ import Privacy from "./pages/Privacy";
 import Messages from "./pages/Messages";
 import Install from "./pages/Install";
 import MyOrders from "./pages/MyOrders";
+import MyBookings from "./pages/MyBookings";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -89,6 +90,7 @@ const App = () => (
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
                       <Route path="/orders" element={<MyOrders />} />
+                      <Route path="/bookings" element={<MyBookings />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
