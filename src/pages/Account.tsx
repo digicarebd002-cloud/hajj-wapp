@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ShoppingBag, MessageCircle, Package, FileText,
+  ShoppingBag, MessageCircle, Package, FileText, Plane,
   Phone, CreditCard, Lock, LogOut, Edit, Check, X,
   TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare,
 } from "lucide-react";
