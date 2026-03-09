@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
+import SEOHead from "@/components/SEOHead";
 
 const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Privacy Policy" description="Learn how Hajj Wallet collects, uses, and protects your personal data. Our commitment to your privacy and data security." />
       {/* Hero */}
       <div className="bg-primary/5 border-b border-border py-16">
         <div className="container mx-auto px-4 text-center">

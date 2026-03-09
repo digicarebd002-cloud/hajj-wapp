@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart, Star, Search, Truck, Shield, Heart, Award, SlidersHorizontal, ArrowUpDown } from "lucide-react";
@@ -83,6 +84,17 @@ const Store = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Community Store — Hajj Essentials & Merch"
+        description="Shop exclusive Hajj essentials, prayer accessories, and community merchandise. Members enjoy special discounts."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Store",
+          name: "Hajj Wallet Store",
+          description: "Hajj essentials and community merchandise",
+          url: "https://hajj-wapp.lovable.app/store",
+        }}
+      />
       {/* Header */}
       <section className="section-padding pb-10">
         <div className="container mx-auto">

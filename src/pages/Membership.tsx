@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import SEOHead from "@/components/SEOHead";
 import { Crown, Check, Loader2, Wallet, ArrowRight, Shield, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,6 +142,10 @@ const Membership = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Membership Plans — Silver, Gold & Platinum"
+        description="Upgrade your Hajj Wallet membership for exclusive store discounts, priority support, sponsorship eligibility, and premium community features."
+      />
       {/* Hero */}
       <section className="bg-dark-teal text-dark-teal-foreground relative overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 opacity-10">

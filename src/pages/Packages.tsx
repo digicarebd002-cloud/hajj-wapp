@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock, Plane, Building2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -237,6 +238,17 @@ const Packages = () => {
 
   return (
     <div className="section-padding min-h-screen">
+      <SEOHead
+        title="Hajj Packages — All-Inclusive Pilgrimage Plans"
+        description="Browse and book all-inclusive Hajj packages with flights, accommodation, guided tours, and visa processing. Flexible payment plans available."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "Hajj Travel Packages",
+          description: "All-inclusive Hajj pilgrimage packages",
+          brand: { "@type": "Organization", name: "Hajj Wallet" },
+        }}
+      />
       <div className="container mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-8">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthGate, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
@@ -298,6 +299,16 @@ const Community = () => {
 
   return (
     <div className="section-padding min-h-screen">
+      <SEOHead
+        title="Community Forum — Discuss, Learn & Earn Points"
+        description="Join the Hajj Wallet community forum. Ask questions, share experiences, earn reward points, and connect with fellow pilgrims worldwide."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "DiscussionForumPosting",
+          name: "Hajj Wallet Community Forum",
+          description: "Community forum for Hajj pilgrims",
+        }}
+      />
       <div className="container mx-auto max-w-6xl">
         {/* Centered Header */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">

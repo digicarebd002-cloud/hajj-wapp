@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import logoImg from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -75,6 +76,7 @@ const Auth = () => {
 
   return (
     <div className="section-padding min-h-screen flex items-center justify-center">
+      <SEOHead title="Sign In or Create Account" description="Join Hajj Wallet to save for Hajj, access community features, and book packages." noindex />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { Heart, Users, Star, Award, Plane, Hotel, Bus, Map, FileCheck, Shield, Package, BookOpen, ArrowRight, CheckCircle2, Send, Loader2, Clock, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -251,6 +252,19 @@ const Sponsorship = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Free Hajj Sponsorship Program — Apply Now"
+        description="Apply for a fully sponsored Hajj pilgrimage. Each month we select community members for free Hajj including flights, accommodation, and visa."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Offer",
+          name: "Hajj Sponsorship Program",
+          description: "Monthly free Hajj sponsorship for community members",
+          price: "0",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+        }}
+      />
       {/* ===== HERO ===== */}
       <section className="bg-dark-teal text-dark-teal-foreground relative overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 opacity-10">

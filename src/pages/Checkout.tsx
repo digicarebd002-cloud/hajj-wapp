@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate, Link } from "react-router-dom";
 import {
   ArrowLeft, CheckCircle, CreditCard, Banknote, ShoppingBag,
@@ -260,6 +261,7 @@ const Checkout = () => {
 
   return (
     <div className="section-padding min-h-screen">
+      <SEOHead title="Checkout" description="Complete your Hajj Wallet store purchase securely." noindex />
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
