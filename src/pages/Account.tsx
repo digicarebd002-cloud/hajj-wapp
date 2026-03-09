@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Gift, Copy, Users, Share2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
+import { useReferral } from "@/hooks/use-referral";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
