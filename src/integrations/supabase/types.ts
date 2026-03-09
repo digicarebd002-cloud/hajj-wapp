@@ -257,6 +257,89 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          ends_at: string
+          id: string
+          payment_method: string
+          plan_id: string
+          starts_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          ends_at: string
+          id?: string
+          payment_method?: string
+          plan_id: string
+          starts_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          ends_at?: string
+          id?: string
+          payment_method?: string
+          plan_id?: string
+          starts_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "membership_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_plans: {
+        Row: {
+          created_at: string
+          description: string
+          features: Json
+          id: string
+          interval: string
+          is_active: boolean
+          name: string
+          price: number
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
