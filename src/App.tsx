@@ -28,6 +28,7 @@ import MyBookings from "./pages/MyBookings";
 import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
+import ContactUs from "./pages/ContactUs";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
