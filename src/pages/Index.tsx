@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import SEOHead, { BASE_URL } from "@/components/SEOHead";
 import {
   Users, Wallet, Star, ArrowRight, Handshake, Award,
   Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe, User
