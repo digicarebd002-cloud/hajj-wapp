@@ -25,6 +25,7 @@ import Messages from "./pages/Messages";
 import Install from "./pages/Install";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
+import Membership from "./pages/Membership";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
