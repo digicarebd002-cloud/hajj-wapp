@@ -50,6 +50,7 @@ const ProductDetail = () => {
   const { data: product, loading, error, refetch } = isUuid ? byId : bySlug;
 
   const { addToCart, setIsOpen } = useCart();
+  const { isSaved, toggle: toggleWishlist } = useWishlist();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
