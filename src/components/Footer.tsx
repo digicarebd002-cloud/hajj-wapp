@@ -12,7 +12,7 @@ const footerLinks = {
   ],
   Support: [
     { label: "Help Center", path: "/faq" },
-    { label: "Contact", path: "/messages" },
+    { label: "Contact Us", path: "/contact" },
     { label: "FAQs", path: "/faq" },
   ],
   Legal: [
