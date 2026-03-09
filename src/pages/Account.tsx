@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { Camera, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
