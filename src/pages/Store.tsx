@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { CardSkeleton, EmptyState, ErrorState } from "@/components/StateHelpers";
 import { useProducts } from "@/hooks/use-supabase-data";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
