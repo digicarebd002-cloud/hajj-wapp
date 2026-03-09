@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import logoImg from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
