@@ -23,6 +23,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Messages from "./pages/Messages";
 import Install from "./pages/Install";
+import MyOrders from "./pages/MyOrders";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
