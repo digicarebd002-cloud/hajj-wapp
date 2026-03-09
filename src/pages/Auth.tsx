@@ -120,7 +120,13 @@ const Auth = () => {
         </div>
 
         <div className="bg-card rounded-xl card-shadow p-6">
-          <Tabs defaultValue="login">
+          {refCode && (
+            <div className="mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20 flex items-center gap-2">
+              <Gift className="h-4 w-4 text-primary shrink-0" />
+              <p className="text-sm text-primary font-medium">You've been referred! Sign up to earn <strong>25 bonus points</strong>.</p>
+            </div>
+          )}
+          <Tabs defaultValue={refCode ? "register" : "login"}>
             <TabsList className="w-full">
               <TabsTrigger value="login" className="flex-1">Login</TabsTrigger>
               <TabsTrigger value="register" className="flex-1">Register</TabsTrigger>
