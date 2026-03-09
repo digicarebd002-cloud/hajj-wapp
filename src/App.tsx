@@ -105,6 +105,7 @@ const App = () => (
         </SiteSettingsProvider>
       </CartProvider>
     </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
