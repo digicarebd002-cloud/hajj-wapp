@@ -41,11 +41,13 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
     <AuthProvider>
       <CartProvider>
         <SiteSettingsProvider>
@@ -103,6 +105,7 @@ const App = () => (
         </SiteSettingsProvider>
       </CartProvider>
     </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
