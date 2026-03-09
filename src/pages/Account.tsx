@@ -500,6 +500,7 @@ const AccountContent = () => {
               {p.next_billing_date && (
                 <p className="text-xs text-muted-foreground">Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
               )}
+              <Link to="/membership" className="text-sm text-primary hover:underline mt-3 inline-block">Manage Membership →</Link>
             </div>
 
             <div className="bg-secondary rounded-xl p-6 text-center">
