@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Shield, Truck, RotateCcw, CheckCircle2, Send, ChevronLeft, ChevronRight, Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,6 +50,7 @@ const ProductDetail = () => {
   const { data: product, loading, error, refetch } = isUuid ? byId : bySlug;
 
   const { addToCart, setIsOpen } = useCart();
+  const { isSaved, toggle: toggleWishlist } = useWishlist();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -472,6 +474,17 @@ const ProductDetail = () => {
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="h-5 w-5" /> Add to Cart
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="h-12 w-12 rounded-xl p-0"
+                  onClick={() => toggleWishlist(product.id, product.name)}
+                >
+                  <Heart className={`h-5 w-5 transition-colors ${isSaved(product.id) ? "fill-destructive text-destructive" : ""}`} />
                 </Button>
               </motion.div>
             </div>

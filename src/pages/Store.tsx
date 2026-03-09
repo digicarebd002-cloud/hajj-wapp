@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { CardSkeleton, EmptyState, ErrorState } from "@/components/StateHelpers";
 import { useProducts } from "@/hooks/use-supabase-data";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -35,6 +36,7 @@ const Store = () => {
   const [sortBy, setSortBy] = useState<string>("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
   const { addToCart, setIsOpen } = useCart();
+  const { isSaved, toggle: toggleWishlist } = useWishlist();
 
   useEffect(() => {
     supabase.from("product_categories").select("name").order("sort_order").then(({ data }) => {
@@ -234,6 +236,13 @@ const Store = () => {
                           )}
                         </div>
                       </Link>
+                      {/* Wishlist heart button */}
+                      <button
+                        onClick={() => toggleWishlist(product.id, product.name)}
+                        className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
+                      >
+                        <Heart className={`h-4.5 w-4.5 transition-colors ${isSaved(product.id) ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                      </button>
 
                       {/* Product Info */}
                       <div className="p-5 space-y-3">

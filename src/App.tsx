@@ -26,6 +26,7 @@ import Install from "./pages/Install";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
 import Membership from "./pages/Membership";
+import Wishlist from "./pages/Wishlist";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -95,6 +96,7 @@ const App = () => (
                       <Route path="/orders" element={<MyOrders />} />
                       <Route path="/bookings" element={<MyBookings />} />
                       <Route path="/membership" element={<Membership />} />
+                      <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
