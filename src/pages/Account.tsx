@@ -300,6 +300,7 @@ const AccountContent = () => {
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const { code: referralCode, stats: referralStats, getReferralLink } = useReferral();
   const [avatarUploading, setAvatarUploading] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
