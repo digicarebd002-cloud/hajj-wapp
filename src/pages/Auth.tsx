@@ -65,6 +65,7 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     const form = new FormData(e.currentTarget);
+    const referralInput = (form.get("referral_code") as string || "").trim();
     const { error } = await signUp(
       form.get("email") as string,
       form.get("password") as string,
@@ -76,8 +77,26 @@ const Auth = () => {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Account created!", description: "Check your email to confirm your account." });
+      // Store referral code to process after email confirmation
+      if (referralInput) {
+        localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
+      }
     }
   };
+
+  // Process pending referral after login
+  useEffect(() => {
+    if (!user) return;
+    const pendingCode = localStorage.getItem("pending_referral_code");
+    if (pendingCode) {
+      localStorage.removeItem("pending_referral_code");
+      processReferralCode(pendingCode, user.id).then((success) => {
+        if (success) {
+          toast({ title: "🎁 Referral bonus!", description: "You earned 25 bonus points for using a referral code!" });
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <div className="section-padding min-h-screen flex items-center justify-center">
