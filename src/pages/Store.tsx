@@ -36,6 +36,7 @@ const Store = () => {
   const [sortBy, setSortBy] = useState<string>("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
   const { addToCart, setIsOpen } = useCart();
+  const { isSaved, toggle: toggleWishlist } = useWishlist();
 
   useEffect(() => {
     supabase.from("product_categories").select("name").order("sort_order").then(({ data }) => {
