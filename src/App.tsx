@@ -100,6 +100,7 @@ const App = () => (
                       <Route path="/membership" element={<Membership />} />
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
+                      <Route path="/contact" element={<ContactUs />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
