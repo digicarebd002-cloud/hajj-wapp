@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { Heart, Users, Star, Award, Plane, Hotel, Bus, Map, FileCheck, Shield, Package, BookOpen, ArrowRight, CheckCircle2, Send, Loader2, Clock, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
