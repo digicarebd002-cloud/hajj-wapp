@@ -977,6 +977,39 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          points_awarded: number
+          referral_code: string
+          referred_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          referral_code: string
+          referred_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          referral_code?: string
+          referred_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       related_products: {
         Row: {
           created_at: string
@@ -1249,6 +1282,10 @@ export type Database = {
       }
     }
     Functions: {
+      get_or_create_referral_code: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       get_wallet_stats: { Args: { p_user_id: string }; Returns: Json }
       has_role: {
         Args: {
@@ -1260,6 +1297,10 @@ export type Database = {
       increment_view_count: {
         Args: { p_discussion_id: string }
         Returns: undefined
+      }
+      process_referral: {
+        Args: { p_referral_code: string; p_referred_user_id: string }
+        Returns: boolean
       }
     }
     Enums: {
