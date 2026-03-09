@@ -364,33 +364,54 @@ export type Database = {
       }
       orders: {
         Row: {
+          cancelled_at: string | null
           created_at: string
+          delivered_at: string | null
           discount: number
+          estimated_delivery: string | null
           id: string
+          shipped_at: string | null
+          shipping_address: Json | null
+          shipping_carrier: string | null
           status: string
           stripe_session_id: string | null
           subtotal: number
           total: number
+          tracking_number: string | null
           user_id: string
         }
         Insert: {
+          cancelled_at?: string | null
           created_at?: string
+          delivered_at?: string | null
           discount?: number
+          estimated_delivery?: string | null
           id?: string
+          shipped_at?: string | null
+          shipping_address?: Json | null
+          shipping_carrier?: string | null
           status?: string
           stripe_session_id?: string | null
           subtotal: number
           total: number
+          tracking_number?: string | null
           user_id: string
         }
         Update: {
+          cancelled_at?: string | null
           created_at?: string
+          delivered_at?: string | null
           discount?: number
+          estimated_delivery?: string | null
           id?: string
+          shipped_at?: string | null
+          shipping_address?: Json | null
+          shipping_carrier?: string | null
           status?: string
           stripe_session_id?: string | null
           subtotal?: number
           total?: number
+          tracking_number?: string | null
           user_id?: string
         }
         Relationships: []
