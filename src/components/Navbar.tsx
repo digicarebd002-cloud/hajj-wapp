@@ -99,6 +99,13 @@ const Navbar = () => {
             </motion.div>
           </Link>
           <NotificationBell />
+          <Link to="/wishlist">
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="ghost" size="icon" className="rounded-full relative">
+                <Heart className="h-4.5 w-4.5" />
+              </Button>
+            </motion.div>
+          </Link>
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
