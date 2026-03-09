@@ -351,7 +351,22 @@ const WalletContent = () => {
 
 const Wallet = () => {
   const { user } = useAuth();
-  return user ? <WalletContent /> : <WalletPublicLanding />;
+  return (
+    <>
+      <SEOHead
+        title="Hajj Savings Wallet"
+        description="Save for your Hajj pilgrimage with a secure digital wallet. Track contributions, set goals, and watch your savings grow."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FinancialProduct",
+          name: "Hajj Savings Wallet",
+          description: "Digital savings wallet for Hajj pilgrimage",
+          provider: { "@type": "Organization", name: "Hajj Wallet" },
+        }}
+      />
+      {user ? <WalletContent /> : <WalletPublicLanding />}
+    </>
+  );
 };
 
 export default Wallet;

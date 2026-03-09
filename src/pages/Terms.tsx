@@ -4,6 +4,7 @@ import SEOHead from "@/components/SEOHead";
 const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Terms of Service" description="Read the Hajj Wallet terms of service covering wallet usage, bookings, store purchases, community guidelines, and membership policies." />
       {/* Hero */}
       <div className="bg-primary/5 border-b border-border py-16">
         <div className="container mx-auto px-4 text-center">
