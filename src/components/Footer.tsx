@@ -11,9 +11,9 @@ const footerLinks = {
     { label: "Store", path: "/store" },
   ],
   Support: [
-    { label: "Help Center", path: "#" },
-    { label: "Contact", path: "#" },
-    { label: "FAQs", path: "#" },
+    { label: "Help Center", path: "/faq" },
+    { label: "Contact", path: "/messages" },
+    { label: "FAQs", path: "/faq" },
   ],
   Legal: [
     { label: "Privacy Policy", path: "/privacy" },

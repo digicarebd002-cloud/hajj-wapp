@@ -27,6 +27,7 @@ import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
 import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
+import FAQ from "./pages/FAQ";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -97,6 +98,7 @@ const App = () => (
                       <Route path="/bookings" element={<MyBookings />} />
                       <Route path="/membership" element={<Membership />} />
                       <Route path="/wishlist" element={<Wishlist />} />
+                      <Route path="/faq" element={<FAQ />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
