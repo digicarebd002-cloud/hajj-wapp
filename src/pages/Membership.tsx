@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import SEOHead from "@/components/SEOHead";
 import { Crown, Check, Loader2, Wallet, ArrowRight, Shield, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

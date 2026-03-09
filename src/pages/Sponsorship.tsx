@@ -252,6 +252,19 @@ const Sponsorship = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Free Hajj Sponsorship Program — Apply Now"
+        description="Apply for a fully sponsored Hajj pilgrimage. Each month we select community members for free Hajj including flights, accommodation, and visa."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Offer",
+          name: "Hajj Sponsorship Program",
+          description: "Monthly free Hajj sponsorship for community members",
+          price: "0",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+        }}
+      />
       {/* ===== HERO ===== */}
       <section className="bg-dark-teal text-dark-teal-foreground relative overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 opacity-10">
