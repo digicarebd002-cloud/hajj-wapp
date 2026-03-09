@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle } from "lucide-react";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
@@ -89,6 +89,13 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-2">
+          <Link to="/messages">
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="ghost" size="icon" className="rounded-full relative">
+                <Mail className="h-4.5 w-4.5" />
+              </Button>
+            </motion.div>
+          </Link>
           <NotificationBell />
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
