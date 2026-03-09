@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle } from "lucide-react";
+import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle, Share2, Facebook, Twitter, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
