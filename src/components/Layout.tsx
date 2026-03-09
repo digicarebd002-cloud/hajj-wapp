@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import OfflineBanner from "./OfflineBanner";
 import TierUpgradeModal from "./TierUpgradeModal";
 import { useTierWatch } from "@/hooks/use-tier-watch";
 
