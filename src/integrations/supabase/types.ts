@@ -989,6 +989,57 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsorship_applications: {
+        Row: {
+          admin_notes: string | null
+          country: string
+          created_at: string
+          email: string
+          full_name: string
+          has_performed_hajj: boolean
+          id: string
+          passport_number: string
+          phone: string
+          previous_hajj_year: number | null
+          reason: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          country?: string
+          created_at?: string
+          email: string
+          full_name: string
+          has_performed_hajj?: boolean
+          id?: string
+          passport_number?: string
+          phone?: string
+          previous_hajj_year?: number | null
+          reason?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          country?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          has_performed_hajj?: boolean
+          id?: string
+          passport_number?: string
+          phone?: string
+          previous_hajj_year?: number | null
+          reason?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
