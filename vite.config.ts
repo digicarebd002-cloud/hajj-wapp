@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => ({
       includeAssets: ["favicon.png", "favicon.ico"],
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp,woff,woff2}"],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/~oauth/],
         runtimeCaching: [
