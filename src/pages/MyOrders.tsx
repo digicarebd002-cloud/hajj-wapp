@@ -9,8 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Package, ShoppingBag, Truck, CheckCircle2, XCircle, Clock,
-  MapPin, ArrowLeft, ExternalLink, Copy, ChevronRight,
+  MapPin, ArrowLeft, ExternalLink, Copy, ChevronRight, FileDown,
 } from "lucide-react";
+import { generateInvoicePDF } from "@/lib/generate-invoice";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
@@ -252,7 +253,7 @@ const OrdersContent = () => {
           )}
 
           {/* Order Items */}
-          <Card className="border-border">
+          <Card className="mb-6 border-border">
             <CardContent className="p-6">
               <h3 className="font-semibold text-foreground mb-4">অর্ডার আইটেম</h3>
               {itemsLoading ? (
@@ -279,6 +280,40 @@ const OrdersContent = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Download Invoice */}
+          {orderItems.length > 0 && (
+            <Button
+              variant="outline"
+              className="w-full gap-2 rounded-xl"
+              onClick={() => {
+                const profile = user;
+                const doc = generateInvoicePDF({
+                  orderId: order.id,
+                  date: new Date(order.created_at),
+                  customerName: profile?.email?.split("@")[0] || "Customer",
+                  customerEmail: profile?.email || "",
+                  items: orderItems.map((item: any) => ({
+                    name: item.products?.name || "Product",
+                    size: item.size,
+                    color: item.color,
+                    quantity: item.quantity,
+                    price: Number(item.unit_price),
+                  })),
+                  subtotal: Number(order.subtotal),
+                  tierDiscount: 0,
+                  couponDiscount: Number(order.discount || 0),
+                  total: Number(order.total),
+                  paymentMethod: "card",
+                });
+                doc.save(`invoice-${order.id.slice(0, 8).toUpperCase()}.pdf`);
+                toast({ title: "ইনভয়েস ডাউনলোড হয়েছে!" });
+              }}
+            >
+              <FileDown className="h-4 w-4" />
+              ইনভয়েস ডাউনলোড করুন
+            </Button>
+          )}
         </motion.div>
       </div>
     );
