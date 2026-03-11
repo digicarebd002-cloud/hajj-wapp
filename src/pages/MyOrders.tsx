@@ -174,7 +174,7 @@ const OrdersContent = () => {
                               animate={{ opacity: 1 }}
                               className="inline-block mt-1 text-xs font-medium text-primary"
                             >
-                              বর্তমান স্ট্যাটাস
+                              Current Status
                             </motion.span>
                           )}
                         </div>
