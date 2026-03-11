@@ -174,6 +174,37 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             <div className="space-y-2"><Label htmlFor="phone">Phone</Label><Input id="phone" name="phone" type="tel" defaultValue={profile?.phone ?? ""} placeholder="+1 (555) 000-0000" required /></div>
             <div className="space-y-2"><Label htmlFor="passport">Passport Number</Label><Input id="passport" name="passport" placeholder="Passport number" required /></div>
           </div>
+
+          {/* Preferred Travel Date Calendar */}
+          <div className="space-y-2">
+            <Label>পছন্দের যাত্রা তারিখ</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !preferredDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {preferredDate ? format(preferredDate, "PPP") : "তারিখ নির্বাচন করুন"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={preferredDate}
+                  onSelect={setPreferredDate}
+                  disabled={(date) => date < new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+            <p className="text-xs text-muted-foreground">প্যাকেজের departure date: <span className="font-semibold">{pkg.departure}</span></p>
+          </div>
+
           <div className="space-y-2"><Label htmlFor="requests">Special Requests</Label><Textarea id="requests" name="requests" placeholder="Dietary needs, accessibility, etc." className="resize-none" /></div>
           <Separator />
           <div className="space-y-3">
