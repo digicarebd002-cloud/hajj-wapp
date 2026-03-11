@@ -122,7 +122,7 @@ const Messages = () => {
             </div>
           )}
           {searchQuery.length >= 2 && !searchLoading && searchResults.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-3">কোনো ইউজার পাওয়া যায়নি</p>
+            <p className="text-xs text-muted-foreground text-center py-3">No users found</p>
           )}
         </div>
       )}
