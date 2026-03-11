@@ -3,6 +3,7 @@ import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3 } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
+import PushNotificationToggle from "@/components/PushNotificationToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
@@ -650,6 +651,11 @@ const AccountContent = () => {
                   </div>
                 </div>
               )}
+
+              {/* Push Notification Toggle */}
+              <div className="mt-6">
+                <PushNotificationToggle />
+              </div>
 
               <div className="flex gap-3 mt-6">
                 <Button type="submit" className="flex-1">Save Changes</Button>
