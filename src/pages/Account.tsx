@@ -354,7 +354,7 @@ const AccountContent = () => {
 
       if (updateError) throw updateError;
 
-      toast({ title: "প্রোফাইল ছবি আপডেট হয়েছে!" });
+      toast({ title: "Profile picture updated!" });
       refetchProfile();
     } catch (err: any) {
       toast({ title: "আপলোড ব্যর্থ", description: err.message, variant: "destructive" });
