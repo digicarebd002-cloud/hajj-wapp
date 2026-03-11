@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3 } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
 import PushNotificationToggle from "@/components/PushNotificationToggle";
+import TwoFactorSetup from "@/components/TwoFactorSetup";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
