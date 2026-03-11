@@ -208,7 +208,7 @@ const OrdersContent = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between bg-secondary/50 rounded-lg p-3">
                     <div>
-                      <p className="text-xs text-muted-foreground">ট্র্যাকিং নম্বর</p>
+                      <p className="text-xs text-muted-foreground">Tracking Number</p>
                       <p className="font-mono text-sm font-bold text-foreground">{order.tracking_number}</p>
                     </div>
                     <Button variant="ghost" size="icon" className="rounded-full" onClick={() => copyTracking(order.tracking_number)}>
