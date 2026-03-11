@@ -297,9 +297,9 @@ const CommunityStats = () => {
 
       {/* Testimonials */}
       <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((t) => (
+        {testimonials.map((t, i) => (
           <motion.div
-            key={t.name}
+            key={t.full_name + i}
             variants={cardPop}
             whileHover={{ y: -6 }}
             className="bg-card rounded-2xl card-shadow p-6 relative"
@@ -307,8 +307,8 @@ const CommunityStats = () => {
             <Quote className="h-8 w-8 text-primary/15 absolute top-4 right-4" />
             <p className="text-sm text-muted-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
             <div>
-              <p className="font-semibold text-sm">{t.name}</p>
-              <p className="text-xs text-primary">{t.role}</p>
+              <p className="font-semibold text-sm">{t.full_name}</p>
+              <p className="text-xs text-primary">{t.hajj_year ? `Hajj ${t.hajj_year}` : t.country}</p>
             </div>
           </motion.div>
         ))}
