@@ -130,7 +130,7 @@ const OrdersContent = () => {
           {order.status !== "cancelled" ? (
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-foreground mb-6">অর্ডার স্ট্যাটাস</h3>
+                <h3 className="font-semibold text-foreground mb-6">Order Status</h3>
                 <div className="relative">
                   {statusSteps.map((step, idx) => {
                     const isComplete = idx <= currentStep;
