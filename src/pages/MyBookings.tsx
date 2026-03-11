@@ -176,10 +176,10 @@ const MyBookingsContent = () => {
                   <p className="font-bold text-primary">${Number(pkg?.price ?? 0).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">পেমেন্ট</p>
+                  <p className="text-xs text-muted-foreground">Payment</p>
                   <p className="font-medium text-foreground capitalize">
-                    {b.payment_method === "plan" ? `${b.installment_months}-মাস কিস্তি` :
-                     b.payment_method === "wallet" ? "ওয়ালেট" : "কার্ড"}
+                    {b.payment_method === "plan" ? `${b.installment_months}-month installment` :
+                     b.payment_method === "wallet" ? "Wallet" : "Card"}
                   </p>
                 </div>
                 <div>
