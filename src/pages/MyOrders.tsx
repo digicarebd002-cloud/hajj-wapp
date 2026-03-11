@@ -31,11 +31,11 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "পেন্ডিং",
-  paid: "পেইড",
-  shipped: "শিপড",
-  delivered: "ডেলিভার্ড",
-  cancelled: "বাতিল",
+  pending: "Pending",
+  paid: "Paid",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
 };
 
 function getStepIndex(status: string) {
