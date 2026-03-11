@@ -113,7 +113,7 @@ const OrdersContent = () => {
                   <p className="font-medium text-foreground">{format(new Date(order.created_at), "d MMM yyyy")}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">মোট</p>
+                  <p className="text-xs text-muted-foreground">Total</p>
                   <p className="font-bold text-primary">${Number(order.total).toLocaleString()}</p>
                 </div>
                 {order.discount > 0 && (
