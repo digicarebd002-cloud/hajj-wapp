@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
@@ -247,25 +248,28 @@ const communityStats = [
   { label: "Dreams Achieved", value: "320+", icon: Trophy },
 ];
 
-const testimonials = [
-  {
-    quote: "This platform made saving for Hajj so much easier. The weekly reminders and progress tracking kept me motivated throughout the entire journey.",
-    name: "Ahmed R.",
-    role: "Completed Hajj 2024",
-  },
-  {
-    quote: "I never thought I could save enough in just 18 months. The calculator helped me plan realistically, and the community kept me going.",
-    name: "Fatima K.",
-    role: "Gold Tier Member",
-  },
-  {
-    quote: "The membership benefits are incredible — the points I earned from contributions gave me a discount on my Hajj package booking!",
-    name: "Omar S.",
-    role: "Platinum Tier Member",
-  },
+const fallbackTestimonials = [
+  { quote: "This platform made saving for Hajj so much easier. The weekly reminders and progress tracking kept me motivated.", full_name: "Ahmed R.", country: "Completed Hajj 2024", rating: 5 },
+  { quote: "I never thought I could save enough in just 18 months. The calculator helped me plan realistically.", full_name: "Fatima K.", country: "Gold Tier Member", rating: 5 },
+  { quote: "The membership benefits are incredible — the points I earned gave me a discount on my Hajj package!", full_name: "Omar S.", country: "Platinum Tier Member", rating: 5 },
 ];
 
-const CommunityStats = () => (
+const CommunityStats = () => {
+  const [testimonials, setTestimonials] = useState<any[]>(fallbackTestimonials);
+
+  useEffect(() => {
+    supabase
+      .from("testimonials")
+      .select("full_name, quote, country, rating, avatar_url, hajj_year")
+      .eq("is_published", true)
+      .order("sort_order", { ascending: true })
+      .limit(6)
+      .then(({ data }) => {
+        if (data && data.length > 0) setTestimonials(data);
+      });
+  }, []);
+
+  return (
   <RevealSection className="section-padding">
     <div className="container mx-auto max-w-5xl">
       <div className="text-center mb-12">
@@ -293,9 +297,9 @@ const CommunityStats = () => (
 
       {/* Testimonials */}
       <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((t) => (
+        {testimonials.map((t, i) => (
           <motion.div
-            key={t.name}
+            key={t.full_name + i}
             variants={cardPop}
             whileHover={{ y: -6 }}
             className="bg-card rounded-2xl card-shadow p-6 relative"
@@ -303,15 +307,16 @@ const CommunityStats = () => (
             <Quote className="h-8 w-8 text-primary/15 absolute top-4 right-4" />
             <p className="text-sm text-muted-foreground leading-relaxed mb-4 italic">"{t.quote}"</p>
             <div>
-              <p className="font-semibold text-sm">{t.name}</p>
-              <p className="text-xs text-primary">{t.role}</p>
+              <p className="font-semibold text-sm">{t.full_name}</p>
+              <p className="text-xs text-primary">{t.hajj_year ? `Hajj ${t.hajj_year}` : t.country}</p>
             </div>
           </motion.div>
         ))}
       </motion.div>
     </div>
   </RevealSection>
-);
+  );
+};
 
 /* ═══════════════════════════════════════════════
    SECTION 4 — Membership Tiers

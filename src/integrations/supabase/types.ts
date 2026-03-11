@@ -1279,6 +1279,51 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          country: string
+          created_at: string
+          full_name: string
+          hajj_year: number | null
+          id: string
+          is_featured: boolean
+          is_published: boolean
+          quote: string
+          rating: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          country?: string
+          created_at?: string
+          full_name: string
+          hajj_year?: number | null
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          quote: string
+          rating?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          country?: string
+          created_at?: string
+          full_name?: string
+          hajj_year?: number | null
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          quote?: string
+          rating?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

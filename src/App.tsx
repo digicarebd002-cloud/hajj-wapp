@@ -47,6 +47,7 @@ import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminContacts from "./pages/admin/AdminContacts";
 import AdminBlog from "./pages/admin/AdminBlog";
+import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
@@ -78,6 +79,7 @@ const App = () => (
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="pages" element={<AdminPageManagement />} />
                   <Route path="blog" element={<AdminBlog />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 
