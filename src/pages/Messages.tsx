@@ -172,7 +172,7 @@ const Messages = () => {
                   </div>
                   {conv.last_message && (
                     <p className={`text-xs truncate mt-0.5 ${conv.unread_count > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                      {conv.last_message.sender_id === user?.id ? "আপনি: " : ""}{conv.last_message.body}
+                      {conv.last_message.sender_id === user?.id ? "You: " : ""}{conv.last_message.body}
                     </p>
                   )}
                 </div>
