@@ -254,7 +254,22 @@ const fallbackTestimonials = [
   { quote: "The membership benefits are incredible — the points I earned gave me a discount on my Hajj package!", full_name: "Omar S.", country: "Platinum Tier Member", rating: 5 },
 ];
 
-const CommunityStats = () => (
+const CommunityStats = () => {
+  const [testimonials, setTestimonials] = useState<any[]>(fallbackTestimonials);
+
+  useEffect(() => {
+    supabase
+      .from("testimonials")
+      .select("full_name, quote, country, rating, avatar_url, hajj_year")
+      .eq("is_published", true)
+      .order("sort_order", { ascending: true })
+      .limit(6)
+      .then(({ data }) => {
+        if (data && data.length > 0) setTestimonials(data);
+      });
+  }, []);
+
+  return (
   <RevealSection className="section-padding">
     <div className="container mx-auto max-w-5xl">
       <div className="text-center mb-12">
