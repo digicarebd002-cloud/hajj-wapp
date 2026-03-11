@@ -91,6 +91,7 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-2">
+          <GlobalSearch />
           <ThemeToggle />
           <Link to="/messages">
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
