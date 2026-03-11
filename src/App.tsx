@@ -29,6 +29,8 @@ import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
+import Blog from "./pages/Blog";
+import BlogArticle from "./pages/BlogArticle";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -44,6 +46,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminContacts from "./pages/admin/AdminContacts";
+import AdminBlog from "./pages/admin/AdminBlog";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
@@ -74,6 +77,7 @@ const App = () => (
                   <Route path="contacts" element={<AdminContacts />} />
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="pages" element={<AdminPageManagement />} />
+                  <Route path="blog" element={<AdminBlog />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 
@@ -103,6 +107,8 @@ const App = () => (
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/contact" element={<ContactUs />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/blog/:slug" element={<BlogArticle />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
