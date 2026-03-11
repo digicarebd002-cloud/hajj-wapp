@@ -331,6 +331,7 @@ const MyBookingsContent = () => {
             বুকিং রিসিট ডাউনলোড করুন
           </Button>
         </motion.div>
+      </div>
     );
   }
 
