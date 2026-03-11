@@ -107,6 +107,8 @@ const App = () => (
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/contact" element={<ContactUs />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/blog/:slug" element={<BlogArticle />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
