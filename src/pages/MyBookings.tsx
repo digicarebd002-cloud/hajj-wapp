@@ -105,8 +105,8 @@ const MyBookingsContent = () => {
 
     if (!wallet || Number(wallet.balance) < Number(installment.amount)) {
       toast({
-        title: "অপর্যাপ্ত ব্যালেন্স",
-        description: `আপনার ওয়ালেটে $${Number(wallet?.balance ?? 0).toLocaleString()} আছে, কিন্তু $${Number(installment.amount).toLocaleString()} দরকার।`,
+        title: "Insufficient Balance",
+        description: `Your wallet has $${Number(wallet?.balance ?? 0).toLocaleString()}, but $${Number(installment.amount).toLocaleString()} is needed.`,
         variant: "destructive",
       });
       setPaying(null);
