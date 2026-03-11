@@ -259,7 +259,7 @@ const OrdersContent = () => {
               {itemsLoading ? (
                 <CardSkeleton />
               ) : orderItems.length === 0 ? (
-                <p className="text-sm text-muted-foreground">কোনো আইটেম পাওয়া যায়নি</p>
+                <p className="text-sm text-muted-foreground">No items found</p>
               ) : (
                 <div className="space-y-3">
                   {orderItems.map((item) => (
