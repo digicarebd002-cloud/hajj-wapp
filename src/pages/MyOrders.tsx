@@ -226,7 +226,7 @@ const OrdersContent = () => {
                   )}
                   {order.estimated_delivery && (
                     <div className="bg-secondary/50 rounded-lg p-3">
-                      <p className="text-xs text-muted-foreground">আনুমানিক ডেলিভারি</p>
+                      <p className="text-xs text-muted-foreground">Estimated Delivery</p>
                       <p className="text-sm font-medium text-foreground">{format(new Date(order.estimated_delivery), "d MMMM yyyy")}</p>
                     </div>
                   )}
