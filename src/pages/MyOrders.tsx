@@ -109,7 +109,7 @@ const OrdersContent = () => {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground">তারিখ</p>
+                  <p className="text-xs text-muted-foreground">Date</p>
                   <p className="font-medium text-foreground">{format(new Date(order.created_at), "d MMM yyyy")}</p>
                 </div>
                 <div>
