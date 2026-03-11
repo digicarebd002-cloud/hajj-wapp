@@ -172,7 +172,7 @@ const MyBookingsContent = () => {
                   <p className="font-semibold text-foreground">{pkg?.name || "N/A"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">মোট মূল্য</p>
+                  <p className="text-xs text-muted-foreground">Total Price</p>
                   <p className="font-bold text-primary">${Number(pkg?.price ?? 0).toLocaleString()}</p>
                 </div>
                 <div>
