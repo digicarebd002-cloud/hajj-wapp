@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag, LogOut, Mail, BookOpen
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag, LogOut, Mail, BookOpen, Quote
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/use-admin";
