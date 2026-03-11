@@ -345,7 +345,7 @@ const MyBookingsContent = () => {
         </div>
         <Link to="/packages">
           <Button variant="outline" className="gap-2 rounded-full">
-            <Plane className="h-4 w-4" /> প্যাকেজ
+            <Plane className="h-4 w-4" /> Packages
           </Button>
         </Link>
       </div>
