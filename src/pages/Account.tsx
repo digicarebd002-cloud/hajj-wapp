@@ -588,6 +588,17 @@ const AccountContent = () => {
             </div>
           </TabsContent>
 
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <UserAnalytics
+              transactions={transactions}
+              wallet={wallet}
+              profile={profile}
+              orders={userOrders}
+              bookings={userBookings}
+            />
+          </TabsContent>
+
           {/* Points Tab */}
           <TabsContent value="points">
             <PointsShowcase pointsTotal={p.points_total} tier={p.tier} />
