@@ -78,7 +78,7 @@ const OrdersContent = () => {
 
   const copyTracking = (num: string) => {
     navigator.clipboard.writeText(num);
-    toast({ title: "ট্র্যাকিং নম্বর কপি হয়েছে!" });
+    toast({ title: "Tracking number copied!" });
   };
 
   // Detail view
