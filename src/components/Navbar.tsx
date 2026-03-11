@@ -115,14 +115,20 @@ const Navbar = () => {
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant={user ? "default" : "outline"}
-                size="sm"
-                className="gap-2 rounded-full px-5"
-              >
-                {user ? <Sparkles className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-                {user ? "Account" : "Login"}
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                  <Avatar className="h-7 w-7 border border-primary/20">
+                    <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
+                </div>
+              ) : (
+                <Button variant="outline" size="sm" className="gap-2 rounded-full px-5">
+                  <User className="h-3.5 w-3.5" />
+                  Login
+                </Button>
+              )}
             </motion.div>
           </Link>
         </div>
