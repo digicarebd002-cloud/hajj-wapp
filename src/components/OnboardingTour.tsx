@@ -15,47 +15,47 @@ interface TourStep {
 
 const tourSteps: TourStep[] = [
   {
-    title: "স্বাগতম! 🕋",
-    description: "Hajj Wallet-এ আপনাকে স্বাগতম। আসুন দ্রুত দেখে নিই কীভাবে এটি কাজ করে।",
+    title: "Welcome! 🕋",
+    description: "Welcome to Hajj Wallet. Let's take a quick look at how it works.",
     icon: Sparkles,
     emoji: "✨",
     position: "center",
   },
   {
-    title: "হজ্জ ওয়ালেট",
-    description: "আপনার নিজস্ব হজ্জ সেভিংস ওয়ালেট — যেকোনো সময় যেকোনো পরিমাণ জমা দিন এবং লক্ষ্যের দিকে এগিয়ে যান।",
+    title: "Hajj Wallet",
+    description: "Your personal Hajj savings wallet — deposit any amount at any time and move toward your goal.",
     icon: Wallet,
     emoji: "💰",
     targetSelector: '[href="/wallet"]',
     position: "bottom",
   },
   {
-    title: "স্টোর",
-    description: "হজ্জ ও উমরাহ সামগ্রী কিনুন — ইহরাম, প্রার্থনার জায়নামাজ, তাসবিহ এবং আরও অনেক কিছু।",
+    title: "Store",
+    description: "Shop Hajj and Umrah essentials — Ihram, prayer mats, tasbih, and much more.",
     icon: ShoppingBag,
     emoji: "🛍️",
     targetSelector: '[href="/store"]',
     position: "bottom",
   },
   {
-    title: "প্যাকেজ বুকিং",
-    description: "হজ্জ ও উমরাহ প্যাকেজ দেখুন, তুলনা করুন এবং সরাসরি বুক করুন।",
+    title: "Package Booking",
+    description: "Browse, compare, and book Hajj and Umrah packages directly.",
     icon: Plane,
     emoji: "✈️",
     targetSelector: '[href="/packages"]',
     position: "bottom",
   },
   {
-    title: "কমিউনিটি",
-    description: "অন্যান্য মুসলিমদের সাথে আলোচনা করুন, পয়েন্ট অর্জন করুন এবং টিয়ার আপগ্রেড পান।",
+    title: "Community",
+    description: "Discuss with other Muslims, earn points, and get tier upgrades.",
     icon: MessageCircle,
     emoji: "💬",
     targetSelector: '[href="/community"]',
     position: "bottom",
   },
   {
-    title: "আপনার অ্যাকাউন্ট",
-    description: "প্রোফাইল, অর্ডার, বুকিং এবং পয়েন্ট সব এক জায়গায় ম্যানেজ করুন। শুরু করুন!",
+    title: "Your Account",
+    description: "Manage your profile, orders, bookings, and points all in one place. Let's get started!",
     icon: User,
     emoji: "🎉",
     position: "center",
@@ -252,15 +252,15 @@ const OnboardingTour = () => {
                   className="text-xs"
                 >
                   <ArrowLeft className="h-3 w-3 mr-1" />
-                  পিছনে
+                  Back
                 </Button>
 
                 <div className="flex gap-2">
                   <Button variant="ghost" size="sm" onClick={finish} className="text-xs text-muted-foreground">
-                    এড়িয়ে যান
+                    Skip
                   </Button>
                   <Button size="sm" onClick={next} className="text-xs">
-                    {step === tourSteps.length - 1 ? "শুরু করুন 🚀" : "পরবর্তী"}
+                    {step === tourSteps.length - 1 ? "Get Started 🚀" : "Next"}
                     {step < tourSteps.length - 1 && <ArrowRight className="h-3 w-3 ml-1" />}
                   </Button>
                 </div>

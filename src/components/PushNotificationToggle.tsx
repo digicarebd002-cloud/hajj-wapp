@@ -51,15 +51,15 @@ const PushNotificationToggle = () => {
   const handleToggle = async () => {
     if (isSubscribed) {
       await unsubscribe();
-      toast({ title: "পুশ নোটিফিকেশন বন্ধ হয়েছে" });
+      toast({ title: "Push notifications disabled" });
     } else {
       const sub = await subscribe();
       if (sub) {
-        toast({ title: "পুশ নোটিফিকেশন চালু হয়েছে! 🔔", description: "এখন থেকে গুরুত্বপূর্ণ আপডেট পাবেন।" });
+        toast({ title: "Push notifications enabled! 🔔", description: "You'll now receive important updates." });
       } else if (permission === "denied") {
         toast({
-          title: "নোটিফিকেশন ব্লক করা আছে",
-          description: "ব্রাউজার সেটিংস থেকে নোটিফিকেশন অনুমতি দিন।",
+          title: "Notifications are blocked",
+          description: "Please allow notifications from your browser settings.",
           variant: "destructive",
         });
       }
@@ -92,13 +92,13 @@ const PushNotificationToggle = () => {
             </AnimatePresence>
           </div>
           <div>
-            <h3 className="font-semibold text-sm">পুশ নোটিফিকেশন</h3>
+            <h3 className="font-semibold text-sm">Push Notifications</h3>
             <p className="text-xs text-muted-foreground">
               {isSubscribed
-                ? "নোটিফিকেশন চালু আছে — আপডেট সরাসরি আপনার ডিভাইসে আসবে"
+                ? "Notifications are on — updates will be sent directly to your device"
                 : permission === "denied"
-                ? "ব্রাউজার সেটিংস থেকে অনুমতি দিন"
-                : "অ্যাপ বন্ধ থাকলেও গুরুত্বপূর্ণ আপডেট পান"}
+                ? "Allow notifications from browser settings"
+                : "Get important updates even when the app is closed"}
             </p>
           </div>
         </div>
@@ -115,12 +115,12 @@ const PushNotificationToggle = () => {
           ) : isSubscribed ? (
             <>
               <BellOff className="h-3.5 w-3.5 mr-1.5" />
-              বন্ধ করুন
+              Disable
             </>
           ) : (
             <>
               <Bell className="h-3.5 w-3.5 mr-1.5" />
-              চালু করুন
+              Enable
             </>
           )}
         </Button>
@@ -134,7 +134,7 @@ const PushNotificationToggle = () => {
           className="mt-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20"
         >
           <p className="text-xs text-destructive">
-            <strong>নোটিফিকেশন ব্লক করা আছে।</strong> ব্রাউজারের অ্যাড্রেস বারে 🔒 আইকনে ক্লিক করে Notifications → Allow সিলেক্ট করুন, তারপর পেজ রিফ্রেশ করুন।
+            <strong>Notifications are blocked.</strong> Click the 🔒 icon in your browser's address bar, select Notifications → Allow, then refresh the page.
           </p>
         </motion.div>
       )}
