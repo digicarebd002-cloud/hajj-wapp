@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
 import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/use-supabase-data";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -23,6 +25,8 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const initials = profile?.full_name ? profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "?";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -111,14 +115,20 @@ const Navbar = () => {
           <CartDrawer />
           <Link to={user ? "/account" : "/auth"}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant={user ? "default" : "outline"}
-                size="sm"
-                className="gap-2 rounded-full px-5"
-              >
-                {user ? <Sparkles className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-                {user ? "Account" : "Login"}
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                  <Avatar className="h-7 w-7 border border-primary/20">
+                    <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
+                </div>
+              ) : (
+                <Button variant="outline" size="sm" className="gap-2 rounded-full px-5">
+                  <User className="h-3.5 w-3.5" />
+                  Login
+                </Button>
+              )}
             </motion.div>
           </Link>
         </div>
@@ -190,9 +200,21 @@ const Navbar = () => {
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
               >
                 <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full mt-3 gap-2 rounded-xl h-12">
-                    {user ? <Sparkles className="h-4 w-4" /> : <User className="h-4 w-4" />}
-                    {user ? "My Account" : "Login / Sign Up"}
+                  <Button className="w-full mt-3 gap-3 rounded-xl h-12">
+                    {user ? (
+                      <>
+                        <Avatar className="h-6 w-6 border border-primary-foreground/30">
+                          <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                          <AvatarFallback className="bg-primary-foreground text-primary text-xs font-bold">{initials}</AvatarFallback>
+                        </Avatar>
+                        <span className="truncate max-w-[180px]">{profile?.full_name || "My Account"}</span>
+                      </>
+                    ) : (
+                      <>
+                        <User className="h-4 w-4" />
+                        Login / Sign Up
+                      </>
+                    )}
                   </Button>
                 </Link>
               </motion.div>
