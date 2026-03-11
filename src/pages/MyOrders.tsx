@@ -9,8 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Package, ShoppingBag, Truck, CheckCircle2, XCircle, Clock,
-  MapPin, ArrowLeft, ExternalLink, Copy, ChevronRight,
+  MapPin, ArrowLeft, ExternalLink, Copy, ChevronRight, FileDown,
 } from "lucide-react";
+import { generateInvoicePDF } from "@/lib/generate-invoice";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
