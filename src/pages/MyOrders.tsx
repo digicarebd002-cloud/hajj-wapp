@@ -16,10 +16,10 @@ import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
 const statusSteps = [
-  { key: "pending", label: "অর্ডার নিশ্চিত", labelEn: "Confirmed", icon: Clock },
-  { key: "paid", label: "পেমেন্ট সম্পন্ন", labelEn: "Paid", icon: CheckCircle2 },
-  { key: "shipped", label: "শিপিং হয়েছে", labelEn: "Shipped", icon: Truck },
-  { key: "delivered", label: "ডেলিভারি সম্পন্ন", labelEn: "Delivered", icon: Package },
+  { key: "pending", label: "Confirmed", labelEn: "Confirmed", icon: Clock },
+  { key: "paid", label: "Paid", labelEn: "Paid", icon: CheckCircle2 },
+  { key: "shipped", label: "Shipped", labelEn: "Shipped", icon: Truck },
+  { key: "delivered", label: "Delivered", labelEn: "Delivered", icon: Package },
 ];
 
 const statusColors: Record<string, string> = {
