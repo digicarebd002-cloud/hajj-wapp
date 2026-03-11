@@ -90,7 +90,7 @@ const OrdersContent = () => {
     return (
       <div className="container mx-auto px-4 py-6 max-w-3xl">
         <Button variant="ghost" className="gap-2 mb-4 rounded-full" onClick={() => setSelectedOrder(null)}>
-          <ArrowLeft className="h-4 w-4" /> সব অর্ডার
+          <ArrowLeft className="h-4 w-4" /> All Orders
         </Button>
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
