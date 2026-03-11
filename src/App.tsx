@@ -77,6 +77,7 @@ const App = () => (
                   <Route path="contacts" element={<AdminContacts />} />
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="pages" element={<AdminPageManagement />} />
+                  <Route path="blog" element={<AdminBlog />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 
