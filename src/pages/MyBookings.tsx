@@ -168,7 +168,7 @@ const MyBookingsContent = () => {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground">প্যাকেজ</p>
+                  <p className="text-xs text-muted-foreground">Package</p>
                   <p className="font-semibold text-foreground">{pkg?.name || "N/A"}</p>
                 </div>
                 <div>
