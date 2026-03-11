@@ -127,7 +127,7 @@ const MyBookingsContent = () => {
       .update({ status: "paid", paid_at: new Date().toISOString() })
       .eq("id", installment.id);
 
-    toast({ title: "কিস্তি পরিশোধ সম্পন্ন!" });
+    toast({ title: "Installment payment completed!" });
 
     // Refresh
     setInstallments((prev) =>
