@@ -33,11 +33,11 @@ const ContactUs = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.subject || !form.message.trim()) {
-      toast({ title: "সব ফিল্ড পূরণ করুন", variant: "destructive" });
+      toast({ title: "Please fill in all fields", variant: "destructive" });
       return;
     }
     if (form.message.trim().length < 10) {
-      toast({ title: "মেসেজ কমপক্ষে ১০ অক্ষর হতে হবে", variant: "destructive" });
+      toast({ title: "Message must be at least 10 characters", variant: "destructive" });
       return;
     }
 
@@ -51,19 +51,19 @@ const ContactUs = () => {
     } as any);
 
     if (error) {
-      toast({ title: "মেসেজ পাঠাতে সমস্যা হয়েছে", variant: "destructive" });
+      toast({ title: "Failed to send message", variant: "destructive" });
       setLoading(false);
       return;
     }
 
-    toast({ title: "মেসেজ পাঠানো হয়েছে!", description: "আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।" });
+    toast({ title: "Message sent!", description: "We will get back to you shortly." });
     setForm({ name: "", email: "", subject: "", message: "" });
     setLoading(false);
   };
 
   return (
     <>
-      <SEOHead title="Contact Us — Hajj Wallet" description="Hajj Wallet সাপোর্ট টিমের সাথে যোগাযোগ করুন। আমরা আপনাকে সাহায্য করতে প্রস্তুত।" />
+      <SEOHead title="Contact Us — Hajj Wallet" description="Get in touch with the Hajj Wallet support team. We're here to help you." />
 
       {/* Hero */}
       <section className="relative bg-gradient-to-b from-primary/10 via-background to-background py-16 md:py-20">
@@ -72,8 +72,8 @@ const ContactUs = () => {
             <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-primary/10 flex items-center justify-center">
               <Mail className="h-7 w-7 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-3">{get("hero_title", "যোগাযোগ করুন")}</h1>
-            <p className="text-muted-foreground">{get("hero_subtitle", "আপনার যেকোনো প্রশ্ন বা মতামত জানাতে আমাদের সাথে যোগাযোগ করুন")}</p>
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-3">{get("hero_title", "Contact Us")}</h1>
+            <p className="text-muted-foreground">{get("hero_subtitle", "Have a question or feedback? Reach out to us anytime.")}</p>
           </motion.div>
         </div>
       </section>
@@ -83,10 +83,10 @@ const ContactUs = () => {
           {/* Contact Info Cards */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-1 space-y-4">
             {[
-              { icon: Mail, title: "ইমেইল", value: "support@hajjwallet.com", href: "mailto:support@hajjwallet.com" },
-              { icon: Phone, title: "ফোন", value: "1-800-HAJJ-HELP", href: "tel:+18004255435" },
-              { icon: Clock, title: "সাপোর্ট সময়", value: "সকাল ৯টা — রাত ১০টা (GMT+6)", href: null },
-              { icon: MapPin, title: "ঠিকানা", value: "ঢাকা, বাংলাদেশ", href: null },
+              { icon: Mail, title: "Email", value: "support@hajjwallet.com", href: "mailto:support@hajjwallet.com" },
+              { icon: Phone, title: "Phone", value: "1-800-HAJJ-HELP", href: "tel:+18004255435" },
+              { icon: Clock, title: "Support Hours", value: "9 AM — 10 PM (GMT+6)", href: null },
+              { icon: MapPin, title: "Address", value: "Dhaka, Bangladesh", href: null },
             ].map((item) => (
               <div key={item.title} className="bg-card rounded-xl border p-5 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -107,10 +107,10 @@ const ContactUs = () => {
 
             <div className="bg-secondary rounded-xl p-5 text-center">
               <MessageCircle className="h-5 w-5 mx-auto text-primary mb-2" />
-              <p className="text-sm font-medium mb-1">দ্রুত উত্তর চান?</p>
-              <p className="text-xs text-muted-foreground mb-3">আমাদের FAQ পেজে সাধারণ প্রশ্নের উত্তর দেখুন</p>
+              <p className="text-sm font-medium mb-1">Need a quick answer?</p>
+              <p className="text-xs text-muted-foreground mb-3">Check our FAQ page for common questions</p>
               <Link to="/faq">
-                <Button variant="outline" size="sm" className="rounded-lg">FAQ দেখুন</Button>
+                <Button variant="outline" size="sm" className="rounded-lg">View FAQ</Button>
               </Link>
             </div>
           </motion.div>
@@ -123,15 +123,15 @@ const ContactUs = () => {
             className="lg:col-span-2"
           >
             <form onSubmit={handleSubmit} className="bg-card rounded-xl border p-6 md:p-8 space-y-5">
-              <h2 className="text-lg font-bold mb-1">মেসেজ পাঠান</h2>
-              <p className="text-sm text-muted-foreground -mt-4 mb-2">সব ফিল্ড পূরণ করুন</p>
+              <h2 className="text-lg font-bold mb-1">Send a Message</h2>
+              <p className="text-sm text-muted-foreground -mt-4 mb-2">Please fill in all fields</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="c-name">আপনার নাম</Label>
+                  <Label htmlFor="c-name">Your Name</Label>
                   <Input
                     id="c-name"
-                    placeholder="নাম লিখুন"
+                    placeholder="Enter your name"
                     value={form.name}
                     onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
                     maxLength={100}
@@ -139,7 +139,7 @@ const ContactUs = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="c-email">ইমেইল</Label>
+                  <Label htmlFor="c-email">Email</Label>
                   <Input
                     id="c-email"
                     type="email"
@@ -153,10 +153,10 @@ const ContactUs = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>বিষয়</Label>
+                <Label>Subject</Label>
                 <Select value={form.subject} onValueChange={(v) => setForm((p) => ({ ...p, subject: v }))}>
                   <SelectTrigger>
-                    <SelectValue placeholder="বিষয় নির্বাচন করুন" />
+                    <SelectValue placeholder="Select a subject" />
                   </SelectTrigger>
                   <SelectContent>
                     {subjects.map((s) => (
@@ -167,10 +167,10 @@ const ContactUs = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="c-msg">মেসেজ</Label>
+                <Label htmlFor="c-msg">Message</Label>
                 <Textarea
                   id="c-msg"
-                  placeholder="আপনার মেসেজ লিখুন..."
+                  placeholder="Write your message..."
                   rows={5}
                   value={form.message}
                   onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
@@ -183,7 +183,7 @@ const ContactUs = () => {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button type="submit" className="w-full gap-2 h-11 rounded-xl" disabled={loading}>
                   <Send className="h-4 w-4" />
-                  {loading ? "পাঠানো হচ্ছে..." : "মেসেজ পাঠান"}
+                  {loading ? "Sending..." : "Send Message"}
                 </Button>
               </motion.div>
             </form>

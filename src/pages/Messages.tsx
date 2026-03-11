@@ -272,7 +272,7 @@ const Messages = () => {
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-2">
             <Input
-              placeholder="মেসেজ লিখুন..."
+              placeholder="Type a message..."
               value={msgInput}
               onChange={(e) => setMsgInput(e.target.value)}
               onKeyDown={handleKeyDown}
