@@ -36,10 +36,10 @@ const installmentStatusColors: Record<string, string> = {
 };
 
 const installmentStatusLabels: Record<string, string> = {
-  upcoming: "আসন্ন",
-  due: "পরিশোধযোগ্য",
-  paid: "পরিশোধিত",
-  overdue: "বিলম্বিত",
+  upcoming: "Upcoming",
+  due: "Due",
+  paid: "Paid",
+  overdue: "Overdue",
 };
 
 const MyBookingsContent = () => {
