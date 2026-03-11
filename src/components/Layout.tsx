@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import OfflineBanner from "./OfflineBanner";
 import TierUpgradeModal from "./TierUpgradeModal";
 import { useTierWatch } from "@/hooks/use-tier-watch";
+import OnboardingTour from "./OnboardingTour";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -22,6 +23,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <OfflineBanner />
       <Navbar />
       {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
+      <OnboardingTour />
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
