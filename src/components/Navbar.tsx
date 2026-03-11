@@ -200,9 +200,21 @@ const Navbar = () => {
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
               >
                 <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full mt-3 gap-2 rounded-xl h-12">
-                    {user ? <Sparkles className="h-4 w-4" /> : <User className="h-4 w-4" />}
-                    {user ? "My Account" : "Login / Sign Up"}
+                  <Button className="w-full mt-3 gap-3 rounded-xl h-12">
+                    {user ? (
+                      <>
+                        <Avatar className="h-6 w-6 border border-primary-foreground/30">
+                          <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                          <AvatarFallback className="bg-primary-foreground text-primary text-xs font-bold">{initials}</AvatarFallback>
+                        </Avatar>
+                        <span className="truncate max-w-[180px]">{profile?.full_name || "My Account"}</span>
+                      </>
+                    ) : (
+                      <>
+                        <User className="h-4 w-4" />
+                        Login / Sign Up
+                      </>
+                    )}
                   </Button>
                 </Link>
               </motion.div>
