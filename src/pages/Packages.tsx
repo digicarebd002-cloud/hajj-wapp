@@ -234,6 +234,9 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             <h4 className="font-semibold">Booking Summary</h4>
             <div className="flex justify-between text-sm"><span className="text-muted-foreground">Package</span><span className="font-medium">{pkg.name}</span></div>
             <div className="flex justify-between text-sm"><span className="text-muted-foreground">Price</span><span className="font-medium">${price.toLocaleString()}</span></div>
+            {preferredDate && (
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel Date</span><span className="font-medium">{format(preferredDate, "d MMM yyyy")}</span></div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Payment</span>
               <span className="font-medium capitalize">
