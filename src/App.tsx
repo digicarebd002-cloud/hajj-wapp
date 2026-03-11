@@ -29,6 +29,8 @@ import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
+import Blog from "./pages/Blog";
+import BlogArticle from "./pages/BlogArticle";
 
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
