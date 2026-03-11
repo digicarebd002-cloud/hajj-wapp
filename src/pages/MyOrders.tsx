@@ -118,7 +118,7 @@ const OrdersContent = () => {
                 </div>
                 {order.discount > 0 && (
                   <div>
-                    <p className="text-xs text-muted-foreground">ডিসকাউন্ট</p>
+                    <p className="text-xs text-muted-foreground">Discount</p>
                     <p className="font-medium text-primary">-${Number(order.discount).toLocaleString()}</p>
                   </div>
                 )}
