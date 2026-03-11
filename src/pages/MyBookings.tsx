@@ -324,7 +324,7 @@ const MyBookingsContent = () => {
                 status: b.status,
               });
               doc.save(`booking-${b.id.slice(0, 8).toUpperCase()}.pdf`);
-              toast({ title: "বুকিং রিসিট ডাউনলোড হয়েছে!" });
+              toast({ title: "Booking receipt downloaded!" });
             }}
           >
             <FileDown className="h-4 w-4" />
