@@ -301,8 +301,36 @@ const MyBookingsContent = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Download Booking Receipt */}
+          <Button
+            variant="outline"
+            className="w-full gap-2 rounded-xl mt-6"
+            onClick={() => {
+              const doc = generateBookingInvoicePDF({
+                bookingId: b.id,
+                date: new Date(b.created_at),
+                travellerName: b.traveller_name,
+                email: b.email,
+                phone: b.phone,
+                passportNumber: b.passport_number,
+                packageName: pkg?.name || "Package",
+                packagePrice: Number(pkg?.price ?? 0),
+                duration: pkg?.duration || "",
+                departure: pkg?.departure || "",
+                paymentMethod: b.payment_method,
+                installmentMonths: b.installment_months,
+                specialRequests: b.special_requests,
+                status: b.status,
+              });
+              doc.save(`booking-${b.id.slice(0, 8).toUpperCase()}.pdf`);
+              toast({ title: "বুকিং রিসিট ডাউনলোড হয়েছে!" });
+            }}
+          >
+            <FileDown className="h-4 w-4" />
+            বুকিং রিসিট ডাউনলোড করুন
+          </Button>
         </motion.div>
-      </div>
     );
   }
 
