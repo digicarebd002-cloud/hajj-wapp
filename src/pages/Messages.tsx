@@ -192,8 +192,8 @@ const Messages = () => {
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <MessageSquarePlus className="h-8 w-8 text-primary" />
           </div>
-          <h3 className="font-bold text-lg text-foreground">মেসেজিং শুরু করুন</h3>
-          <p className="text-sm text-muted-foreground mt-1">একটি কথোপকথন নির্বাচন করুন বা নতুন চ্যাট শুরু করুন</p>
+          <h3 className="font-bold text-lg text-foreground">Start Messaging</h3>
+          <p className="text-sm text-muted-foreground mt-1">Select a conversation or start a new chat</p>
         </div>
       );
     }
