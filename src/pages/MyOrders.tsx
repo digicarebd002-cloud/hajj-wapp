@@ -189,7 +189,7 @@ const OrdersContent = () => {
               <CardContent className="p-6 flex items-center gap-4">
                 <XCircle className="h-8 w-8 text-destructive" />
                 <div>
-                  <p className="font-semibold text-destructive">অর্ডার বাতিল হয়েছে</p>
+                  <p className="font-semibold text-destructive">Order Cancelled</p>
                   {order.cancelled_at && (
                     <p className="text-xs text-muted-foreground">{format(new Date(order.cancelled_at), "d MMM yyyy, h:mm a")}</p>
                   )}
