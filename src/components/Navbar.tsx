@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import CartDrawer from "@/components/CartDrawer";
 import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/use-supabase-data";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
