@@ -159,7 +159,7 @@ const MyBookingsContent = () => {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">বুকিং রেফারেন্স</p>
+                  <p className="text-xs text-muted-foreground">Booking Reference</p>
                   <p className="font-mono text-sm font-bold text-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <Badge className={`${statusColors[b.status]} border`}>
