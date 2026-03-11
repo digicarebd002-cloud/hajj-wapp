@@ -23,9 +23,9 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "পেন্ডিং",
-  confirmed: "নিশ্চিত",
-  cancelled: "বাতিল",
+  pending: "Pending",
+  confirmed: "Confirmed",
+  cancelled: "Cancelled",
 };
 
 const installmentStatusColors: Record<string, string> = {
