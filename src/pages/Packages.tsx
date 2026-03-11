@@ -107,7 +107,10 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
       email: fd.get("email") as string,
       phone: fd.get("phone") as string,
       passport_number: fd.get("passport") as string,
-      special_requests: (fd.get("requests") as string) || "",
+      special_requests: [
+        fd.get("requests") as string,
+        preferredDate ? `Preferred travel date: ${format(preferredDate, "PPP")}` : "",
+      ].filter(Boolean).join("\n") || "",
       payment_method: paymentMethod,
       installment_months: paymentMethod === "plan" ? parseInt(installmentPlan) : null,
       status: paymentMethod === "wallet" ? "confirmed" : "pending",
