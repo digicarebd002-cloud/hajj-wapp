@@ -236,8 +236,8 @@ const MyBookingsContent = () => {
                 <div className="mb-6">
                   <Progress value={progressPercent} className="h-3 mb-2" />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>পরিশোধিত: ${paidAmount.toLocaleString()}</span>
-                    <span>মোট: ${totalAmount.toLocaleString()}</span>
+                    <span>Paid: ${paidAmount.toLocaleString()}</span>
+                    <span>Total: ${totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
 
