@@ -57,11 +57,36 @@ const Auth = () => {
     setLoading(false);
     if (error) {
       toast({ title: "Login failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Welcome back!" });
-      navigate(returnTo || "/account", { replace: true });
+      return;
     }
+
+    // Check if MFA is required
+    const { data: factors } = await supabase.auth.mfa.listFactors();
+    const verifiedFactors = factors?.totp.filter((f) => f.status === "verified") || [];
+    if (verifiedFactors.length > 0) {
+      setMfaFactorId(verifiedFactors[0].id);
+      return;
+    }
+
+    toast({ title: "Welcome back!" });
+    navigate(returnTo || "/account", { replace: true });
   };
+
+  if (mfaFactorId) {
+    return (
+      <MfaChallenge
+        factorId={mfaFactorId}
+        onSuccess={() => {
+          toast({ title: "Welcome back!" });
+          navigate(returnTo || "/account", { replace: true });
+        }}
+        onCancel={() => {
+          setMfaFactorId(null);
+          supabase.auth.signOut();
+        }}
+      />
+    );
+  }
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -624,7 +624,10 @@ const AccountContent = () => {
                 </div>
               </div>
 
-              <div className="bg-card rounded-xl card-shadow p-6 space-y-4 mt-6">
+              {/* Two-Factor Authentication */}
+              <TwoFactorSetup />
+
+              <div className="bg-card rounded-xl card-shadow p-6 space-y-4">
                 <h3 className="font-semibold flex items-center gap-2"><Lock className="h-4 w-4" /> Change Password</h3>
                 <div className="space-y-3">
                   <div className="space-y-2"><Label>New Password</Label><Input type="password" placeholder="Min 6 characters" id="new-password" /></div>
