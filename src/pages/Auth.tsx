@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SEOHead from "@/components/SEOHead";
+import MfaChallenge from "@/components/MfaChallenge";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import logoImg from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +24,7 @@ const Auth = () => {
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const refCode = searchParams.get("ref") || "";
 
   const handleForgotPassword = async () => {
@@ -55,11 +57,36 @@ const Auth = () => {
     setLoading(false);
     if (error) {
       toast({ title: "Login failed", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Welcome back!" });
-      navigate(returnTo || "/account", { replace: true });
+      return;
     }
+
+    // Check if MFA is required
+    const { data: factors } = await supabase.auth.mfa.listFactors();
+    const verifiedFactors = factors?.totp.filter((f) => f.status === "verified") || [];
+    if (verifiedFactors.length > 0) {
+      setMfaFactorId(verifiedFactors[0].id);
+      return;
+    }
+
+    toast({ title: "Welcome back!" });
+    navigate(returnTo || "/account", { replace: true });
   };
+
+  if (mfaFactorId) {
+    return (
+      <MfaChallenge
+        factorId={mfaFactorId}
+        onSuccess={() => {
+          toast({ title: "Welcome back!" });
+          navigate(returnTo || "/account", { replace: true });
+        }}
+        onCancel={() => {
+          setMfaFactorId(null);
+          supabase.auth.signOut();
+        }}
+      />
+    );
+  }
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
