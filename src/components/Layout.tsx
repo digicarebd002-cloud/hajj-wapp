@@ -23,6 +23,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <OfflineBanner />
       <Navbar />
       {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
+      <OnboardingTour />
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
