@@ -79,6 +79,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
   const [installmentPlan, setInstallmentPlan] = useState("3");
   const [submitting, setSubmitting] = useState(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState<string | null>(null);
+  const [preferredDate, setPreferredDate] = useState<Date | undefined>(undefined);
 
   const price = Number(pkg.price);
   const walletBalance = Number(wallet?.balance ?? 0);
