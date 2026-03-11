@@ -329,7 +329,7 @@ const OrdersContent = () => {
         </div>
         <Link to="/store">
           <Button variant="outline" className="gap-2 rounded-full">
-            <ShoppingBag className="h-4 w-4" /> শপ
+            <ShoppingBag className="h-4 w-4" /> Shop
           </Button>
         </Link>
       </div>
