@@ -188,7 +188,7 @@ const MyBookingsContent = () => {
                 </div>
                 {pkg?.departure && (
                   <div>
-                    <p className="text-xs text-muted-foreground">যাত্রা</p>
+                    <p className="text-xs text-muted-foreground">Departure</p>
                     <p className="font-medium text-foreground">{pkg.departure}</p>
                   </div>
                 )}
