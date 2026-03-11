@@ -255,7 +255,7 @@ const OrdersContent = () => {
           {/* Order Items */}
           <Card className="mb-6 border-border">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-4">অর্ডার আইটেম</h3>
+              <h3 className="font-semibold text-foreground mb-4">Order Items</h3>
               {itemsLoading ? (
                 <CardSkeleton />
               ) : orderItems.length === 0 ? (
