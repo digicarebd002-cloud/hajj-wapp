@@ -177,7 +177,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
 
           {/* Preferred Travel Date Calendar */}
           <div className="space-y-2">
-            <Label>পছন্দের যাত্রা তারিখ</Label>
+            <Label>Preferred Travel Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
