@@ -10,8 +10,9 @@ import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plane, ArrowLeft, ChevronRight, CalendarDays, CheckCircle2,
-  Clock, CreditCard, DollarSign, AlertCircle, Wallet,
+  Clock, CreditCard, DollarSign, AlertCircle, Wallet, FileDown,
 } from "lucide-react";
+import { generateBookingInvoicePDF } from "@/lib/generate-booking-invoice";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
