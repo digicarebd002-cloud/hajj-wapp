@@ -183,7 +183,7 @@ const MyBookingsContent = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">তারিখ</p>
+                  <p className="text-xs text-muted-foreground">Date</p>
                   <p className="font-medium text-foreground">{format(new Date(b.created_at), "d MMM yyyy")}</p>
                 </div>
                 {pkg?.departure && (
