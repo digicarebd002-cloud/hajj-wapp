@@ -16,10 +16,10 @@ import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
 const statusSteps = [
-  { key: "pending", label: "অর্ডার নিশ্চিত", labelEn: "Confirmed", icon: Clock },
-  { key: "paid", label: "পেমেন্ট সম্পন্ন", labelEn: "Paid", icon: CheckCircle2 },
-  { key: "shipped", label: "শিপিং হয়েছে", labelEn: "Shipped", icon: Truck },
-  { key: "delivered", label: "ডেলিভারি সম্পন্ন", labelEn: "Delivered", icon: Package },
+  { key: "pending", label: "Confirmed", labelEn: "Confirmed", icon: Clock },
+  { key: "paid", label: "Paid", labelEn: "Paid", icon: CheckCircle2 },
+  { key: "shipped", label: "Shipped", labelEn: "Shipped", icon: Truck },
+  { key: "delivered", label: "Delivered", labelEn: "Delivered", icon: Package },
 ];
 
 const statusColors: Record<string, string> = {
@@ -31,11 +31,11 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "পেন্ডিং",
-  paid: "পেইড",
-  shipped: "শিপড",
-  delivered: "ডেলিভার্ড",
-  cancelled: "বাতিল",
+  pending: "Pending",
+  paid: "Paid",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
 };
 
 function getStepIndex(status: string) {
@@ -78,7 +78,7 @@ const OrdersContent = () => {
 
   const copyTracking = (num: string) => {
     navigator.clipboard.writeText(num);
-    toast({ title: "ট্র্যাকিং নম্বর কপি হয়েছে!" });
+    toast({ title: "Tracking number copied!" });
   };
 
   // Detail view
@@ -90,7 +90,7 @@ const OrdersContent = () => {
     return (
       <div className="container mx-auto px-4 py-6 max-w-3xl">
         <Button variant="ghost" className="gap-2 mb-4 rounded-full" onClick={() => setSelectedOrder(null)}>
-          <ArrowLeft className="h-4 w-4" /> সব অর্ডার
+          <ArrowLeft className="h-4 w-4" /> All Orders
         </Button>
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
@@ -99,7 +99,7 @@ const OrdersContent = () => {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">অর্ডার নম্বর</p>
+                  <p className="text-xs text-muted-foreground">Order Number</p>
                   <p className="font-mono text-sm font-bold text-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <Badge className={`${statusColors[order.status]} border`}>
@@ -109,16 +109,16 @@ const OrdersContent = () => {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground">তারিখ</p>
+                  <p className="text-xs text-muted-foreground">Date</p>
                   <p className="font-medium text-foreground">{format(new Date(order.created_at), "d MMM yyyy")}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">মোট</p>
+                  <p className="text-xs text-muted-foreground">Total</p>
                   <p className="font-bold text-primary">${Number(order.total).toLocaleString()}</p>
                 </div>
                 {order.discount > 0 && (
                   <div>
-                    <p className="text-xs text-muted-foreground">ডিসকাউন্ট</p>
+                    <p className="text-xs text-muted-foreground">Discount</p>
                     <p className="font-medium text-primary">-${Number(order.discount).toLocaleString()}</p>
                   </div>
                 )}
@@ -130,7 +130,7 @@ const OrdersContent = () => {
           {order.status !== "cancelled" ? (
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-foreground mb-6">অর্ডার স্ট্যাটাস</h3>
+                <h3 className="font-semibold text-foreground mb-6">Order Status</h3>
                 <div className="relative">
                   {statusSteps.map((step, idx) => {
                     const isComplete = idx <= currentStep;
@@ -174,7 +174,7 @@ const OrdersContent = () => {
                               animate={{ opacity: 1 }}
                               className="inline-block mt-1 text-xs font-medium text-primary"
                             >
-                              বর্তমান স্ট্যাটাস
+                              Current Status
                             </motion.span>
                           )}
                         </div>
@@ -189,7 +189,7 @@ const OrdersContent = () => {
               <CardContent className="p-6 flex items-center gap-4">
                 <XCircle className="h-8 w-8 text-destructive" />
                 <div>
-                  <p className="font-semibold text-destructive">অর্ডার বাতিল হয়েছে</p>
+                  <p className="font-semibold text-destructive">Order Cancelled</p>
                   {order.cancelled_at && (
                     <p className="text-xs text-muted-foreground">{format(new Date(order.cancelled_at), "d MMM yyyy, h:mm a")}</p>
                   )}
@@ -203,12 +203,12 @@ const OrdersContent = () => {
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Truck className="h-4 w-4 text-primary" /> ট্র্যাকিং তথ্য
+                  <Truck className="h-4 w-4 text-primary" /> Tracking Information
                 </h3>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between bg-secondary/50 rounded-lg p-3">
                     <div>
-                      <p className="text-xs text-muted-foreground">ট্র্যাকিং নম্বর</p>
+                      <p className="text-xs text-muted-foreground">Tracking Number</p>
                       <p className="font-mono text-sm font-bold text-foreground">{order.tracking_number}</p>
                     </div>
                     <Button variant="ghost" size="icon" className="rounded-full" onClick={() => copyTracking(order.tracking_number)}>
@@ -218,7 +218,7 @@ const OrdersContent = () => {
                   {order.shipping_carrier && (
                     <div className="flex items-center justify-between bg-secondary/50 rounded-lg p-3">
                       <div>
-                        <p className="text-xs text-muted-foreground">কুরিয়ার</p>
+                        <p className="text-xs text-muted-foreground">Carrier</p>
                         <p className="text-sm font-medium text-foreground">{order.shipping_carrier}</p>
                       </div>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -226,7 +226,7 @@ const OrdersContent = () => {
                   )}
                   {order.estimated_delivery && (
                     <div className="bg-secondary/50 rounded-lg p-3">
-                      <p className="text-xs text-muted-foreground">আনুমানিক ডেলিভারি</p>
+                      <p className="text-xs text-muted-foreground">Estimated Delivery</p>
                       <p className="text-sm font-medium text-foreground">{format(new Date(order.estimated_delivery), "d MMMM yyyy")}</p>
                     </div>
                   )}
@@ -240,7 +240,7 @@ const OrdersContent = () => {
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary" /> শিপিং ঠিকানা
+                  <MapPin className="h-4 w-4 text-primary" /> Shipping Address
                 </h3>
                 <div className="bg-secondary/50 rounded-lg p-4 text-sm text-foreground">
                   <p className="font-medium">{address.name || ""}</p>
@@ -255,11 +255,11 @@ const OrdersContent = () => {
           {/* Order Items */}
           <Card className="mb-6 border-border">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-4">অর্ডার আইটেম</h3>
+              <h3 className="font-semibold text-foreground mb-4">Order Items</h3>
               {itemsLoading ? (
                 <CardSkeleton />
               ) : orderItems.length === 0 ? (
-                <p className="text-sm text-muted-foreground">কোনো আইটেম পাওয়া যায়নি</p>
+                <p className="text-sm text-muted-foreground">No items found</p>
               ) : (
                 <div className="space-y-3">
                   {orderItems.map((item) => (
@@ -307,11 +307,11 @@ const OrdersContent = () => {
                   paymentMethod: "card",
                 });
                 doc.save(`invoice-${order.id.slice(0, 8).toUpperCase()}.pdf`);
-                toast({ title: "ইনভয়েস ডাউনলোড হয়েছে!" });
+                toast({ title: "Invoice downloaded!" });
               }}
             >
               <FileDown className="h-4 w-4" />
-              ইনভয়েস ডাউনলোড করুন
+              Download Invoice
             </Button>
           )}
         </motion.div>
@@ -324,12 +324,12 @@ const OrdersContent = () => {
     <div className="container mx-auto px-4 py-6 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-foreground">আমার অর্ডার</h1>
-          <p className="text-sm text-muted-foreground">আপনার সব অর্ডার ও শিপিং স্ট্যাটাস দেখুন</p>
+          <h1 className="text-2xl font-extrabold text-foreground">My Orders</h1>
+          <p className="text-sm text-muted-foreground">View all your orders and shipping status</p>
         </div>
         <Link to="/store">
           <Button variant="outline" className="gap-2 rounded-full">
-            <ShoppingBag className="h-4 w-4" /> শপ
+            <ShoppingBag className="h-4 w-4" /> Shop
           </Button>
         </Link>
       </div>
@@ -339,9 +339,9 @@ const OrdersContent = () => {
       ) : orders.length === 0 ? (
         <EmptyState
           icon="📦"
-          title="কোনো অর্ডার নেই"
-          description="আপনি এখনো কোনো অর্ডার করেননি"
-          actionLabel="স্টোরে যান"
+          title="No orders yet"
+          description="You haven't placed any orders yet"
+          actionLabel="Go to Store"
           actionTo="/store"
         />
       ) : (
@@ -386,7 +386,7 @@ const OrdersContent = () => {
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>{format(new Date(order.created_at), "d MMM yyyy")}</span>
                     {order.tracking_number && (
-                      <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> ট্র্যাকিং আছে</span>
+                      <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Tracking available</span>
                     )}
                   </div>
                 </button>

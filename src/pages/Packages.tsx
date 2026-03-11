@@ -177,7 +177,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
 
           {/* Preferred Travel Date Calendar */}
           <div className="space-y-2">
-            <Label>পছন্দের যাত্রা তারিখ</Label>
+            <Label>Preferred Travel Date</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -188,7 +188,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {preferredDate ? format(preferredDate, "PPP") : "তারিখ নির্বাচন করুন"}
+                  {preferredDate ? format(preferredDate, "PPP") : "Select a date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -202,7 +202,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
                 />
               </PopoverContent>
             </Popover>
-            <p className="text-xs text-muted-foreground">প্যাকেজের departure date: <span className="font-semibold">{pkg.departure}</span></p>
+            <p className="text-xs text-muted-foreground">Package departure date: <span className="font-semibold">{pkg.departure}</span></p>
           </div>
 
           <div className="space-y-2"><Label htmlFor="requests">Special Requests</Label><Textarea id="requests" name="requests" placeholder="Dietary needs, accessibility, etc." className="resize-none" /></div>

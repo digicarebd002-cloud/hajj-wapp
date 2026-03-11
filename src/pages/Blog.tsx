@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Search, Clock, Eye, ArrowRight, BookOpen } from "lucide-react";
 import { format } from "date-fns";
-import { bn } from "date-fns/locale";
 
 interface BlogPost {
   id: string;
@@ -31,11 +30,11 @@ const categoryColors: Record<string, string> = {
 };
 
 const categoryLabels: Record<string, string> = {
-  guide: "গাইড",
-  tips: "টিপস",
-  story: "অভিজ্ঞতা",
-  news: "খবর",
-  dua: "দোয়া",
+  guide: "Guide",
+  tips: "Tips",
+  story: "Experience",
+  news: "News",
+  dua: "Dua",
 };
 
 const fadeUp = {
@@ -74,17 +73,17 @@ const Blog = () => {
   return (
     <div className="section-padding min-h-screen">
       <SEOHead
-        title="ব্লগ ও গাইড — হজ্জ সম্পর্কিত আর্টিকেল"
-        description="হজ্জ ও উমরাহ সম্পর্কিত গাইড, টিপস, দোয়া এবং অভিজ্ঞতামূলক আর্টিকেল পড়ুন। আপনার পবিত্র যাত্রার প্রস্তুতি নিন।"
+        title="Blog & Guides — Hajj Related Articles"
+        description="Read guides, tips, duas, and experience-based articles about Hajj and Umrah. Prepare for your sacred journey."
       />
       <div className="container mx-auto max-w-5xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            <BookOpen className="h-4 w-4" /> ব্লগ ও গাইড
+            <BookOpen className="h-4 w-4" /> Blog & Guides
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">হজ্জ সম্পর্কিত আর্টিকেল</h1>
-          <p className="text-muted-foreground max-w-lg mx-auto">হজ্জ ও উমরাহের প্রস্তুতি, টিপস, দোয়া এবং অভিজ্ঞতামূলক লেখা পড়ুন।</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Hajj Related Articles</h1>
+          <p className="text-muted-foreground max-w-lg mx-auto">Read guides, tips, duas, and experience-based articles about Hajj and Umrah.</p>
         </motion.div>
 
         {/* Search & Filters */}
@@ -92,7 +91,7 @@ const Blog = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="আর্টিকেল খুঁজুন..."
+              placeholder="Search articles..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
@@ -105,7 +104,7 @@ const Blog = () => {
                 !activeCategory ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
-              সব
+              All
             </button>
             {categories.map((cat) => (
               <button
@@ -138,9 +137,9 @@ const Blog = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <span className="text-5xl mb-4 block">📝</span>
-            <h3 className="text-lg font-semibold mb-1">কোনো আর্টিকেল পাওয়া যায়নি</h3>
+            <h3 className="text-lg font-semibold mb-1">No articles found</h3>
             <p className="text-sm text-muted-foreground">
-              {search ? "অন্য কিছু দিয়ে খুঁজে দেখুন" : "শীঘ্রই নতুন আর্টিকেল আসছে!"}
+              {search ? "Try searching with different keywords" : "New articles coming soon!"}
             </p>
           </div>
         ) : (

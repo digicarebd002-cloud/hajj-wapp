@@ -38,10 +38,10 @@ const Messages = () => {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4">
         <MessageSquarePlus className="h-16 w-16 text-muted-foreground/40" />
-        <h2 className="text-xl font-bold text-foreground">প্রাইভেট মেসেজিং</h2>
-        <p className="text-muted-foreground text-center">মেসেজ পাঠাতে লগইন করুন</p>
+        <h2 className="text-xl font-bold text-foreground">Private Messaging</h2>
+        <p className="text-muted-foreground text-center">Sign in to send messages</p>
         <Link to="/auth">
-          <Button className="rounded-full">লগইন করুন</Button>
+          <Button className="rounded-full">Sign In</Button>
         </Link>
       </div>
     );
@@ -76,7 +76,7 @@ const Messages = () => {
   const ConversationList = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <h2 className="font-bold text-lg text-foreground">মেসেজ</h2>
+        <h2 className="font-bold text-lg text-foreground">Messages</h2>
         <Button
           variant="ghost"
           size="icon"
@@ -92,7 +92,7 @@ const Messages = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="নাম দিয়ে খুঁজুন..."
+              placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 rounded-full bg-secondary/50"
@@ -122,7 +122,7 @@ const Messages = () => {
             </div>
           )}
           {searchQuery.length >= 2 && !searchLoading && searchResults.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-3">কোনো ইউজার পাওয়া যায়নি</p>
+            <p className="text-xs text-muted-foreground text-center py-3">No users found</p>
           )}
         </div>
       )}
@@ -133,8 +133,8 @@ const Messages = () => {
         ) : conversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
             <MessageSquarePlus className="h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-sm text-muted-foreground">কোনো কথোপকথন নেই</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">নতুন চ্যাট শুরু করতে + বাটনে ক্লিক করুন</p>
+            <p className="text-sm text-muted-foreground">No conversations yet</p>
+            <p className="text-xs text-muted-foreground/60 mt-1">Click the + button to start a new chat</p>
           </div>
         ) : (
           <div className="p-2 space-y-0.5">
@@ -172,7 +172,7 @@ const Messages = () => {
                   </div>
                   {conv.last_message && (
                     <p className={`text-xs truncate mt-0.5 ${conv.unread_count > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                      {conv.last_message.sender_id === user?.id ? "আপনি: " : ""}{conv.last_message.body}
+                      {conv.last_message.sender_id === user?.id ? "You: " : ""}{conv.last_message.body}
                     </p>
                   )}
                 </div>
@@ -192,8 +192,8 @@ const Messages = () => {
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <MessageSquarePlus className="h-8 w-8 text-primary" />
           </div>
-          <h3 className="font-bold text-lg text-foreground">মেসেজিং শুরু করুন</h3>
-          <p className="text-sm text-muted-foreground mt-1">একটি কথোপকথন নির্বাচন করুন বা নতুন চ্যাট শুরু করুন</p>
+          <h3 className="font-bold text-lg text-foreground">Start Messaging</h3>
+          <p className="text-sm text-muted-foreground mt-1">Select a conversation or start a new chat</p>
         </div>
       );
     }
@@ -228,7 +228,7 @@ const Messages = () => {
             <div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-sm text-muted-foreground">কোনো মেসেজ নেই — প্রথম মেসেজ পাঠান!</p>
+              <p className="text-sm text-muted-foreground">No messages yet — send the first one!</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -240,7 +240,7 @@ const Messages = () => {
                     {showDate && (
                       <div className="flex justify-center my-4">
                         <span className="text-[10px] bg-secondary text-muted-foreground px-3 py-1 rounded-full">
-                          {isToday(new Date(msg.created_at)) ? "আজ" : isYesterday(new Date(msg.created_at)) ? "গতকাল" : format(new Date(msg.created_at), "d MMM yyyy")}
+                          {isToday(new Date(msg.created_at)) ? "Today" : isYesterday(new Date(msg.created_at)) ? "Yesterday" : format(new Date(msg.created_at), "d MMM yyyy")}
                         </span>
                       </div>
                     )}
@@ -272,7 +272,7 @@ const Messages = () => {
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-2">
             <Input
-              placeholder="মেসেজ লিখুন..."
+              placeholder="Type a message..."
               value={msgInput}
               onChange={(e) => setMsgInput(e.target.value)}
               onKeyDown={handleKeyDown}

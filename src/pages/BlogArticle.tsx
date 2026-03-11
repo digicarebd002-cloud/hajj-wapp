@@ -26,11 +26,11 @@ interface BlogPost {
 }
 
 const categoryLabels: Record<string, string> = {
-  guide: "গাইড",
-  tips: "টিপস",
-  story: "অভিজ্ঞতা",
-  news: "খবর",
-  dua: "দোয়া",
+  guide: "Guide",
+  tips: "Tips",
+  story: "Experience",
+  news: "News",
+  dua: "Dua",
 };
 
 const BlogArticle = () => {
@@ -82,7 +82,7 @@ const BlogArticle = () => {
       await navigator.share({ title: post?.title, text: post?.excerpt, url });
     } else {
       await navigator.clipboard.writeText(url);
-      toast({ title: "লিংক কপি হয়েছে!" });
+      toast({ title: "Link copied!" });
     }
   };
 
@@ -158,10 +158,10 @@ const BlogArticle = () => {
       <div className="section-padding min-h-screen flex items-center justify-center">
         <div className="text-center">
           <span className="text-5xl mb-4 block">📄</span>
-          <h2 className="text-xl font-bold mb-2">আর্টিকেল পাওয়া যায়নি</h2>
-          <p className="text-muted-foreground mb-4">এই আর্টিকেলটি মুছে ফেলা হয়েছে অথবা প্রকাশিত হয়নি।</p>
+          <h2 className="text-xl font-bold mb-2">Article not found</h2>
+          <p className="text-muted-foreground mb-4">This article has been removed or is not published.</p>
           <Link to="/blog">
-            <Button><ArrowLeft className="h-4 w-4 mr-2" /> ব্লগে ফিরে যান</Button>
+            <Button><ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog</Button>
           </Link>
         </div>
       </div>
@@ -178,7 +178,7 @@ const BlogArticle = () => {
       <div className="container mx-auto max-w-3xl">
         {/* Back link */}
         <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
-          <ArrowLeft className="h-4 w-4" /> সব আর্টিকেল
+          <ArrowLeft className="h-4 w-4" /> All Articles
         </Link>
 
         <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -194,7 +194,7 @@ const BlogArticle = () => {
               </span>
             )}
             <span className="text-sm text-muted-foreground flex items-center gap-1">
-              <Eye className="h-3.5 w-3.5" /> {post.views + 1} ভিউ
+              <Eye className="h-3.5 w-3.5" /> {post.views + 1} views
             </span>
           </div>
 
@@ -207,7 +207,7 @@ const BlogArticle = () => {
               <User className="h-4 w-4" /> {post.author_name}
             </div>
             <Button variant="ghost" size="sm" onClick={handleShare} className="gap-1.5">
-              <Share2 className="h-4 w-4" /> শেয়ার
+              <Share2 className="h-4 w-4" /> Share
             </Button>
           </div>
 
@@ -247,7 +247,7 @@ const BlogArticle = () => {
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <div className="mt-12 pt-8 border-t border-border">
-            <h3 className="font-semibold text-lg mb-6">সম্পর্কিত আর্টিকেল</h3>
+            <h3 className="font-semibold text-lg mb-6">Related Articles</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {relatedPosts.map((rp) => (
                 <Link

@@ -322,11 +322,11 @@ const AccountContent = () => {
 
     // Validate
     if (!file.type.startsWith("image/")) {
-      toast({ title: "শুধু ইমেজ ফাইল আপলোড করুন", variant: "destructive" });
+      toast({ title: "Please upload an image file only", variant: "destructive" });
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "ফাইল সাইজ ৫MB এর বেশি হতে পারবে না", variant: "destructive" });
+      toast({ title: "File size must not exceed 5MB", variant: "destructive" });
       return;
     }
 
@@ -354,10 +354,10 @@ const AccountContent = () => {
 
       if (updateError) throw updateError;
 
-      toast({ title: "প্রোফাইল ছবি আপডেট হয়েছে!" });
+      toast({ title: "Profile picture updated!" });
       refetchProfile();
     } catch (err: any) {
-      toast({ title: "আপলোড ব্যর্থ", description: err.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
     } finally {
       setAvatarUploading(false);
       if (avatarInputRef.current) avatarInputRef.current.value = "";

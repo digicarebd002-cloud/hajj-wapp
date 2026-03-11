@@ -23,9 +23,9 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "পেন্ডিং",
-  confirmed: "নিশ্চিত",
-  cancelled: "বাতিল",
+  pending: "Pending",
+  confirmed: "Confirmed",
+  cancelled: "Cancelled",
 };
 
 const installmentStatusColors: Record<string, string> = {
@@ -36,10 +36,10 @@ const installmentStatusColors: Record<string, string> = {
 };
 
 const installmentStatusLabels: Record<string, string> = {
-  upcoming: "আসন্ন",
-  due: "পরিশোধযোগ্য",
-  paid: "পরিশোধিত",
-  overdue: "বিলম্বিত",
+  upcoming: "Upcoming",
+  due: "Due",
+  paid: "Paid",
+  overdue: "Overdue",
 };
 
 const MyBookingsContent = () => {
@@ -105,8 +105,8 @@ const MyBookingsContent = () => {
 
     if (!wallet || Number(wallet.balance) < Number(installment.amount)) {
       toast({
-        title: "অপর্যাপ্ত ব্যালেন্স",
-        description: `আপনার ওয়ালেটে $${Number(wallet?.balance ?? 0).toLocaleString()} আছে, কিন্তু $${Number(installment.amount).toLocaleString()} দরকার।`,
+        title: "Insufficient Balance",
+        description: `Your wallet has $${Number(wallet?.balance ?? 0).toLocaleString()}, but $${Number(installment.amount).toLocaleString()} is needed.`,
         variant: "destructive",
       });
       setPaying(null);
@@ -127,7 +127,7 @@ const MyBookingsContent = () => {
       .update({ status: "paid", paid_at: new Date().toISOString() })
       .eq("id", installment.id);
 
-    toast({ title: "কিস্তি পরিশোধ সম্পন্ন!" });
+    toast({ title: "Installment payment completed!" });
 
     // Refresh
     setInstallments((prev) =>
@@ -150,7 +150,7 @@ const MyBookingsContent = () => {
     return (
       <div className="container mx-auto px-4 py-6 max-w-3xl">
         <Button variant="ghost" className="gap-2 mb-4 rounded-full" onClick={() => setSelectedBooking(null)}>
-          <ArrowLeft className="h-4 w-4" /> সব বুকিং
+          <ArrowLeft className="h-4 w-4" /> All Bookings
         </Button>
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
@@ -159,7 +159,7 @@ const MyBookingsContent = () => {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">বুকিং রেফারেন্স</p>
+                  <p className="text-xs text-muted-foreground">Booking Reference</p>
                   <p className="font-mono text-sm font-bold text-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <Badge className={`${statusColors[b.status]} border`}>
@@ -168,33 +168,33 @@ const MyBookingsContent = () => {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground">প্যাকেজ</p>
+                  <p className="text-xs text-muted-foreground">Package</p>
                   <p className="font-semibold text-foreground">{pkg?.name || "N/A"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">মোট মূল্য</p>
+                  <p className="text-xs text-muted-foreground">Total Price</p>
                   <p className="font-bold text-primary">${Number(pkg?.price ?? 0).toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">পেমেন্ট</p>
+                  <p className="text-xs text-muted-foreground">Payment</p>
                   <p className="font-medium text-foreground capitalize">
-                    {b.payment_method === "plan" ? `${b.installment_months}-মাস কিস্তি` :
-                     b.payment_method === "wallet" ? "ওয়ালেট" : "কার্ড"}
+                    {b.payment_method === "plan" ? `${b.installment_months}-month installment` :
+                     b.payment_method === "wallet" ? "Wallet" : "Card"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">তারিখ</p>
+                  <p className="text-xs text-muted-foreground">Date</p>
                   <p className="font-medium text-foreground">{format(new Date(b.created_at), "d MMM yyyy")}</p>
                 </div>
                 {pkg?.departure && (
                   <div>
-                    <p className="text-xs text-muted-foreground">যাত্রা</p>
+                    <p className="text-xs text-muted-foreground">Departure</p>
                     <p className="font-medium text-foreground">{pkg.departure}</p>
                   </div>
                 )}
                 {pkg?.duration && (
                   <div>
-                    <p className="text-xs text-muted-foreground">সময়কাল</p>
+                    <p className="text-xs text-muted-foreground">Duration</p>
                     <p className="font-medium text-foreground">{pkg.duration}</p>
                   </div>
                 )}
@@ -205,16 +205,16 @@ const MyBookingsContent = () => {
           {/* Traveller Info */}
           <Card className="mb-6 border-border">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-3">যাত্রী তথ্য</h3>
+              <h3 className="font-semibold text-foreground mb-3">Traveller Information</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><p className="text-xs text-muted-foreground">নাম</p><p className="font-medium text-foreground">{b.traveller_name}</p></div>
-                <div><p className="text-xs text-muted-foreground">ইমেইল</p><p className="font-medium text-foreground">{b.email}</p></div>
-                <div><p className="text-xs text-muted-foreground">ফোন</p><p className="font-medium text-foreground">{b.phone}</p></div>
-                <div><p className="text-xs text-muted-foreground">পাসপোর্ট</p><p className="font-medium text-foreground">{b.passport_number}</p></div>
+                <div><p className="text-xs text-muted-foreground">Name</p><p className="font-medium text-foreground">{b.traveller_name}</p></div>
+                <div><p className="text-xs text-muted-foreground">Email</p><p className="font-medium text-foreground">{b.email}</p></div>
+                <div><p className="text-xs text-muted-foreground">Phone</p><p className="font-medium text-foreground">{b.phone}</p></div>
+                <div><p className="text-xs text-muted-foreground">Passport</p><p className="font-medium text-foreground">{b.passport_number}</p></div>
               </div>
               {b.special_requests && (
                 <div className="mt-3">
-                  <p className="text-xs text-muted-foreground">বিশেষ অনুরোধ</p>
+                  <p className="text-xs text-muted-foreground">Special Requests</p>
                   <p className="text-sm text-foreground">{b.special_requests}</p>
                 </div>
               )}
@@ -227,17 +227,17 @@ const MyBookingsContent = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-foreground flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-primary" /> কিস্তি পরিকল্পনা
+                    <CalendarDays className="h-4 w-4 text-primary" /> Installment Plan
                   </h3>
-                  <span className="text-sm text-muted-foreground">{paidCount}/{totalInstallments} পরিশোধিত</span>
+                  <span className="text-sm text-muted-foreground">{paidCount}/{totalInstallments} paid</span>
                 </div>
 
                 {/* Progress */}
                 <div className="mb-6">
                   <Progress value={progressPercent} className="h-3 mb-2" />
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>পরিশোধিত: ${paidAmount.toLocaleString()}</span>
-                    <span>মোট: ${totalAmount.toLocaleString()}</span>
+                    <span>Paid: ${paidAmount.toLocaleString()}</span>
+                    <span>Total: ${totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -267,15 +267,15 @@ const MyBookingsContent = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold text-foreground">কিস্তি #{inst.installment_number}</p>
+                              <p className="text-sm font-semibold text-foreground">Installment #{inst.installment_number}</p>
                               <Badge variant="outline" className={`text-[10px] ${installmentStatusColors[inst.status]} border-0`}>
                                 {installmentStatusLabels[inst.status]}
                               </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground">
                               {inst.status === "paid" && inst.paid_at
-                                ? `পরিশোধ: ${format(new Date(inst.paid_at), "d MMM yyyy")}`
-                                : `নির্ধারিত: ${format(new Date(inst.due_date), "d MMM yyyy")}`
+                                ? `Paid: ${format(new Date(inst.paid_at), "d MMM yyyy")}`
+                                : `Due: ${format(new Date(inst.due_date), "d MMM yyyy")}`
                               }
                             </p>
                           </div>
@@ -289,7 +289,7 @@ const MyBookingsContent = () => {
                                 disabled={paying === inst.id}
                                 onClick={() => handlePayInstallment(inst)}
                               >
-                                {paying === inst.id ? "..." : <><Wallet className="h-3 w-3" /> পরিশোধ</>}
+                                {paying === inst.id ? "..." : <><Wallet className="h-3 w-3" /> Pay</>}
                               </Button>
                             )}
                           </div>
@@ -324,11 +324,11 @@ const MyBookingsContent = () => {
                 status: b.status,
               });
               doc.save(`booking-${b.id.slice(0, 8).toUpperCase()}.pdf`);
-              toast({ title: "বুকিং রিসিট ডাউনলোড হয়েছে!" });
+              toast({ title: "Booking receipt downloaded!" });
             }}
           >
             <FileDown className="h-4 w-4" />
-            বুকিং রিসিট ডাউনলোড করুন
+            Download Booking Receipt
           </Button>
         </motion.div>
       </div>
@@ -340,12 +340,12 @@ const MyBookingsContent = () => {
     <div className="container mx-auto px-4 py-6 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-foreground">আমার বুকিং</h1>
-          <p className="text-sm text-muted-foreground">আপনার সব প্যাকেজ বুকিং ও কিস্তি</p>
+          <h1 className="text-2xl font-extrabold text-foreground">My Bookings</h1>
+          <p className="text-sm text-muted-foreground">All your package bookings and installments</p>
         </div>
         <Link to="/packages">
           <Button variant="outline" className="gap-2 rounded-full">
-            <Plane className="h-4 w-4" /> প্যাকেজ
+            <Plane className="h-4 w-4" /> Packages
           </Button>
         </Link>
       </div>
@@ -355,9 +355,9 @@ const MyBookingsContent = () => {
       ) : bookings.length === 0 ? (
         <EmptyState
           icon="✈️"
-          title="কোনো বুকিং নেই"
-          description="আপনি এখনো কোনো প্যাকেজ বুক করেননি"
-          actionLabel="প্যাকেজ দেখুন"
+          title="No bookings yet"
+          description="You haven't booked any packages yet"
+          actionLabel="View Packages"
           actionTo="/packages"
         />
       ) : (
@@ -397,7 +397,7 @@ const MyBookingsContent = () => {
                       <span className="font-medium text-foreground">${Number(b.packages?.price ?? 0).toLocaleString()}</span>
                       {b.payment_method === "plan" && (
                         <span className="flex items-center gap-1">
-                          <CreditCard className="h-3 w-3" /> {b.installment_months}-মাস কিস্তি
+                          <CreditCard className="h-3 w-3" /> {b.installment_months}-month installment
                         </span>
                       )}
                     </div>
