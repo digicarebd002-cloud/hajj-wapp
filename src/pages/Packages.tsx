@@ -202,7 +202,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
                 />
               </PopoverContent>
             </Popover>
-            <p className="text-xs text-muted-foreground">প্যাকেজের departure date: <span className="font-semibold">{pkg.departure}</span></p>
+            <p className="text-xs text-muted-foreground">Package departure date: <span className="font-semibold">{pkg.departure}</span></p>
           </div>
 
           <div className="space-y-2"><Label htmlFor="requests">Special Requests</Label><Textarea id="requests" name="requests" placeholder="Dietary needs, accessibility, etc." className="resize-none" /></div>

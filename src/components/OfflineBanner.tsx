@@ -15,7 +15,7 @@ const OfflineBanner = () => {
           className="bg-destructive text-destructive-foreground text-center py-2 px-4 text-sm font-medium flex items-center justify-center gap-2 z-[100]"
         >
           <WifiOff className="h-4 w-4" />
-          আপনি অফলাইন আছেন — ক্যাশ করা ডেটা দেখানো হচ্ছে
+          You are offline — showing cached data
         </motion.div>
       )}
     </AnimatePresence>

@@ -51,7 +51,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-      const label = d.toLocaleDateString("bn-BD", { month: "short" });
+      const label = d.toLocaleDateString("en-US", { month: "short" });
 
       // Monthly deposit
       const monthDeposit = sorted
@@ -77,8 +77,8 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
     const orderTotal = orders?.reduce((s, o) => s + Number(o.total || 0), 0) ?? 0;
     const bookingCount = bookings?.length ?? 0;
     const items: { name: string; value: number }[] = [];
-    if (orderTotal > 0) items.push({ name: "স্টোর অর্ডার", value: orderTotal });
-    if (bookingCount > 0) items.push({ name: "বুকিং", value: bookingCount });
+    if (orderTotal > 0) items.push({ name: "Store Orders", value: orderTotal });
+    if (bookingCount > 0) items.push({ name: "Bookings", value: bookingCount });
     return items;
   }, [orders, bookings]);
 
@@ -89,7 +89,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
     const result: { month: string; amount: number }[] = [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const label = d.toLocaleDateString("bn-BD", { month: "short" });
+      const label = d.toLocaleDateString("en-US", { month: "short" });
       const amount = transactions
         .filter(t => {
           const td = new Date(t.created_at);
@@ -125,31 +125,31 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
         {[
           {
             icon: <PiggyBank className="h-5 w-5" />,
-            label: "মোট সেভিংস",
+            label: "Total Savings",
             value: `$${stats.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-            sub: `লক্ষ্য: $${stats.goal.toLocaleString()}`,
+            sub: `Goal: $${stats.goal.toLocaleString()}`,
             color: "text-primary",
           },
           {
             icon: <DollarSign className="h-5 w-5" />,
-            label: "এই মাসে জমা",
+            label: "This Month",
             value: `$${stats.thisMonth.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-            sub: stats.trend !== 0 ? `${stats.trend > 0 ? "+" : ""}${stats.trend.toFixed(0)}% গত মাস থেকে` : "—",
+            sub: stats.trend !== 0 ? `${stats.trend > 0 ? "+" : ""}${stats.trend.toFixed(0)}% from last month` : "—",
             color: stats.trend >= 0 ? "text-emerald-500" : "text-red-500",
             trendIcon: stats.trend >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />,
           },
           {
             icon: <ShoppingCart className="h-5 w-5" />,
-            label: "মোট অর্ডার",
+            label: "Total Orders",
             value: String(orders?.length ?? 0),
-            sub: `$${(orders?.reduce((s, o) => s + Number(o.total || 0), 0) ?? 0).toLocaleString()} খরচ`,
+            sub: `$${(orders?.reduce((s, o) => s + Number(o.total || 0), 0) ?? 0).toLocaleString()} spent`,
             color: "text-amber-500",
           },
           {
             icon: <Plane className="h-5 w-5" />,
-            label: "লক্ষ্যে পৌঁছাতে",
-            value: stats.monthsToGoal ? `~${stats.monthsToGoal} মাস` : "—",
-            sub: `$${stats.remaining.toLocaleString()} বাকি`,
+            label: "Time to Goal",
+            value: stats.monthsToGoal ? `~${stats.monthsToGoal} months` : "—",
+            sub: `$${stats.remaining.toLocaleString()} remaining`,
             color: "text-violet-500",
           },
         ].map((card, i) => (
@@ -176,15 +176,15 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
       {noData ? (
         <div className="bg-card rounded-xl card-shadow p-12 text-center">
           <span className="text-4xl mb-3 block">📊</span>
-          <h3 className="font-semibold text-lg mb-1">এখনও কোনো ডেটা নেই</h3>
-          <p className="text-sm text-muted-foreground">ওয়ালেটে জমা দিলে এখানে আপনার সেভিংস ট্রেন্ড দেখা যাবে।</p>
+          <h3 className="font-semibold text-lg mb-1">No data yet</h3>
+          <p className="text-sm text-muted-foreground">Start contributing to your wallet to see your savings trend here.</p>
         </div>
       ) : (
         <>
           {/* Savings Trend Area Chart */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" className="bg-card rounded-xl card-shadow p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" /> সেভিংস ট্রেন্ড (৬ মাস)
+              <TrendingUp className="h-5 w-5 text-primary" /> Savings Trend (6 Months)
             </h3>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={savingsTrend}>
@@ -200,7 +200,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
                 <Tooltip
                   contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
                   labelStyle={{ color: "hsl(var(--foreground))" }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, "ব্যালেন্স"]}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, "Balance"]}
                 />
                 <Area type="monotone" dataKey="balance" stroke="hsl(var(--primary))" fill="url(#savingsGrad)" strokeWidth={2.5} />
               </AreaChart>
@@ -210,7 +210,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
           {/* Monthly Deposits Bar Chart */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" className="bg-card rounded-xl card-shadow p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-emerald-500" /> মাসিক জমা
+              <DollarSign className="h-5 w-5 text-emerald-500" /> Monthly Deposits
             </h3>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={monthlyDeposits}>
@@ -219,7 +219,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
                 <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `$${v}`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, "জমা"]}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, "Deposit"]}
                 />
                 <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -230,7 +230,7 @@ const UserAnalytics = ({ transactions, wallet, profile, orders, bookings }: User
           {spendingData.length > 0 && (
             <motion.div variants={fadeUp} initial="hidden" animate="show" className="bg-card rounded-xl card-shadow p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-amber-500" /> খরচের বিভাজন
+                <ShoppingCart className="h-5 w-5 text-amber-500" /> Spending Breakdown
               </h3>
               <div className="flex items-center justify-center">
                 <ResponsiveContainer width="100%" height={220}>

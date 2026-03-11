@@ -357,7 +357,7 @@ const AccountContent = () => {
       toast({ title: "Profile picture updated!" });
       refetchProfile();
     } catch (err: any) {
-      toast({ title: "আপলোড ব্যর্থ", description: err.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
     } finally {
       setAvatarUploading(false);
       if (avatarInputRef.current) avatarInputRef.current.value = "";
