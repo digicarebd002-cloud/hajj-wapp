@@ -315,7 +315,8 @@ const CommunityStats = () => {
       </motion.div>
     </div>
   </RevealSection>
-);
+  );
+};
 
 /* ═══════════════════════════════════════════════
    SECTION 4 — Membership Tiers
