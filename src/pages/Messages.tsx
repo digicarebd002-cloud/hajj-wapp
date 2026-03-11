@@ -228,7 +228,7 @@ const Messages = () => {
             <div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="text-sm text-muted-foreground">কোনো মেসেজ নেই — প্রথম মেসেজ পাঠান!</p>
+              <p className="text-sm text-muted-foreground">No messages yet — send the first one!</p>
             </div>
           ) : (
             <div className="space-y-3">
