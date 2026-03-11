@@ -386,7 +386,7 @@ const OrdersContent = () => {
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>{format(new Date(order.created_at), "d MMM yyyy")}</span>
                     {order.tracking_number && (
-                      <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> ট্র্যাকিং আছে</span>
+                      <span className="flex items-center gap-1"><Truck className="h-3 w-3" /> Tracking available</span>
                     )}
                   </div>
                 </button>
