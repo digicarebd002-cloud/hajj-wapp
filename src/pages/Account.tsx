@@ -326,7 +326,7 @@ const AccountContent = () => {
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "ফাইল সাইজ ৫MB এর বেশি হতে পারবে না", variant: "destructive" });
+      toast({ title: "File size must not exceed 5MB", variant: "destructive" });
       return;
     }
 
