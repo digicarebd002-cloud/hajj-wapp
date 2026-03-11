@@ -28,10 +28,10 @@ type ContactMessage = {
 };
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  unread: { label: "অপঠিত", color: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400 border-yellow-500/30", icon: Mail },
-  read: { label: "পঠিত", color: "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30", icon: Eye },
-  replied: { label: "উত্তর দেওয়া হয়েছে", color: "bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30", icon: CheckCircle2 },
-  archived: { label: "আর্কাইভ", color: "bg-muted text-muted-foreground border-border", icon: Archive },
+  unread: { label: "Unread", color: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400 border-yellow-500/30", icon: Mail },
+  read: { label: "Read", color: "bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30", icon: Eye },
+  replied: { label: "Replied", color: "bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30", icon: CheckCircle2 },
+  archived: { label: "Archived", color: "bg-muted text-muted-foreground border-border", icon: Archive },
 };
 
 export default function AdminContacts() {
@@ -65,7 +65,7 @@ export default function AdminContacts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-contact-messages"] });
-      toast({ title: "আপডেট সফল!" });
+      toast({ title: "Updated successfully!" });
     },
   });
 
@@ -86,7 +86,7 @@ export default function AdminContacts() {
   const handleSaveNotes = () => {
     if (!selectedMsg) return;
     updateMutation.mutate({ id: selectedMsg.id, status: selectedMsg.status, admin_notes: adminNotes });
-    toast({ title: "নোট সেভ হয়েছে" });
+    toast({ title: "Notes saved" });
   };
 
   const filtered = messages.filter((m) => {
@@ -111,7 +111,7 @@ export default function AdminContacts() {
             Contact Messages
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            মোট {messages.length}টি মেসেজ {unreadCount > 0 && `• ${unreadCount}টি অপঠিত`}
+            Total {messages.length} messages {unreadCount > 0 && `• ${unreadCount} unread`}
           </p>
         </div>
       </div>
@@ -141,7 +141,7 @@ export default function AdminContacts() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="নাম, ইমেইল বা বিষয় দিয়ে খুঁজুন..."
+            placeholder="Search by name, email, or subject..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -152,7 +152,7 @@ export default function AdminContacts() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
+            <SelectItem value="all">All Statuses</SelectItem>
             {Object.entries(statusConfig).map(([key, cfg]) => (
               <SelectItem key={key} value={key}>{cfg.label}</SelectItem>
             ))}
@@ -164,21 +164,21 @@ export default function AdminContacts() {
       <Card>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-8 text-center text-muted-foreground">লোড হচ্ছে...</div>
+            <div className="p-8 text-center text-muted-foreground">Loading...</div>
           ) : filtered.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <Mail className="h-10 w-10 mx-auto mb-3 opacity-30" />
-              <p>কোনো মেসেজ পাওয়া যায়নি</p>
+              <p>No messages found</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>প্রেরক</TableHead>
-                  <TableHead>বিষয়</TableHead>
-                  <TableHead className="hidden md:table-cell">তারিখ</TableHead>
-                  <TableHead>স্ট্যাটাস</TableHead>
-                  <TableHead className="text-right">অ্যাকশন</TableHead>
+                  <TableHead>Sender</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead className="hidden md:table-cell">Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -227,41 +227,41 @@ export default function AdminContacts() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
-              মেসেজ বিস্তারিত
+              Message Details
             </DialogTitle>
           </DialogHeader>
           {selectedMsg && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">নাম</p>
+                  <p className="text-xs text-muted-foreground font-medium">Name</p>
                   <p className="font-semibold">{selectedMsg.name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">ইমেইল</p>
+                  <p className="text-xs text-muted-foreground font-medium">Email</p>
                   <a href={`mailto:${selectedMsg.email}`} className="font-semibold text-primary hover:underline">
                     {selectedMsg.email}
                   </a>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">বিষয়</p>
+                  <p className="text-xs text-muted-foreground font-medium">Subject</p>
                   <p className="font-semibold">{selectedMsg.subject}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">তারিখ</p>
+                  <p className="text-xs text-muted-foreground font-medium">Date</p>
                   <p>{format(new Date(selectedMsg.created_at), "dd MMM yyyy, hh:mm a")}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground font-medium mb-1">মেসেজ</p>
+                <p className="text-xs text-muted-foreground font-medium mb-1">Message</p>
                 <div className="bg-secondary/50 rounded-lg p-3 text-sm whitespace-pre-wrap max-h-40 overflow-y-auto">
                   {selectedMsg.message}
                 </div>
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground font-medium mb-1">স্ট্যাটাস পরিবর্তন</p>
+                <p className="text-xs text-muted-foreground font-medium mb-1">Change Status</p>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(statusConfig).map(([key, cfg]) => (
                     <Button
@@ -279,16 +279,16 @@ export default function AdminContacts() {
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground font-medium mb-1">অ্যাডমিন নোট</p>
+                <p className="text-xs text-muted-foreground font-medium mb-1">Admin Notes</p>
                 <Textarea
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder="এই মেসেজ সম্পর্কে নোট লিখুন..."
+                  placeholder="Write notes about this message..."
                   rows={3}
                 />
                 <Button size="sm" className="mt-2 gap-1.5" onClick={handleSaveNotes}>
                   <Send className="h-3.5 w-3.5" />
-                  নোট সেভ করুন
+                  Save Notes
                 </Button>
               </div>
             </div>

@@ -20,43 +20,43 @@ const categories = [
 
 const faqs: Record<string, { q: string; a: string }[]> = {
   general: [
-    { q: "Hajj Wallet কি?", a: "Hajj Wallet হলো একটি কমিউনিটি-ড্রিভেন সেভিংস প্ল্যাটফর্ম যা মুসলিমদের হজ্জের লক্ষ্যে সঞ্চয় করতে, প্যাকেজ বুক করতে এবং প্রয়োজনীয় পণ্য কিনতে সাহায্য করে।" },
-    { q: "কিভাবে অ্যাকাউন্ট তৈরি করবো?", a: "ওয়েবসাইটের উপরের ডানদিকে 'Login' বাটনে ক্লিক করুন, তারপর 'Register' ট্যাবে আপনার তথ্য দিয়ে অ্যাকাউন্ট তৈরি করুন। ইমেইল ভেরিফিকেশনের পর আপনার অ্যাকাউন্ট সক্রিয় হবে।" },
-    { q: "Hajj Wallet কি বিনামূল্যে ব্যবহার করা যায়?", a: "হ্যাঁ, বেসিক ফিচারগুলো সম্পূর্ণ বিনামূল্যে। তবে প্রিমিয়াম মেম্বারশিপ প্ল্যান নিলে আরও বেশি সুবিধা পাবেন যেমন এক্সক্লুসিভ ডিসকাউন্ট, অগ্রাধিকার সাপোর্ট ইত্যাদি।" },
-    { q: "রেফারেল কোড কিভাবে ব্যবহার করবো?", a: "রেজিস্ট্রেশনের সময় Referral Code ফিল্ডে আপনার বন্ধুর কোড দিন। সফল রেজিস্ট্রেশনের পর আপনি 25 পয়েন্ট এবং আপনার বন্ধু 50 পয়েন্ট পাবেন।" },
+    { q: "What is Hajj Wallet?", a: "Hajj Wallet is a community-driven savings platform that helps Muslims save toward their Hajj goal, book packages, and purchase essential products." },
+    { q: "How do I create an account?", a: "Click the 'Login' button at the top right of the website, then go to the 'Register' tab to create your account with your details. Your account will be active after email verification." },
+    { q: "Is Hajj Wallet free to use?", a: "Yes, the basic features are completely free. However, premium membership plans offer additional benefits such as exclusive discounts, priority support, and more." },
+    { q: "How do I use a referral code?", a: "Enter your friend's referral code in the Referral Code field during registration. After successful registration, you'll earn 25 points and your friend will earn 50 points." },
   ],
   wallet: [
-    { q: "ওয়ালেটে কিভাবে টাকা জমা করবো?", a: "Wallet পেজে গিয়ে 'Add Funds' বাটনে ক্লিক করুন। কার্ড, বিকাশ বা অন্যান্য পেমেন্ট মেথড ব্যবহার করে টাকা জমা দিতে পারবেন।" },
-    { q: "সেভিংস গোল কিভাবে সেট করবো?", a: "Wallet পেজে আপনার হজ্জের লক্ষ্যমাত্রা সেট করতে পারবেন। প্রোগ্রেস বার দিয়ে দেখতে পাবেন কতটুকু সঞ্চয় হয়েছে।" },
-    { q: "ওয়ালেট থেকে কি টাকা তোলা যায়?", a: "হ্যাঁ, আপনি যেকোনো সময় আপনার ওয়ালেট থেকে টাকা তুলতে পারেন। Withdrawal রিকোয়েস্ট সাধারণত ৩-৫ কর্মদিবসের মধ্যে প্রসেস হয়।" },
-    { q: "টিয়ার সিস্টেম কিভাবে কাজ করে?", a: "আপনার পয়েন্ট ও কন্ট্রিবিউশনের ভিত্তিতে টিয়ার আপগ্রেড হয়: Bronze → Silver → Gold → Platinum। প্রতিটি টিয়ারে বিভিন্ন সুবিধা ও ডিসকাউন্ট পাওয়া যায়।" },
+    { q: "How do I add funds to my wallet?", a: "Go to the Wallet page and click 'Add Funds'. You can deposit money using card, or other supported payment methods." },
+    { q: "How do I set a savings goal?", a: "On the Wallet page, you can set your Hajj savings target. A progress bar will show you how much you've saved so far." },
+    { q: "Can I withdraw money from my wallet?", a: "Yes, you can withdraw from your wallet at any time. Withdrawal requests are typically processed within 3-5 business days." },
+    { q: "How does the tier system work?", a: "Your tier upgrades based on your points and contributions: Bronze → Silver → Gold → Platinum. Each tier comes with different benefits and discounts." },
   ],
   store: [
-    { q: "অর্ডার করার পর কতদিনে ডেলিভারি পাবো?", a: "সাধারণত ৫-১০ কর্মদিবসের মধ্যে ডেলিভারি হয়। শিপিং স্ট্যাটাস আপনার 'My Orders' পেজ থেকে ট্র্যাক করতে পারবেন।" },
-    { q: "প্রোডাক্ট রিটার্ন বা এক্সচেঞ্জ করতে পারবো?", a: "হ্যাঁ, ডেলিভারির ৭ দিনের মধ্যে রিটার্ন বা এক্সচেঞ্জ করতে পারবেন। প্রোডাক্ট অবশ্যই অব্যবহৃত এবং আসল প্যাকেজিংসহ হতে হবে।" },
-    { q: "কুপন কোড কিভাবে ব্যবহার করবো?", a: "চেকআউটের সময় কুপন কোড ফিল্ডে আপনার কোড দিন এবং 'Apply' বাটনে ক্লিক করুন। বৈধ কোড হলে ডিসকাউন্ট অটোমেটিকভাবে যোগ হবে।" },
-    { q: "Wishlist কিভাবে ব্যবহার করবো?", a: "যেকোনো প্রোডাক্টের হার্ট আইকনে ক্লিক করে সেটি Wishlist-এ সেভ করতে পারবেন। পরে Wishlist পেজ থেকে সহজেই কিনতে পারবেন।" },
+    { q: "How long does delivery take after ordering?", a: "Delivery typically takes 5-10 business days. You can track your shipping status from the 'My Orders' page." },
+    { q: "Can I return or exchange a product?", a: "Yes, you can return or exchange within 7 days of delivery. The product must be unused and in its original packaging." },
+    { q: "How do I use a coupon code?", a: "Enter your coupon code in the coupon field at checkout and click 'Apply'. If the code is valid, the discount will be applied automatically." },
+    { q: "How do I use the Wishlist?", a: "Click the heart icon on any product to save it to your Wishlist. You can easily purchase items later from the Wishlist page." },
   ],
   packages: [
-    { q: "হজ্জ প্যাকেজ কিভাবে বুক করবো?", a: "Packages পেজে গিয়ে আপনার পছন্দের প্যাকেজ বাছাই করুন, তারপর 'Book Now' ক্লিক করে প্রয়োজনীয় তথ্য দিয়ে বুকিং সম্পন্ন করুন।" },
-    { q: "কিস্তিতে পেমেন্ট করা যায়?", a: "হ্যাঁ, বুকিংয়ের সময় 'Installment' পেমেন্ট অপশন সিলেক্ট করতে পারবেন। ৩, ৬ বা ১২ মাসের কিস্তি প্ল্যান পাওয়া যায়।" },
-    { q: "বুকিং ক্যান্সেল করলে রিফান্ড পাবো?", a: "ক্যান্সেলেশন পলিসি অনুযায়ী, ৩০ দিন আগে ক্যান্সেল করলে ৮০% রিফান্ড, ১৫ দিন আগে ৫০% রিফান্ড পাবেন। বিস্তারিত Terms of Service পেজে দেখুন।" },
-    { q: "স্পনসরশিপ প্রোগ্রাম কি?", a: "যারা আর্থিকভাবে অক্ষম তাদের জন্য হজ্জ স্পনসরশিপ প্রোগ্রাম রয়েছে। Sponsorship পেজ থেকে আবেদন করতে পারবেন।" },
+    { q: "How do I book a Hajj package?", a: "Go to the Packages page, select your preferred package, then click 'Book Now' and fill in the required information to complete your booking." },
+    { q: "Can I pay in installments?", a: "Yes, you can select the 'Installment' payment option during booking. Plans of 3, 6, or 12 months are available." },
+    { q: "Will I get a refund if I cancel my booking?", a: "According to our cancellation policy, cancelling 30 days in advance gives an 80% refund, and 15 days in advance gives a 50% refund. See the Terms of Service page for details." },
+    { q: "What is the sponsorship program?", a: "We have a Hajj sponsorship program for those who are financially unable. You can apply from the Sponsorship page." },
   ],
   community: [
-    { q: "কমিউনিটিতে কিভাবে পোস্ট করবো?", a: "Community পেজে গিয়ে 'New Discussion' বাটনে ক্লিক করুন। ক্যাটাগরি সিলেক্ট করে আপনার প্রশ্ন বা আলোচনা শুরু করুন।" },
-    { q: "পয়েন্ট কিভাবে আর্ন করবো?", a: "ডিসকাশন তৈরি, রিপ্লাই, লাইক পাওয়া, বেস্ট আনসার, ওয়ালেট কন্ট্রিবিউশন, রেফারেল — এসব কাজে পয়েন্ট আর্ন করতে পারবেন। Account পেজে পয়েন্ট হিস্ট্রি দেখুন।" },
-    { q: "ডিসকাশন রিপোর্ট করতে চাই, কিভাবে করবো?", a: "অনুচিত বা অপ্রাসঙ্গিক কন্টেন্ট পেলে সাপোর্টে যোগাযোগ করুন। আমাদের মডারেশন টিম দ্রুত ব্যবস্থা নেবে।" },
+    { q: "How do I post in the community?", a: "Go to the Community page and click 'New Discussion'. Select a category and start your question or discussion." },
+    { q: "How do I earn points?", a: "You can earn points by creating discussions, replying, receiving likes, getting best answers, wallet contributions, and referrals. Check your points history on the Account page." },
+    { q: "How do I report a discussion?", a: "If you find inappropriate or irrelevant content, please contact support. Our moderation team will take action promptly." },
   ],
   account: [
-    { q: "পাসওয়ার্ড ভুলে গেলে কি করবো?", a: "লগইন পেজে 'Forgot password?' লিংকে ক্লিক করুন। আপনার ইমেইলে একটি রিসেট লিংক পাঠানো হবে।" },
-    { q: "প্রোফাইল আপডেট কিভাবে করবো?", a: "Account পেজে গিয়ে 'Profile' ট্যাবে আপনার নাম, ফোন নম্বর, অ্যাভাটার ইত্যাদি আপডেট করতে পারবেন।" },
-    { q: "নোটিফিকেশন সেটিংস কাস্টমাইজ করতে চাই", a: "Account পেজের 'Notifications' ট্যাবে গিয়ে কোন ধরনের নোটিফিকেশন পেতে চান সেটি কাস্টমাইজ করতে পারবেন।" },
+    { q: "What if I forget my password?", a: "Click the 'Forgot password?' link on the login page. A reset link will be sent to your email." },
+    { q: "How do I update my profile?", a: "Go to the Account page, then the 'Profile' tab to update your name, phone number, avatar, and more." },
+    { q: "How do I customize notification settings?", a: "Go to the 'Notifications' tab on the Account page to customize which types of notifications you want to receive." },
   ],
   payments: [
-    { q: "কোন কোন পেমেন্ট মেথড সাপোর্ট করে?", a: "বর্তমানে Visa, Mastercard, American Express কার্ড সাপোর্ট করে। ভবিষ্যতে বিকাশ, নগদ ও অন্যান্য লোকাল পেমেন্ট অপশন যোগ হবে।" },
-    { q: "পেমেন্ট নিরাপদ কিনা?", a: "হ্যাঁ, সমস্ত পেমেন্ট SSL এনক্রিপ্টেড এবং Stripe-এর মাধ্যমে প্রসেস হয়। আমরা কোনো কার্ড তথ্য সংরক্ষণ করি না।" },
-    { q: "ইনভয়েস কিভাবে ডাউনলোড করবো?", a: "My Orders পেজে প্রতিটি অর্ডারের পাশে 'Download Invoice' বাটন আছে। সেখান থেকে PDF ইনভয়েস ডাউনলোড করতে পারবেন।" },
+    { q: "Which payment methods are supported?", a: "We currently support Visa, Mastercard, and American Express cards. Additional local payment options will be added in the future." },
+    { q: "Is my payment secure?", a: "Yes, all payments are SSL encrypted and processed through Stripe. We do not store any card information." },
+    { q: "How do I download an invoice?", a: "On the My Orders page, each order has a 'Download Invoice' button. You can download a PDF invoice from there." },
   ],
 };
 
@@ -75,7 +75,7 @@ const FAQ = () => {
 
   return (
     <>
-      <SEOHead title="FAQ & Help Center — Hajj Wallet" description="Hajj Wallet সম্পর্কে সাধারণ প্রশ্ন ও উত্তর। ওয়ালেট, স্টোর, প্যাকেজ, কমিউনিটি বিষয়ে সাহায্য পান।" />
+      <SEOHead title="FAQ & Help Center — Hajj Wallet" description="Frequently asked questions and answers about Hajj Wallet. Get help with wallet, store, packages, and community." />
 
       {/* Hero */}
       <section className="relative bg-gradient-to-b from-primary/10 via-background to-background py-16 md:py-24">
@@ -84,12 +84,12 @@ const FAQ = () => {
             <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-primary/10 flex items-center justify-center">
               <HelpCircle className="h-7 w-7 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-3">{get("hero_title", "সাহায্য কেন্দ্র")}</h1>
-            <p className="text-muted-foreground mb-8">{get("hero_subtitle", "আপনার প্রশ্নের উত্তর খুঁজুন বা আমাদের সাথে যোগাযোগ করুন")}</p>
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-3">{get("hero_title", "Help Center")}</h1>
+            <p className="text-muted-foreground mb-8">{get("hero_subtitle", "Find answers to your questions or contact us")}</p>
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-muted-foreground" />
               <Input
-                placeholder="প্রশ্ন সার্চ করুন..."
+                placeholder="Search questions..."
                 className="pl-10 h-12 rounded-xl"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -133,18 +133,18 @@ const FAQ = () => {
           >
             {search && (
               <p className="text-sm text-muted-foreground mb-4">
-                "{search}" — {filteredFaqs.length}টি ফলাফল পাওয়া গেছে
+                "{search}" — {filteredFaqs.length} result{filteredFaqs.length !== 1 ? "s" : ""} found
               </p>
             )}
 
             {filteredFaqs.length === 0 ? (
               <div className="text-center py-16">
                 <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                <h3 className="font-semibold mb-1">কোনো ফলাফল পাওয়া যায়নি</h3>
-                <p className="text-sm text-muted-foreground mb-4">অন্য কিওয়ার্ড দিয়ে চেষ্টা করুন অথবা সরাসরি আমাদের সাথে যোগাযোগ করুন।</p>
+                <h3 className="font-semibold mb-1">No results found</h3>
+                <p className="text-sm text-muted-foreground mb-4">Try a different keyword or contact us directly.</p>
                 <Link to="/messages">
                   <Button variant="outline" className="gap-2">
-                    <Mail className="h-4 w-4" /> যোগাযোগ করুন
+                    <Mail className="h-4 w-4" /> Contact Us
                   </Button>
                 </Link>
               </div>
@@ -176,12 +176,12 @@ const FAQ = () => {
           viewport={{ once: true }}
           className="mt-16 max-w-2xl mx-auto text-center bg-card rounded-2xl border p-8"
         >
-          <h2 className="text-xl font-bold mb-2">আপনার প্রশ্নের উত্তর পাননি?</h2>
-          <p className="text-sm text-muted-foreground mb-5">আমাদের সাপোর্ট টিম আপনাকে সাহায্য করতে প্রস্তুত</p>
+          <h2 className="text-xl font-bold mb-2">Didn't find your answer?</h2>
+          <p className="text-sm text-muted-foreground mb-5">Our support team is ready to help you</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link to="/messages">
               <Button className="gap-2 rounded-xl">
-                <Mail className="h-4 w-4" /> মেসেজ পাঠান
+                <Mail className="h-4 w-4" /> Send a Message
               </Button>
             </Link>
             <a href="mailto:support@hajjwallet.com">

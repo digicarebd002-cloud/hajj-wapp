@@ -52,11 +52,11 @@ const Navbar = () => {
           <motion.img
             src={logoImg}
             alt="Hajj Wallet"
-            className="h-12 w-12 object-contain"
+            className="h-10 w-10 object-contain"
             whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
             transition={{ duration: 0.5 }}
           />
-          <span className="font-extrabold text-xl tracking-tight uppercase">
+          <span className="font-extrabold text-base md:text-lg tracking-tight uppercase">
             <span className="text-foreground">HAJJ</span>{" "}
             <span className="text-primary">WALLET</span>
           </span>

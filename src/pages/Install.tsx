@@ -32,9 +32,9 @@ const Install = () => {
         <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
           <Smartphone className="h-10 w-10 text-primary" />
         </div>
-        <h1 className="text-3xl font-extrabold text-foreground mb-2">অ্যাপ ইনস্টল করুন</h1>
+        <h1 className="text-3xl font-extrabold text-foreground mb-2">Install the App</h1>
         <p className="text-muted-foreground">
-          Hajj Wallet আপনার ফোনে ইনস্টল করুন — অফলাইনেও ব্যবহার করুন
+          Install Hajj Wallet on your phone — use it even offline
         </p>
       </motion.div>
 
@@ -48,26 +48,26 @@ const Install = () => {
                   <Download className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-foreground mb-1">অ্যাপ ইনস্টল</h3>
+                  <h3 className="font-bold text-foreground mb-1">Install App</h3>
                   {isInstalled ? (
                     <div className="flex items-center gap-2 text-primary">
                       <Check className="h-4 w-4" />
-                      <span className="text-sm font-medium">ইতিমধ্যে ইনস্টল হয়েছে!</span>
+                      <span className="text-sm font-medium">Already installed!</span>
                     </div>
                   ) : isInstallable ? (
                     <>
                       <p className="text-sm text-muted-foreground mb-3">
-                        হোম স্ক্রিনে যোগ করুন — নেটিভ অ্যাপের মতো কাজ করবে
+                        Add to your home screen — works like a native app
                       </p>
                       <Button onClick={handleInstall} className="rounded-full gap-2">
                         <Download className="h-4 w-4" />
-                        ইনস্টল করুন
+                        Install
                       </Button>
                     </>
                   ) : (
                     <div className="space-y-3">
                       <p className="text-sm text-muted-foreground">
-                        ব্রাউজার মেনু থেকে ইনস্টল করুন:
+                        Install from your browser menu:
                       </p>
                       <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
                         <div className="flex items-center gap-3">
@@ -80,7 +80,7 @@ const Install = () => {
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">And</div>
                           <div className="text-sm text-foreground">
-                            Menu (⋮) → <strong>"Install App"</strong> বা <strong>"Add to Home Screen"</strong>
+                            Menu (⋮) → <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>
                           </div>
                         </div>
                       </div>
@@ -102,7 +102,7 @@ const Install = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-bold text-foreground">পুশ নোটিফিকেশন</h3>
+                    <h3 className="font-bold text-foreground">Push Notifications</h3>
                     <Switch
                       checked={isSubscribed}
                       onCheckedChange={handleNotificationToggle}
@@ -111,10 +111,10 @@ const Install = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {permission === "denied"
-                      ? "নোটিফিকেশন ব্লক করা আছে — ব্রাউজার সেটিংস থেকে অনুমতি দিন"
+                      ? "Notifications are blocked — please allow them from browser settings"
                       : isSubscribed
-                        ? "আপনি নোটিফিকেশন পাবেন — ওয়ালেট আপডেট, অর্ডার, কমিউনিটি"
-                        : "ওয়ালেট আপডেট, অর্ডার স্ট্যাটাস, এবং কমিউনিটি আপডেট পান"
+                        ? "You'll receive notifications — wallet updates, orders, community"
+                        : "Get wallet updates, order status, and community updates"
                     }
                   </p>
                 </div>
@@ -132,11 +132,11 @@ const Install = () => {
                   {isOnline ? <Wifi className="h-6 w-6 text-primary" /> : <WifiOff className="h-6 w-6 text-destructive" />}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-foreground mb-1">অফলাইন মোড</h3>
+                  <h3 className="font-bold text-foreground mb-1">Offline Mode</h3>
                   <p className="text-sm text-muted-foreground">
                     {isOnline
-                      ? "আপনি অনলাইন আছেন। অ্যাপটি অফলাইনেও কাজ করবে — আগে দেখা পেজগুলো ক্যাশ থেকে লোড হবে।"
-                      : "আপনি অফলাইন আছেন। ক্যাশ করা ডেটা দেখানো হচ্ছে — ইন্টারনেট ফিরে আসলে অটোমেটিক সিঙ্ক হবে।"
+                      ? "You are online. The app also works offline — previously viewed pages load from cache."
+                      : "You are offline. Cached data is being shown — it will sync automatically when internet returns."
                     }
                   </p>
                 </div>
@@ -149,15 +149,15 @@ const Install = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <Card className="border-border bg-secondary/30">
             <CardContent className="p-6">
-              <h3 className="font-bold text-foreground mb-4">অ্যাপ ইনস্টলের সুবিধা</h3>
+              <h3 className="font-bold text-foreground mb-4">Benefits of Installing the App</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  "হোম স্ক্রিন থেকে সরাসরি ওপেন",
-                  "ফুলস্ক্রিন অভিজ্ঞতা",
-                  "অফলাইনে ব্রাউজ করুন",
-                  "দ্রুত লোডিং স্পিড",
-                  "পুশ নোটিফিকেশন",
-                  "কম ডেটা ব্যবহার",
+                  "Open directly from home screen",
+                  "Full-screen experience",
+                  "Browse offline",
+                  "Faster loading speed",
+                  "Push notifications",
+                  "Lower data usage",
                 ].map((feature, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary shrink-0" />
