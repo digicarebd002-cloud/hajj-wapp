@@ -76,7 +76,7 @@ const Messages = () => {
   const ConversationList = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <h2 className="font-bold text-lg text-foreground">মেসেজ</h2>
+        <h2 className="font-bold text-lg text-foreground">Messages</h2>
         <Button
           variant="ghost"
           size="icon"
