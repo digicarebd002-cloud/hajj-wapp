@@ -300,7 +300,16 @@ const AccountContent = () => {
   const { user, signOut } = useAuth();
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
+  const { data: transactions } = useWalletTransactions();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const [userOrders, setUserOrders] = useState<{ total: number; created_at: string; status: string }[] | null>(null);
+  const [userBookings, setUserBookings] = useState<{ created_at: string; status: string }[] | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("orders").select("total, created_at, status").eq("user_id", user.id).then(({ data }) => setUserOrders(data || []));
+    supabase.from("bookings").select("created_at, status").eq("user_id", user.id).then(({ data }) => setUserBookings(data || []));
+  }, [user]);
   const { code: referralCode, stats: referralStats, getReferralLink } = useReferral();
   const [avatarUploading, setAvatarUploading] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
