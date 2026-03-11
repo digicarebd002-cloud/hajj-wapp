@@ -38,10 +38,10 @@ const Messages = () => {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4">
         <MessageSquarePlus className="h-16 w-16 text-muted-foreground/40" />
-        <h2 className="text-xl font-bold text-foreground">প্রাইভেট মেসেজিং</h2>
-        <p className="text-muted-foreground text-center">মেসেজ পাঠাতে লগইন করুন</p>
+        <h2 className="text-xl font-bold text-foreground">Private Messaging</h2>
+        <p className="text-muted-foreground text-center">Sign in to send messages</p>
         <Link to="/auth">
-          <Button className="rounded-full">লগইন করুন</Button>
+          <Button className="rounded-full">Sign In</Button>
         </Link>
       </div>
     );
