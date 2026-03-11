@@ -218,7 +218,7 @@ const OrdersContent = () => {
                   {order.shipping_carrier && (
                     <div className="flex items-center justify-between bg-secondary/50 rounded-lg p-3">
                       <div>
-                        <p className="text-xs text-muted-foreground">কুরিয়ার</p>
+                        <p className="text-xs text-muted-foreground">Carrier</p>
                         <p className="text-sm font-medium text-foreground">{order.shipping_carrier}</p>
                       </div>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
