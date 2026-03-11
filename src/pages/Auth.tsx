@@ -24,6 +24,7 @@ const Auth = () => {
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const refCode = searchParams.get("ref") || "";
 
   const handleForgotPassword = async () => {
