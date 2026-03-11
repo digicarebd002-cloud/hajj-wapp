@@ -42,14 +42,18 @@ const ContactUs = () => {
     }
 
     setLoading(true);
-    // Store as a notification to admin for now
-    if (user) {
-      await supabase.from("notifications").insert({
-        user_id: user.id,
-        title: `Contact: ${form.subject}`,
-        body: `From: ${form.name} (${form.email})\n\n${form.message}`,
-        type: "system",
-      });
+    const { error } = await supabase.from("contact_messages" as any).insert({
+      name: form.name,
+      email: form.email,
+      subject: form.subject,
+      message: form.message,
+      user_id: user?.id || null,
+    } as any);
+
+    if (error) {
+      toast({ title: "মেসেজ পাঠাতে সমস্যা হয়েছে", variant: "destructive" });
+      setLoading(false);
+      return;
     }
 
     toast({ title: "মেসেজ পাঠানো হয়েছে!", description: "আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।" });

@@ -27,6 +27,7 @@ const navItems = [
   { title: "Coupons", url: "/admin/coupons", icon: Tag },
   { title: "Bookings", url: "/admin/bookings", icon: CalendarCheck },
   { title: "Community", url: "/admin/community", icon: MessageSquare },
+  { title: "Contacts", url: "/admin/contacts", icon: Mail },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Pages", url: "/admin/pages", icon: FileText },
   { title: "Settings", url: "/admin/settings", icon: Settings },

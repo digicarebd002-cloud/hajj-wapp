@@ -71,6 +71,7 @@ const App = () => (
                   <Route path="bookings" element={<AdminBookings />} />
                   <Route path="coupons" element={<AdminCoupons />} />
                   <Route path="community" element={<AdminCommunity />} />
+                  <Route path="contacts" element={<AdminContacts />} />
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="pages" element={<AdminPageManagement />} />
                   <Route path="settings" element={<AdminSettings />} />
