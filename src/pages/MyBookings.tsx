@@ -227,9 +227,9 @@ const MyBookingsContent = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-foreground flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-primary" /> কিস্তি পরিকল্পনা
+                    <CalendarDays className="h-4 w-4 text-primary" /> Installment Plan
                   </h3>
-                  <span className="text-sm text-muted-foreground">{paidCount}/{totalInstallments} পরিশোধিত</span>
+                  <span className="text-sm text-muted-foreground">{paidCount}/{totalInstallments} paid</span>
                 </div>
 
                 {/* Progress */}
