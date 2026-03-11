@@ -248,22 +248,10 @@ const communityStats = [
   { label: "Dreams Achieved", value: "320+", icon: Trophy },
 ];
 
-const testimonials = [
-  {
-    quote: "This platform made saving for Hajj so much easier. The weekly reminders and progress tracking kept me motivated throughout the entire journey.",
-    name: "Ahmed R.",
-    role: "Completed Hajj 2024",
-  },
-  {
-    quote: "I never thought I could save enough in just 18 months. The calculator helped me plan realistically, and the community kept me going.",
-    name: "Fatima K.",
-    role: "Gold Tier Member",
-  },
-  {
-    quote: "The membership benefits are incredible — the points I earned from contributions gave me a discount on my Hajj package booking!",
-    name: "Omar S.",
-    role: "Platinum Tier Member",
-  },
+const fallbackTestimonials = [
+  { quote: "This platform made saving for Hajj so much easier. The weekly reminders and progress tracking kept me motivated.", full_name: "Ahmed R.", country: "Completed Hajj 2024", rating: 5 },
+  { quote: "I never thought I could save enough in just 18 months. The calculator helped me plan realistically.", full_name: "Fatima K.", country: "Gold Tier Member", rating: 5 },
+  { quote: "The membership benefits are incredible — the points I earned gave me a discount on my Hajj package!", full_name: "Omar S.", country: "Platinum Tier Member", rating: 5 },
 ];
 
 const CommunityStats = () => (
