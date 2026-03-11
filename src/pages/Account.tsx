@@ -652,6 +652,11 @@ const AccountContent = () => {
                 </div>
               )}
 
+              {/* Push Notification Toggle */}
+              <div className="mt-6">
+                <PushNotificationToggle />
+              </div>
+
               <div className="flex gap-3 mt-6">
                 <Button type="submit" className="flex-1">Save Changes</Button>
                 <Button type="button" variant="destructive" className="gap-2" onClick={handleSignOut}><LogOut className="h-4 w-4" /> Sign Out</Button>
