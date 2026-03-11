@@ -8,21 +8,21 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Static FAQ data for search
 const faqItems = [
-  { q: "Hajj Wallet কি?", category: "General", path: "/faq" },
-  { q: "কিভাবে অ্যাকাউন্ট তৈরি করবো?", category: "General", path: "/faq" },
-  { q: "ওয়ালেটে কিভাবে টাকা জমা করবো?", category: "Wallet", path: "/faq" },
-  { q: "সেভিংস গোল কিভাবে সেট করবো?", category: "Wallet", path: "/faq" },
-  { q: "টিয়ার সিস্টেম কিভাবে কাজ করে?", category: "Wallet", path: "/faq" },
-  { q: "অর্ডার করার পর কতদিনে ডেলিভারি পাবো?", category: "Store", path: "/faq" },
-  { q: "কুপন কোড কিভাবে ব্যবহার করবো?", category: "Store", path: "/faq" },
-  { q: "হজ্জ প্যাকেজ কিভাবে বুক করবো?", category: "Packages", path: "/faq" },
-  { q: "কিস্তিতে পেমেন্ট করা যায়?", category: "Packages", path: "/faq" },
-  { q: "পাসওয়ার্ড ভুলে গেলে কি করবো?", category: "Account", path: "/faq" },
-  { q: "পেমেন্ট নিরাপদ কিনা?", category: "Payments", path: "/faq" },
-  { q: "ইনভয়েস কিভাবে ডাউনলোড করবো?", category: "Payments", path: "/faq" },
-  { q: "রেফারেল কোড কিভাবে ব্যবহার করবো?", category: "General", path: "/faq" },
-  { q: "স্পনসরশিপ প্রোগ্রাম কি?", category: "Packages", path: "/faq" },
-  { q: "Wishlist কিভাবে ব্যবহার করবো?", category: "Store", path: "/faq" },
+  { q: "What is Hajj Wallet?", category: "General", path: "/faq" },
+  { q: "How do I create an account?", category: "General", path: "/faq" },
+  { q: "How do I add funds to my wallet?", category: "Wallet", path: "/faq" },
+  { q: "How do I set a savings goal?", category: "Wallet", path: "/faq" },
+  { q: "How does the tier system work?", category: "Wallet", path: "/faq" },
+  { q: "How long does delivery take after ordering?", category: "Store", path: "/faq" },
+  { q: "How do I use a coupon code?", category: "Store", path: "/faq" },
+  { q: "How do I book a Hajj package?", category: "Packages", path: "/faq" },
+  { q: "Can I pay in installments?", category: "Packages", path: "/faq" },
+  { q: "What if I forget my password?", category: "Account", path: "/faq" },
+  { q: "Is my payment secure?", category: "Payments", path: "/faq" },
+  { q: "How do I download an invoice?", category: "Payments", path: "/faq" },
+  { q: "How do I use a referral code?", category: "General", path: "/faq" },
+  { q: "What is the sponsorship program?", category: "Packages", path: "/faq" },
+  { q: "How do I use the Wishlist?", category: "Store", path: "/faq" },
 ];
 
 type SearchResult = {
@@ -152,8 +152,8 @@ export default function GlobalSearch() {
 
   const typeLabel = (type: string) => {
     switch (type) {
-      case "product": return "প্রোডাক্ট";
-      case "package": return "প্যাকেজ";
+      case "product": return "Product";
+      case "package": return "Package";
       case "faq": return "FAQ";
       default: return "";
     }
@@ -167,7 +167,7 @@ export default function GlobalSearch() {
         className="flex items-center gap-2 px-3 py-2 rounded-full bg-secondary/60 hover:bg-secondary text-muted-foreground text-sm transition-colors"
       >
         <Search className="h-4 w-4" />
-        <span className="hidden lg:inline">সার্চ করুন...</span>
+        <span className="hidden lg:inline">Search...</span>
         <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono font-medium text-muted-foreground border border-border">
           ⌘K
         </kbd>
@@ -183,7 +183,7 @@ export default function GlobalSearch() {
               ref={inputRef}
               value={query}
               onChange={(e) => handleQueryChange(e.target.value)}
-              placeholder="প্রোডাক্ট, প্যাকেজ বা প্রশ্ন সার্চ করুন..."
+              placeholder="Search products, packages, or questions..."
               className="border-0 bg-transparent shadow-none focus-visible:ring-0 h-14 text-base"
             />
             {query && (
@@ -204,14 +204,14 @@ export default function GlobalSearch() {
             {!loading && query.length >= 2 && results.length === 0 && (
               <div className="text-center py-8">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
-                <p className="text-sm text-muted-foreground">"{query}" এর জন্য কোনো ফলাফল পাওয়া যায়নি</p>
+                <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
               </div>
             )}
 
             {!loading && query.length < 2 && (
               <div className="text-center py-8">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground/20 mb-2" />
-                <p className="text-sm text-muted-foreground">কমপক্ষে ২ অক্ষর লিখুন</p>
+                <p className="text-sm text-muted-foreground">Type at least 2 characters</p>
               </div>
             )}
 
@@ -258,7 +258,7 @@ export default function GlobalSearch() {
 
           {/* Footer hint */}
           <div className="border-t border-border px-4 py-2 flex items-center justify-between text-[11px] text-muted-foreground">
-            <span>↑↓ নেভিগেট করুন • Enter সিলেক্ট • Esc বন্ধ</span>
+            <span>↑↓ Navigate • Enter Select • Esc Close</span>
             <span className="font-mono">⌘K</span>
           </div>
         </DialogContent>
