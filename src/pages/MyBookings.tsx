@@ -205,12 +205,12 @@ const MyBookingsContent = () => {
           {/* Traveller Info */}
           <Card className="mb-6 border-border">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-foreground mb-3">যাত্রী তথ্য</h3>
+              <h3 className="font-semibold text-foreground mb-3">Traveller Information</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><p className="text-xs text-muted-foreground">নাম</p><p className="font-medium text-foreground">{b.traveller_name}</p></div>
-                <div><p className="text-xs text-muted-foreground">ইমেইল</p><p className="font-medium text-foreground">{b.email}</p></div>
-                <div><p className="text-xs text-muted-foreground">ফোন</p><p className="font-medium text-foreground">{b.phone}</p></div>
-                <div><p className="text-xs text-muted-foreground">পাসপোর্ট</p><p className="font-medium text-foreground">{b.passport_number}</p></div>
+                <div><p className="text-xs text-muted-foreground">Name</p><p className="font-medium text-foreground">{b.traveller_name}</p></div>
+                <div><p className="text-xs text-muted-foreground">Email</p><p className="font-medium text-foreground">{b.email}</p></div>
+                <div><p className="text-xs text-muted-foreground">Phone</p><p className="font-medium text-foreground">{b.phone}</p></div>
+                <div><p className="text-xs text-muted-foreground">Passport</p><p className="font-medium text-foreground">{b.passport_number}</p></div>
               </div>
               {b.special_requests && (
                 <div className="mt-3">
