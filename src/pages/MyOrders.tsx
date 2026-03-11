@@ -307,7 +307,7 @@ const OrdersContent = () => {
                   paymentMethod: "card",
                 });
                 doc.save(`invoice-${order.id.slice(0, 8).toUpperCase()}.pdf`);
-                toast({ title: "ইনভয়েস ডাউনলোড হয়েছে!" });
+                toast({ title: "Invoice downloaded!" });
               }}
             >
               <FileDown className="h-4 w-4" />
