@@ -328,7 +328,7 @@ const MyBookingsContent = () => {
             }}
           >
             <FileDown className="h-4 w-4" />
-            বুকিং রিসিট ডাউনলোড করুন
+            Download Booking Receipt
           </Button>
         </motion.div>
       </div>
