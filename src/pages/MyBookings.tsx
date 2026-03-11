@@ -397,7 +397,7 @@ const MyBookingsContent = () => {
                       <span className="font-medium text-foreground">${Number(b.packages?.price ?? 0).toLocaleString()}</span>
                       {b.payment_method === "plan" && (
                         <span className="flex items-center gap-1">
-                          <CreditCard className="h-3 w-3" /> {b.installment_months}-মাস কিস্তি
+                          <CreditCard className="h-3 w-3" /> {b.installment_months}-month installment
                         </span>
                       )}
                     </div>
