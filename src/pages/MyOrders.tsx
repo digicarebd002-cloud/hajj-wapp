@@ -203,7 +203,7 @@ const OrdersContent = () => {
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Truck className="h-4 w-4 text-primary" /> ট্র্যাকিং তথ্য
+                  <Truck className="h-4 w-4 text-primary" /> Tracking Information
                 </h3>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between bg-secondary/50 rounded-lg p-3">
