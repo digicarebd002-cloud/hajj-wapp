@@ -214,7 +214,7 @@ const MyBookingsContent = () => {
               </div>
               {b.special_requests && (
                 <div className="mt-3">
-                  <p className="text-xs text-muted-foreground">বিশেষ অনুরোধ</p>
+                  <p className="text-xs text-muted-foreground">Special Requests</p>
                   <p className="text-sm text-foreground">{b.special_requests}</p>
                 </div>
               )}
