@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Camera, Loader2, Gift, Copy, Users, Share2 } from "lucide-react";
+import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3 } from "lucide-react";
+import UserAnalytics from "@/components/UserAnalytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
@@ -299,7 +300,16 @@ const AccountContent = () => {
   const { user, signOut } = useAuth();
   const { data: profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile();
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
+  const { data: transactions } = useWalletTransactions();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const [userOrders, setUserOrders] = useState<{ total: number; created_at: string; status: string }[] | null>(null);
+  const [userBookings, setUserBookings] = useState<{ created_at: string; status: string }[] | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("orders").select("total, created_at, status").eq("user_id", user.id).then(({ data }) => setUserOrders(data || []));
+    supabase.from("bookings").select("created_at, status").eq("user_id", user.id).then(({ data }) => setUserBookings(data || []));
+  }, [user]);
   const { code: referralCode, stats: referralStats, getReferralLink } = useReferral();
   const [avatarUploading, setAvatarUploading] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -447,8 +457,9 @@ const AccountContent = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
             <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -575,6 +586,17 @@ const AccountContent = () => {
               <h3 className="font-semibold mb-1">Need Help?</h3>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4" /> 1-800-HAJJ-HELP</p>
             </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <UserAnalytics
+              transactions={transactions}
+              wallet={wallet}
+              profile={profile}
+              orders={userOrders}
+              bookings={userBookings}
+            />
           </TabsContent>
 
           {/* Points Tab */}
