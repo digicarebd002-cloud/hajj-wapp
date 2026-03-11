@@ -339,9 +339,9 @@ const OrdersContent = () => {
       ) : orders.length === 0 ? (
         <EmptyState
           icon="📦"
-          title="কোনো অর্ডার নেই"
-          description="আপনি এখনো কোনো অর্ডার করেননি"
-          actionLabel="স্টোরে যান"
+          title="No orders yet"
+          description="You haven't placed any orders yet"
+          actionLabel="Go to Store"
           actionTo="/store"
         />
       ) : (
