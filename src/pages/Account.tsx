@@ -322,7 +322,7 @@ const AccountContent = () => {
 
     // Validate
     if (!file.type.startsWith("image/")) {
-      toast({ title: "শুধু ইমেজ ফাইল আপলোড করুন", variant: "destructive" });
+      toast({ title: "Please upload an image file only", variant: "destructive" });
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
