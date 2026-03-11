@@ -324,8 +324,8 @@ const OrdersContent = () => {
     <div className="container mx-auto px-4 py-6 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-foreground">আমার অর্ডার</h1>
-          <p className="text-sm text-muted-foreground">আপনার সব অর্ডার ও শিপিং স্ট্যাটাস দেখুন</p>
+          <h1 className="text-2xl font-extrabold text-foreground">My Orders</h1>
+          <p className="text-sm text-muted-foreground">View all your orders and shipping status</p>
         </div>
         <Link to="/store">
           <Button variant="outline" className="gap-2 rounded-full">
