@@ -79,6 +79,7 @@ const App = () => (
                   <Route path="notifications" element={<AdminNotifications />} />
                   <Route path="pages" element={<AdminPageManagement />} />
                   <Route path="blog" element={<AdminBlog />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 

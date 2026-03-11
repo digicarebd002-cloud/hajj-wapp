@@ -31,6 +31,7 @@ const navItems = [
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Pages", url: "/admin/pages", icon: FileText },
   { title: "Blog", url: "/admin/blog", icon: BookOpen },
+  { title: "Testimonials", url: "/admin/testimonials", icon: Quote },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
