@@ -240,7 +240,7 @@ const OrdersContent = () => {
             <Card className="mb-6 border-border">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary" /> শিপিং ঠিকানা
+                  <MapPin className="h-4 w-4 text-primary" /> Shipping Address
                 </h3>
                 <div className="bg-secondary/50 rounded-lg p-4 text-sm text-foreground">
                   <p className="font-medium">{address.name || ""}</p>
