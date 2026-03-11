@@ -43,6 +43,7 @@ import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import AdminCoupons from "./pages/admin/AdminCoupons";
+import AdminContacts from "./pages/admin/AdminContacts";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
