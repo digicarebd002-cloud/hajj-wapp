@@ -355,9 +355,9 @@ const MyBookingsContent = () => {
       ) : bookings.length === 0 ? (
         <EmptyState
           icon="✈️"
-          title="কোনো বুকিং নেই"
-          description="আপনি এখনো কোনো প্যাকেজ বুক করেননি"
-          actionLabel="প্যাকেজ দেখুন"
+          title="No bookings yet"
+          description="You haven't booked any packages yet"
+          actionLabel="View Packages"
           actionTo="/packages"
         />
       ) : (
