@@ -340,8 +340,8 @@ const MyBookingsContent = () => {
     <div className="container mx-auto px-4 py-6 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-foreground">আমার বুকিং</h1>
-          <p className="text-sm text-muted-foreground">আপনার সব প্যাকেজ বুকিং ও কিস্তি</p>
+          <h1 className="text-2xl font-extrabold text-foreground">My Bookings</h1>
+          <p className="text-sm text-muted-foreground">All your package bookings and installments</p>
         </div>
         <Link to="/packages">
           <Button variant="outline" className="gap-2 rounded-full">
