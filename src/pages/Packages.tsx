@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SEOHead from "@/components/SEOHead";
-import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock, Plane, Building2, MapPin } from "lucide-react";
+import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock, Plane, Building2, MapPin, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -10,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { CardSkeleton, EmptyState, ErrorState, AuthGate } from "@/components/StateHelpers";
 import { usePackages, useProfile, useWallet } from "@/hooks/use-supabase-data";
@@ -75,6 +79,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
   const [installmentPlan, setInstallmentPlan] = useState("3");
   const [submitting, setSubmitting] = useState(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState<string | null>(null);
+  const [preferredDate, setPreferredDate] = useState<Date | undefined>(undefined);
 
   const price = Number(pkg.price);
   const walletBalance = Number(wallet?.balance ?? 0);
@@ -102,7 +107,10 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
       email: fd.get("email") as string,
       phone: fd.get("phone") as string,
       passport_number: fd.get("passport") as string,
-      special_requests: (fd.get("requests") as string) || "",
+      special_requests: [
+        fd.get("requests") as string,
+        preferredDate ? `Preferred travel date: ${format(preferredDate, "PPP")}` : "",
+      ].filter(Boolean).join("\n") || "",
       payment_method: paymentMethod,
       installment_months: paymentMethod === "plan" ? parseInt(installmentPlan) : null,
       status: paymentMethod === "wallet" ? "confirmed" : "pending",
@@ -166,6 +174,37 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             <div className="space-y-2"><Label htmlFor="phone">Phone</Label><Input id="phone" name="phone" type="tel" defaultValue={profile?.phone ?? ""} placeholder="+1 (555) 000-0000" required /></div>
             <div className="space-y-2"><Label htmlFor="passport">Passport Number</Label><Input id="passport" name="passport" placeholder="Passport number" required /></div>
           </div>
+
+          {/* Preferred Travel Date Calendar */}
+          <div className="space-y-2">
+            <Label>পছন্দের যাত্রা তারিখ</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !preferredDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {preferredDate ? format(preferredDate, "PPP") : "তারিখ নির্বাচন করুন"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={preferredDate}
+                  onSelect={setPreferredDate}
+                  disabled={(date) => date < new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+            <p className="text-xs text-muted-foreground">প্যাকেজের departure date: <span className="font-semibold">{pkg.departure}</span></p>
+          </div>
+
           <div className="space-y-2"><Label htmlFor="requests">Special Requests</Label><Textarea id="requests" name="requests" placeholder="Dietary needs, accessibility, etc." className="resize-none" /></div>
           <Separator />
           <div className="space-y-3">
@@ -195,6 +234,9 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             <h4 className="font-semibold">Booking Summary</h4>
             <div className="flex justify-between text-sm"><span className="text-muted-foreground">Package</span><span className="font-medium">{pkg.name}</span></div>
             <div className="flex justify-between text-sm"><span className="text-muted-foreground">Price</span><span className="font-medium">${price.toLocaleString()}</span></div>
+            {preferredDate && (
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel Date</span><span className="font-medium">{format(preferredDate, "d MMM yyyy")}</span></div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Payment</span>
               <span className="font-medium capitalize">
