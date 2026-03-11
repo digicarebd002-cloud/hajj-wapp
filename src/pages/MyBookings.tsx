@@ -194,7 +194,7 @@ const MyBookingsContent = () => {
                 )}
                 {pkg?.duration && (
                   <div>
-                    <p className="text-xs text-muted-foreground">সময়কাল</p>
+                    <p className="text-xs text-muted-foreground">Duration</p>
                     <p className="font-medium text-foreground">{pkg.duration}</p>
                   </div>
                 )}
