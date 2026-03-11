@@ -133,8 +133,8 @@ const Messages = () => {
         ) : conversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
             <MessageSquarePlus className="h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-sm text-muted-foreground">কোনো কথোপকথন নেই</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">নতুন চ্যাট শুরু করতে + বাটনে ক্লিক করুন</p>
+            <p className="text-sm text-muted-foreground">No conversations yet</p>
+            <p className="text-xs text-muted-foreground/60 mt-1">Click the + button to start a new chat</p>
           </div>
         ) : (
           <div className="p-2 space-y-0.5">
