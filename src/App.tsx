@@ -47,6 +47,7 @@ import AdminPageManagement from "./pages/admin/AdminPageManagement";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminContacts from "./pages/admin/AdminContacts";
 import AdminBlog from "./pages/admin/AdminBlog";
+import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
