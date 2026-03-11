@@ -311,7 +311,7 @@ const OrdersContent = () => {
               }}
             >
               <FileDown className="h-4 w-4" />
-              ইনভয়েস ডাউনলোড করুন
+              Download Invoice
             </Button>
           )}
         </motion.div>
