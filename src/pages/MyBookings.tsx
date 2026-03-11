@@ -274,8 +274,8 @@ const MyBookingsContent = () => {
                             </div>
                             <p className="text-xs text-muted-foreground">
                               {inst.status === "paid" && inst.paid_at
-                                ? `পরিশোধ: ${format(new Date(inst.paid_at), "d MMM yyyy")}`
-                                : `নির্ধারিত: ${format(new Date(inst.due_date), "d MMM yyyy")}`
+                                ? `Paid: ${format(new Date(inst.paid_at), "d MMM yyyy")}`
+                                : `Due: ${format(new Date(inst.due_date), "d MMM yyyy")}`
                               }
                             </p>
                           </div>
