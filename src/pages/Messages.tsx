@@ -240,7 +240,7 @@ const Messages = () => {
                     {showDate && (
                       <div className="flex justify-center my-4">
                         <span className="text-[10px] bg-secondary text-muted-foreground px-3 py-1 rounded-full">
-                          {isToday(new Date(msg.created_at)) ? "আজ" : isYesterday(new Date(msg.created_at)) ? "গতকাল" : format(new Date(msg.created_at), "d MMM yyyy")}
+                          {isToday(new Date(msg.created_at)) ? "Today" : isYesterday(new Date(msg.created_at)) ? "Yesterday" : format(new Date(msg.created_at), "d MMM yyyy")}
                         </span>
                       </div>
                     )}
