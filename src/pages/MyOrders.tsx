@@ -99,7 +99,7 @@ const OrdersContent = () => {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">অর্ডার নম্বর</p>
+                  <p className="text-xs text-muted-foreground">Order Number</p>
                   <p className="font-mono text-sm font-bold text-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <Badge className={`${statusColors[order.status]} border`}>
