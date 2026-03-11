@@ -289,7 +289,7 @@ const MyBookingsContent = () => {
                                 disabled={paying === inst.id}
                                 onClick={() => handlePayInstallment(inst)}
                               >
-                                {paying === inst.id ? "..." : <><Wallet className="h-3 w-3" /> পরিশোধ</>}
+                                {paying === inst.id ? "..." : <><Wallet className="h-3 w-3" /> Pay</>}
                               </Button>
                             )}
                           </div>
