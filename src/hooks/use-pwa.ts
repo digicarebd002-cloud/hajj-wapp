@@ -109,10 +109,11 @@ export function usePushNotifications() {
 
       const subscribeOptions: PushSubscriptionOptionsInit = {
         userVisibleOnly: true,
-        ...(vapidPublicKey ? {
-          applicationServerKey: base64urlToUint8Array(vapidPublicKey),
-        } : {}),
       };
+
+      if (vapidPublicKey) {
+        subscribeOptions.applicationServerKey = base64urlToUint8Array(vapidPublicKey).buffer as ArrayBuffer;
+      }
 
       const sub = await reg.pushManager.subscribe(subscribeOptions);
       const subJson = sub.toJSON();
