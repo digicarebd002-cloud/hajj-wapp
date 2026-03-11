@@ -30,6 +30,7 @@ const navItems = [
   { title: "Contacts", url: "/admin/contacts", icon: Mail },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Pages", url: "/admin/pages", icon: FileText },
+  { title: "Blog", url: "/admin/blog", icon: BookOpen },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
