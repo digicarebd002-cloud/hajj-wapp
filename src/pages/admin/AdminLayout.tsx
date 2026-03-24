@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, Users, ShoppingBag, Package, ClipboardList,
-  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag, LogOut, Mail, BookOpen, Quote
+  CalendarCheck, MessageSquare, Bell, ChevronLeft, Shield, Sparkles, Settings, FileText, Sun, Moon, Tag, LogOut, Mail, BookOpen, Quote,
+  BarChart3, RotateCcw, Truck, CreditCard, Megaphone, HeadphonesIcon, Package2
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/use-admin";
@@ -22,12 +23,19 @@ const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Products", url: "/admin/products", icon: ShoppingBag },
+  { title: "Inventory", url: "/admin/inventory", icon: Package2 },
   { title: "Packages", url: "/admin/packages", icon: Package },
   { title: "Orders", url: "/admin/orders", icon: ClipboardList },
+  { title: "Sales Reports", url: "/admin/sales-reports", icon: BarChart3 },
+  { title: "Transactions", url: "/admin/transactions", icon: CreditCard },
+  { title: "Refunds", url: "/admin/refunds", icon: RotateCcw },
+  { title: "Shipping", url: "/admin/shipping", icon: Truck },
   { title: "Coupons", url: "/admin/coupons", icon: Tag },
+  { title: "Marketing", url: "/admin/marketing", icon: Megaphone },
   { title: "Bookings", url: "/admin/bookings", icon: CalendarCheck },
   { title: "Community", url: "/admin/community", icon: MessageSquare },
   { title: "Contacts", url: "/admin/contacts", icon: Mail },
+  { title: "Support", url: "/admin/support", icon: HeadphonesIcon },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Pages", url: "/admin/pages", icon: FileText },
   { title: "Blog", url: "/admin/blog", icon: BookOpen },
