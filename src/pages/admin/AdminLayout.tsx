@@ -82,16 +82,16 @@ function AdminSidebar() {
                         end={item.url === "/admin"}
                         className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                           isActive
-                            ? "bg-primary/15 text-primary font-semibold shadow-sm"
-                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                            ? "bg-primary/15 text-primary font-bold shadow-sm"
+                            : "text-foreground/80 hover:text-foreground hover:bg-secondary/50 font-medium"
                         }`}
                         activeClassName=""
                       >
                         {isActive && (
                           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-primary" />
                         )}
-                        <item.icon className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`} />
-                        {!collapsed && <span>{item.title}</span>}
+                        <item.icon className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-primary" : "text-foreground/70 group-hover:text-foreground"}`} />
+                        {!collapsed && <span className="font-medium">{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -104,7 +104,7 @@ function AdminSidebar() {
         <div className="mt-auto p-3 border-t border-sidebar-border space-y-1">
           <Button
             variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+            className="w-full justify-start text-foreground/70 hover:text-foreground hover:bg-secondary/50 gap-2 font-medium"
             size="sm"
             onClick={toggle}
           >
@@ -114,7 +114,7 @@ function AdminSidebar() {
           <Link to="/">
             <Button
               variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+              className="w-full justify-start text-foreground/70 hover:text-foreground hover:bg-secondary/50 gap-2 font-medium"
               size="sm"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -177,7 +177,7 @@ export default function AdminLayout() {
               <SidebarTrigger />
               <div className="ml-3 flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <span className="text-sm font-semibold text-foreground/80">Hajj Together</span>
+                <span className="text-sm font-bold text-foreground">Hajj Together</span>
                 <span className="text-xs text-muted-foreground">•</span>
                 <span className="text-xs text-primary font-medium">Admin</span>
               </div>
