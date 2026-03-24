@@ -199,8 +199,8 @@ const Store = () => {
                     <motion.div
                       key={product.id}
                       variants={cardVariants}
-                      whileHover={{ y: -6 }}
-                      className="bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-shadow duration-300 group"
+                      whileHover={{ y: -8, transition: { type: "spring", stiffness: 300 } }}
+                      className="bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-300 group relative"
                     >
                       {/* Product Image */}
                       <Link to={`/store/${(product as any).slug || product.id}`} className="block relative">
@@ -209,7 +209,7 @@ const Store = () => {
                             <img
                               src={imageUrl}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                               loading="lazy"
                             />
                           ) : (

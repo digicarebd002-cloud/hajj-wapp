@@ -7,6 +7,8 @@ import OfflineBanner from "./OfflineBanner";
 import TierUpgradeModal from "./TierUpgradeModal";
 import { useTierWatch } from "@/hooks/use-tier-watch";
 import OnboardingTour from "./OnboardingTour";
+import ScrollToTop from "./ScrollToTop";
+import Breadcrumbs from "./Breadcrumbs";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -17,6 +19,7 @@ const pageVariants = {
 const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const { upgradedTo, dismissUpgrade } = useTierWatch();
+  const showBreadcrumbs = location.pathname !== "/" && location.pathname !== "/auth" && location.pathname !== "/reset-password";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -24,6 +27,11 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Navbar />
       {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
       <OnboardingTour />
+      {showBreadcrumbs && (
+        <div className="max-w-7xl mx-auto w-full px-4">
+          <Breadcrumbs />
+        </div>
+      )}
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
@@ -37,6 +45,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         </motion.main>
       </AnimatePresence>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
