@@ -82,8 +82,8 @@ function AdminSidebar() {
                         end={item.url === "/admin"}
                         className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                           isActive
-                            ? "bg-primary/15 text-primary font-semibold shadow-sm"
-                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                            ? "bg-primary/15 text-primary font-bold shadow-sm"
+                            : "text-foreground/80 hover:text-foreground hover:bg-secondary/50 font-medium"
                         }`}
                         activeClassName=""
                       >
@@ -104,7 +104,7 @@ function AdminSidebar() {
         <div className="mt-auto p-3 border-t border-sidebar-border space-y-1">
           <Button
             variant="ghost"
-            className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+            className="w-full justify-start text-foreground/70 hover:text-foreground hover:bg-secondary/50 gap-2 font-medium"
             size="sm"
             onClick={toggle}
           >
@@ -114,7 +114,7 @@ function AdminSidebar() {
           <Link to="/">
             <Button
               variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 gap-2"
+              className="w-full justify-start text-foreground/70 hover:text-foreground hover:bg-secondary/50 gap-2 font-medium"
               size="sm"
             >
               <ChevronLeft className="h-4 w-4" />
