@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Search, Edit, Users as UsersIcon, History, Award, MessageSquare, MessageCircle, ThumbsUp, Star, Zap, CreditCard } from "lucide-react";
+import { Search, Edit, Users as UsersIcon, History, Award, MessageSquare, MessageCircle, ThumbsUp, Star, Zap, CreditCard, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 
@@ -109,9 +109,23 @@ export default function AdminUsers() {
           </h1>
           <p className="text-muted-foreground mt-1 ml-[52px]">{profiles.length} total users</p>
         </div>
-        <div className="relative w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search users..." className="pl-9 bg-card/50 border-border/50" value={search} onChange={e => setSearch(e.target.value)} />
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={() => {
+            const headers = ["Name", "Email", "Phone", "Tier", "Points", "Membership Status"];
+            const rows = profiles.map(p => [p.full_name, p.email, p.phone || "", p.tier, p.points_total, p.membership_status]);
+            const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a"); a.href = url; a.download = `users_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+            URL.revokeObjectURL(url);
+            toast.success("Users exported successfully");
+          }}>
+            <Download className="h-4 w-4 mr-1" /> Export CSV
+          </Button>
+          <div className="relative w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search users..." className="pl-9 bg-card/50 border-border/50" value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
         </div>
       </div>
 
