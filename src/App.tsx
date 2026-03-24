@@ -48,6 +48,13 @@ import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminContacts from "./pages/admin/AdminContacts";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminSalesReports from "./pages/admin/AdminSalesReports";
+import AdminRefunds from "./pages/admin/AdminRefunds";
+import AdminShipping from "./pages/admin/AdminShipping";
+import AdminTransactions from "./pages/admin/AdminTransactions";
+import AdminMarketing from "./pages/admin/AdminMarketing";
+import AdminSupportTickets from "./pages/admin/AdminSupportTickets";
+import AdminInventory from "./pages/admin/AdminInventory";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
@@ -80,6 +87,13 @@ const App = () => (
                   <Route path="pages" element={<AdminPageManagement />} />
                   <Route path="blog" element={<AdminBlog />} />
                   <Route path="testimonials" element={<AdminTestimonials />} />
+                  <Route path="sales-reports" element={<AdminSalesReports />} />
+                  <Route path="refunds" element={<AdminRefunds />} />
+                  <Route path="shipping" element={<AdminShipping />} />
+                  <Route path="transactions" element={<AdminTransactions />} />
+                  <Route path="marketing" element={<AdminMarketing />} />
+                  <Route path="support" element={<AdminSupportTickets />} />
+                  <Route path="inventory" element={<AdminInventory />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
 
