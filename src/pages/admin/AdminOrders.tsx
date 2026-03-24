@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 interface Order {
@@ -41,14 +42,28 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-pink-500/15 flex items-center justify-center">
-            <ClipboardList className="h-5 w-5 text-pink-400" />
-          </div>
-          Orders
-        </h1>
-        <p className="text-muted-foreground mt-1 ml-[52px]">{orders.length} total orders</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-pink-500/15 flex items-center justify-center">
+              <ClipboardList className="h-5 w-5 text-pink-400" />
+            </div>
+            Orders
+          </h1>
+          <p className="text-muted-foreground mt-1 ml-[52px]">{orders.length} total orders</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => {
+          const headers = ["Order ID", "User ID", "Subtotal", "Discount", "Total", "Status", "Date"];
+          const rows = orders.map(o => [o.id, o.user_id, o.subtotal, o.discount, o.total, o.status, format(new Date(o.created_at), "yyyy-MM-dd")]);
+          const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+          const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a"); a.href = url; a.download = `orders_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+          URL.revokeObjectURL(url);
+          toast.success("Orders exported successfully");
+        }}>
+          <Download className="h-4 w-4 mr-1" /> Export CSV
+        </Button>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border border-border/50 overflow-hidden bg-card/30 backdrop-blur-sm">
