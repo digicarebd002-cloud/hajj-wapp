@@ -20,7 +20,7 @@ export default function AdminTransactions() {
     const fetch = async () => {
       // Combine wallet contributions and orders as transactions
       const [{ data: contributions }, { data: orders }] = await Promise.all([
-        supabase.from("wallet_contributions").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("wallet_contributions" as any).select("*").order("created_at", { ascending: false }).limit(50),
         supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(50),
       ]);
 
