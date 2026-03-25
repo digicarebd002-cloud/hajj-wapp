@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { CreditCard, ChevronRight } from "lucide-react";
+import PayPalButton from "@/components/PayPalButton";
 
 const stagger = {
   hidden: {},
