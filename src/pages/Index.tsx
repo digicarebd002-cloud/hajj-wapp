@@ -372,8 +372,8 @@ const Index = () => {
       <WalletShowcase />
 
       {/* ===== HOW IT WORKS ===== */}
-      <section id="how-it-works" className="section-padding" ref={stepsReveal.ref}>
-        <div className="container mx-auto">
+      <section id="how-it-works" className="section-padding relative" ref={stepsReveal.ref}>
+        <FloatingShapes />
           <div className="text-center mb-16">
             <motion.span
               initial={{ opacity: 0 }}
@@ -416,20 +416,24 @@ const Index = () => {
                 transition={{ delay: i * 0.15, duration: 0.5 }}
                 className="text-center relative"
               >
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-5 text-lg font-bold shadow-lg shadow-primary/20 relative z-10"
-                >
-                  {i + 1}
-                </motion.div>
-                <motion.div
-                  className="text-4xl mb-4"
-                  whileHover={{ scale: 1.2 }}
-                >
-                  {s.emoji}
-                </motion.div>
-                <h3 className="text-lg font-bold mb-2">{s.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
+                <GlowCard gradientBorder className="h-full">
+                  <div className="p-6">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-5 text-lg font-bold shadow-lg shadow-primary/20 relative z-10"
+                    >
+                      {i + 1}
+                    </motion.div>
+                    <motion.div
+                      className="text-4xl mb-4"
+                      whileHover={{ scale: 1.2 }}
+                    >
+                      {s.emoji}
+                    </motion.div>
+                    <h3 className="text-lg font-bold mb-2">{s.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
+                  </div>
+                </GlowCard>
               </motion.div>
             ))}
           </div>
