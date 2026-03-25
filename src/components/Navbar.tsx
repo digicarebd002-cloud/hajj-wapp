@@ -120,24 +120,45 @@ const Navbar = () => {
             </motion.div>
           </Link>
           <CartDrawer />
-          <Link to={user ? "/account" : "/auth"}>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              {user ? (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
-                  <Avatar className="h-7 w-7 border border-primary/20">
-                    <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
-                </div>
-              ) : (
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                    <Avatar className="h-7 w-7 border border-primary/20">
+                      <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
+                  </div>
+                </motion.div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/account")} className="cursor-pointer gap-2">
+                  <UserCircle className="h-4 w-4" />
+                  My Account
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/orders")} className="cursor-pointer gap-2">
+                  <ShoppingBag className="h-4 w-4" />
+                  My Orders
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/auth">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="outline" size="sm" className="gap-2 rounded-full px-5">
                   <User className="h-3.5 w-3.5" />
                   Login
                 </Button>
-              )}
-            </motion.div>
-          </Link>
+              </motion.div>
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}
