@@ -66,10 +66,25 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("Missing required environment variables", {
+        hasSupabaseUrl: !!supabaseUrl,
+        hasServiceRoleKey: !!serviceRoleKey,
+      });
+
+      return new Response(
+        JSON.stringify({ error: "Server configuration error: Missing Supabase credentials" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
     // Verify user auth
     const authHeader = req.headers.get("authorization");
