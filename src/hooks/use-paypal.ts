@@ -8,17 +8,43 @@ export function usePayPal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const diagnoseFunctionReachability = useCallback(async () => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    if (!supabaseUrl) return null;
+
+    try {
+      const res = await fetch(`${supabaseUrl}/functions/v1/paypal-checkout`, {
+        method: "OPTIONS",
+      });
+
+      if (res.status === 404) {
+        return "Payment service is not deployed yet (paypal-checkout not found).";
+      }
+    } catch {
+      return "Could not reach payment service endpoint. Please check network/CORS settings.";
+    }
+
+    return null;
+  }, []);
+
   const invokePayPalFunction = useCallback(async (payload: Record<string, any>) => {
     const { data, error: invokeError } = await supabase.functions.invoke("paypal-checkout", {
       body: payload,
     });
 
     if (invokeError) {
+      if (invokeError.message?.includes("Failed to send a request to the Edge Function")) {
+        const diagnosis = await diagnoseFunctionReachability();
+        if (diagnosis) {
+          throw new Error(diagnosis);
+        }
+      }
+
       throw new Error(invokeError.message || "Failed to contact payment service");
     }
 
     return data;
-  }, []);
+  }, [diagnoseFunctionReachability]);
 
   useEffect(() => {
     let cancelled = false;
