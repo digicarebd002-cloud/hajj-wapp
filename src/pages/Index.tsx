@@ -8,6 +8,9 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
+import GlowCard from "@/components/GlowCard";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
+import FloatingShapes from "@/components/FloatingShapes";
 
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
@@ -142,15 +145,17 @@ const Index = () => {
       />
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
-          src={c("hero_video", "/videos/hajj-bg.mp4")}
-        />
+        <motion.div style={{ y: heroY }} className="absolute inset-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover scale-110"
+            src={c("hero_video", "/videos/hajj-bg.mp4")}
+          />
+        </motion.div>
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to bottom, hsl(0 0% 0% / 0.25) 0%, hsl(0 0% 0% / 0.15) 50%, hsl(0 0% 0% / 0.35) 100%)"
         }} />
@@ -367,7 +372,8 @@ const Index = () => {
       <WalletShowcase />
 
       {/* ===== HOW IT WORKS ===== */}
-      <section id="how-it-works" className="section-padding" ref={stepsReveal.ref}>
+      <section id="how-it-works" className="section-padding relative" ref={stepsReveal.ref}>
+        <FloatingShapes />
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <motion.span
@@ -411,20 +417,24 @@ const Index = () => {
                 transition={{ delay: i * 0.15, duration: 0.5 }}
                 className="text-center relative"
               >
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-5 text-lg font-bold shadow-lg shadow-primary/20 relative z-10"
-                >
-                  {i + 1}
-                </motion.div>
-                <motion.div
-                  className="text-4xl mb-4"
-                  whileHover={{ scale: 1.2 }}
-                >
-                  {s.emoji}
-                </motion.div>
-                <h3 className="text-lg font-bold mb-2">{s.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
+                <GlowCard gradientBorder className="h-full">
+                  <div className="p-6">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-5 text-lg font-bold shadow-lg shadow-primary/20 relative z-10"
+                    >
+                      {i + 1}
+                    </motion.div>
+                    <motion.div
+                      className="text-4xl mb-4"
+                      whileHover={{ scale: 1.2 }}
+                    >
+                      {s.emoji}
+                    </motion.div>
+                    <h3 className="text-lg font-bold mb-2">{s.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{s.description}</p>
+                  </div>
+                </GlowCard>
               </motion.div>
             ))}
           </div>
@@ -476,48 +486,52 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -8 }}
-                className={`bg-card rounded-2xl overflow-hidden relative border ${pkg.popular ? "border-2 border-accent/50 shadow-lg shadow-accent/5" : "border-border/50 shadow-sm"} hover:shadow-xl transition-shadow duration-500 flex flex-col`}
+                className="flex flex-col"
               >
-                {pkg.popular && (
-                  <motion.span
-                    className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground text-xs font-bold px-3 py-1 rounded-full shadow-lg"
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ type: "spring", delay: 0.5 }}
-                  >
-                    ⭐ POPULAR
-                  </motion.span>
-                )}
-                <div className="relative h-40 overflow-hidden">
-                  <img src={pkg.img} alt={pkg.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
-                </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <h3 className="text-lg font-bold text-card-foreground">{pkg.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1 mb-3">{pkg.desc}</p>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold text-primary">${pkg.price.toLocaleString()}</span>
-                    <span className="text-muted-foreground text-xs"> /person</span>
+                <GlowCard gradientBorder={pkg.popular} className="h-full flex flex-col">
+                  <div className={`overflow-hidden relative ${pkg.popular ? "" : "border border-border/50"} rounded-2xl flex flex-col h-full bg-card`}>
+                    {pkg.popular && (
+                      <motion.span
+                        className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground text-xs font-bold px-3 py-1 rounded-full shadow-lg"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ type: "spring", delay: 0.5 }}
+                      >
+                        ⭐ POPULAR
+                      </motion.span>
+                    )}
+                    <div className="relative h-40 overflow-hidden">
+                      <img src={pkg.img} alt={pkg.name} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+                    </div>
+                    <div className="p-5 flex flex-col flex-1">
+                      <h3 className="text-lg font-bold text-card-foreground">{pkg.name}</h3>
+                      <p className="text-xs text-muted-foreground mt-1 mb-3">{pkg.desc}</p>
+                      <div className="mb-4">
+                        <span className="text-3xl font-bold text-primary">${pkg.price.toLocaleString()}</span>
+                        <span className="text-muted-foreground text-xs"> /person</span>
+                      </div>
+                      <ul className="space-y-2 mb-6 flex-1">
+                        {pkg.features.map((f) => (
+                          <li key={f} className="flex items-start gap-2 text-xs">
+                            <div className={`w-4 h-4 ${pkg.popular ? "bg-accent/15" : "bg-primary/10"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                              <Check className="h-2.5 w-2.5 text-primary" />
+                            </div>
+                            <span className="text-card-foreground">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link to="/packages">
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                          <Button variant={pkg.popular ? "default" : "outline"} className="w-full gap-2 rounded-xl" size="sm">
+                            View Details <ArrowRight className="h-3 w-3" />
+                          </Button>
+                        </motion.div>
+                      </Link>
+                    </div>
                   </div>
-                  <ul className="space-y-2 mb-6 flex-1">
-                    {pkg.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-xs">
-                        <div className={`w-4 h-4 ${pkg.popular ? "bg-accent/15" : "bg-primary/10"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                          <Check className="h-2.5 w-2.5 text-primary" />
-                        </div>
-                        <span className="text-card-foreground">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/packages">
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button variant={pkg.popular ? "default" : "outline"} className="w-full gap-2 rounded-xl" size="sm">
-                        View Details <ArrowRight className="h-3 w-3" />
-                      </Button>
-                    </motion.div>
-                  </Link>
-                </div>
+                </GlowCard>
               </motion.div>
             ))}
           </div>
@@ -565,31 +579,34 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                whileHover={{ y: -6 }}
               >
-                <Link to={`/community/${post.id}`}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center overflow-hidden">
-                      {post.avatar_url ? (
-                        <img src={post.avatar_url} alt={post.author_name} className="w-full h-full object-cover rounded-full" />
-                      ) : (
-                        <User className="h-5 w-5 text-primary" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-card-foreground text-sm">{post.author_name}</p>
-                      <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
-                    </div>
+                <GlowCard gradientBorder className="h-full">
+                  <div className="p-6 cursor-pointer group">
+                    <Link to={`/community/${post.id}`}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center overflow-hidden">
+                          {post.avatar_url ? (
+                            <img src={post.avatar_url} alt={post.author_name} className="w-full h-full object-cover rounded-full" />
+                          ) : (
+                            <User className="h-5 w-5 text-primary" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-card-foreground text-sm">{post.author_name}</p>
+                          <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
+                        </div>
+                      </div>
+                      <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <MessageCircle className="h-4 w-4" />
+                        {post.reply_count} replies
+                      </div>
+                    </Link>
                   </div>
-                  <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <MessageCircle className="h-4 w-4" />
-                    {post.reply_count} replies
-                  </div>
-                </Link>
+                </GlowCard>
               </motion.div>
             ))}
           </div>
@@ -671,6 +688,9 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ===== TESTIMONIALS ===== */}
+      <TestimonialCarousel />
 
       {/* ===== FINAL CTA ===== */}
       <section className="section-padding text-center relative overflow-hidden">
