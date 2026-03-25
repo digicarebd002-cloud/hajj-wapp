@@ -115,36 +115,14 @@ const SavingsProgress = ({ stats }: { stats: any }) => {
 
 // --- Contribute Section ---
 const ContributeSection = ({ onContributed }: { onContributed: () => void }) => {
-  const { user } = useAuth();
   const [amount, setAmount] = useState("");
-  const [contributing, setContributing] = useState(false);
   const quickAmounts = [25, 50, 100];
-
-  const handleContribute = async () => {
-    const amt = parseFloat(amount);
-    if (!amt || amt <= 0 || !user) return;
-    setContributing(true);
-    // Direct insert for now — Stripe PaymentIntent flow will replace this
-    const { error } = await supabase.from("wallet_transactions").insert({
-      user_id: user.id,
-      amount: amt,
-      type: "one-time",
-      status: "completed",
-    });
-    setContributing(false);
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "✅ Contribution successful!", description: `$${amt.toFixed(2)} added to your Hajj fund!` });
-      setAmount("");
-      onContributed();
-    }
-  };
+  const parsedAmount = parseFloat(amount) || 0;
 
   return (
     <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
       <h2 className="text-lg font-semibold mb-1">Make a Contribution</h2>
-      <p className="text-sm text-muted-foreground mb-4">Add funds to your Hajj savings wallet</p>
+      <p className="text-sm text-muted-foreground mb-4">Add funds to your Hajj savings wallet via PayPal</p>
       <div className="flex gap-2 mb-3">
         {quickAmounts.map((amt) => (
           <motion.div key={amt} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
@@ -154,14 +132,24 @@ const ContributeSection = ({ onContributed }: { onContributed: () => void }) => 
           </motion.div>
         ))}
       </div>
-      <div className="flex gap-3">
-        <Input type="number" placeholder="Custom amount ($)" value={amount} onChange={(e) => setAmount(e.target.value)} className="flex-1" />
-        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-          <Button onClick={handleContribute} disabled={!amount || contributing}>
-            {contributing ? "Processing..." : "Contribute Now"}
-          </Button>
-        </motion.div>
-      </div>
+      <Input type="number" placeholder="Custom amount ($)" value={amount} onChange={(e) => setAmount(e.target.value)} className="mb-4" />
+
+      {parsedAmount > 0 && (
+        <PayPalButton
+          amount={parsedAmount}
+          description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
+          type="wallet"
+          onSuccess={() => {
+            toast({ title: "✅ Contribution successful!", description: `$${parsedAmount.toFixed(2)} added to your Hajj fund!` });
+            setAmount("");
+            onContributed();
+          }}
+          onError={(err) => {
+            toast({ title: "Payment failed", description: err, variant: "destructive" });
+          }}
+        />
+      )}
+
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="bg-secondary rounded-lg p-4 mt-4 text-sm text-muted-foreground">
         💡 <strong>Tip:</strong> Set up recurring contributions to reach your goal faster!
       </motion.div>
