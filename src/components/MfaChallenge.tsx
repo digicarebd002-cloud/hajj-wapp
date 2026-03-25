@@ -50,7 +50,7 @@ const MfaChallenge = ({ factorId, onSuccess, onCancel }: MfaChallengeProps) => {
     <div className="min-h-screen flex items-center justify-center section-padding">
       <div className="w-full max-w-sm mx-auto space-y-6">
         <div className="text-center">
-          <img src={logoImg} alt="Logo" className="h-12 mx-auto mb-4" />
+          <img src={logoImg} alt="Logo" className="h-14 w-14 mx-auto mb-4 object-contain" />
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
             <Shield className="h-4 w-4" /> Two-Factor Authentication
           </div>

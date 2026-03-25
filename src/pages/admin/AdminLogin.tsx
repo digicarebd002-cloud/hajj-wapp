@@ -62,7 +62,7 @@ const AdminLogin = () => {
               <Shield className="h-8 w-8 text-primary-foreground" />
             </motion.div>
             <div className="flex items-center justify-center gap-3 mb-2">
-              <img src={logoImg} alt="Logo" className="w-8 h-8 rounded-lg object-contain" />
+              <img src={logoImg} alt="Logo" className="w-12 h-12 object-contain" />
               <h1 className="text-2xl font-bold text-foreground">Admin Panel</h1>
             </div>
             <p className="text-sm text-muted-foreground">Authorized personnel only</p>
