@@ -374,6 +374,7 @@ const Index = () => {
       {/* ===== HOW IT WORKS ===== */}
       <section id="how-it-works" className="section-padding relative" ref={stepsReveal.ref}>
         <FloatingShapes />
+        <div className="container mx-auto">
           <div className="text-center mb-16">
             <motion.span
               initial={{ opacity: 0 }}
