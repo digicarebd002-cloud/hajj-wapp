@@ -117,41 +117,78 @@ const SavingsProgress = ({ stats }: { stats: any }) => {
 // --- Contribute Section ---
 const ContributeSection = ({ onContributed }: { onContributed: () => void }) => {
   const [amount, setAmount] = useState("");
+  const [showPayPal, setShowPayPal] = useState(false);
   const quickAmounts = [25, 50, 100];
   const parsedAmount = parseFloat(amount) || 0;
 
+  const handlePayNow = () => {
+    if (parsedAmount > 0) {
+      setShowPayPal(true);
+    }
+  };
+
+  // Reset PayPal when amount changes
+  useEffect(() => {
+    setShowPayPal(false);
+  }, [amount]);
+
   return (
-    <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
-      <h2 className="text-lg font-semibold mb-1">Make a Contribution</h2>
-      <p className="text-sm text-muted-foreground mb-4">Add funds to your Hajj savings wallet via PayPal</p>
-      <div className="flex gap-2 mb-3">
+    <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl card-shadow p-8 mb-8 border-2 border-primary/20">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-3 bg-primary/10 rounded-xl">
+          <CreditCard className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold">Make a Contribution</h2>
+          <p className="text-sm font-medium text-muted-foreground">Add funds to your Hajj savings wallet via PayPal</p>
+        </div>
+      </div>
+
+      <div className="flex gap-3 mt-5 mb-4">
         {quickAmounts.map((amt) => (
           <motion.div key={amt} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-            <Button variant={amount === String(amt) ? "default" : "outline"} size="sm" onClick={() => setAmount(String(amt))}>
+            <Button variant={amount === String(amt) ? "default" : "outline"} className="text-base font-bold px-6 h-12" onClick={() => setAmount(String(amt))}>
               ${amt}
             </Button>
           </motion.div>
         ))}
       </div>
-      <Input type="number" placeholder="Custom amount ($)" value={amount} onChange={(e) => setAmount(e.target.value)} className="mb-4" />
+      <Input type="number" placeholder="Custom amount ($)" value={amount} onChange={(e) => setAmount(e.target.value)} className="mb-5 h-12 text-base font-medium" />
 
-      {parsedAmount > 0 && (
-        <PayPalButton
-          amount={parsedAmount}
-          description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
-          type="wallet"
-          onSuccess={() => {
-            toast({ title: "✅ Contribution successful!", description: `$${parsedAmount.toFixed(2)} added to your Hajj fund!` });
-            setAmount("");
-            onContributed();
-          }}
-          onError={(err) => {
-            toast({ title: "Payment failed", description: err, variant: "destructive" });
-          }}
-        />
+      {!showPayPal ? (
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button
+            onClick={handlePayNow}
+            disabled={parsedAmount <= 0}
+            className="w-full h-14 text-lg font-bold btn-glow"
+            size="lg"
+          >
+            {parsedAmount > 0 ? `Pay $${parsedAmount.toFixed(2)} Now` : "Enter an amount to continue"}
+          </Button>
+        </motion.div>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <PayPalButton
+            amount={parsedAmount}
+            description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
+            type="wallet"
+            onSuccess={() => {
+              toast({ title: "✅ Contribution successful!", description: `$${parsedAmount.toFixed(2)} added to your Hajj fund!` });
+              setAmount("");
+              setShowPayPal(false);
+              onContributed();
+            }}
+            onError={(err) => {
+              toast({ title: "Payment failed", description: err, variant: "destructive" });
+            }}
+          />
+          <Button variant="ghost" size="sm" className="w-full mt-2 text-muted-foreground" onClick={() => setShowPayPal(false)}>
+            ← Change amount
+          </Button>
+        </motion.div>
       )}
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="bg-secondary rounded-lg p-4 mt-4 text-sm text-muted-foreground">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="bg-secondary rounded-lg p-4 mt-5 text-sm font-medium text-muted-foreground">
         💡 <strong>Tip:</strong> Set up recurring contributions to reach your goal faster!
       </motion.div>
     </motion.div>
@@ -329,9 +366,9 @@ const WalletContent = () => {
         </motion.div>
 
         <StatsCards stats={stats} profile={profile} />
+        <ContributeSection onContributed={handleContributed} />
         <MembershipCard profile={profile} />
         <SavingsProgress stats={stats} />
-        <ContributeSection onContributed={handleContributed} />
         <RecentContributions transactions={transactions} txLoading={txLoading} setAmount={() => {}} />
       </div>
     </div>
