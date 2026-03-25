@@ -8,6 +8,9 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
+import GlowCard from "@/components/GlowCard";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
+import FloatingShapes from "@/components/FloatingShapes";
 
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
@@ -142,15 +145,17 @@ const Index = () => {
       />
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
-          src={c("hero_video", "/videos/hajj-bg.mp4")}
-        />
+        <motion.div style={{ y: heroY }} className="absolute inset-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover scale-110"
+            src={c("hero_video", "/videos/hajj-bg.mp4")}
+          />
+        </motion.div>
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to bottom, hsl(0 0% 0% / 0.25) 0%, hsl(0 0% 0% / 0.15) 50%, hsl(0 0% 0% / 0.35) 100%)"
         }} />
