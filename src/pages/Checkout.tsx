@@ -5,6 +5,7 @@ import {
   ArrowLeft, CheckCircle, CreditCard, Banknote, ShoppingBag,
   Minus, Plus, Trash2, Shield, Truck, Package, Tag, X, Download
 } from "lucide-react";
+import PayPalButton from "@/components/PayPalButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -345,7 +346,7 @@ const Checkout = () => {
                     }`}
                   >
                     <CreditCard className="h-5 w-5" />
-                    Card Payment
+                    PayPal
                   </button>
                   <button
                     type="button"
@@ -360,9 +361,6 @@ const Checkout = () => {
                     Cash on Delivery
                   </button>
                 </div>
-                {paymentMethod === "card" && (
-                  <p className="text-xs text-muted-foreground mt-3">💡 Stripe payment integration coming soon. Order will be placed and you'll be contacted for payment.</p>
-                )}
               </div>
 
               {/* Coupon Code */}
@@ -447,16 +445,65 @@ const Checkout = () => {
                 <span className="text-primary">${total.toFixed(2)}</span>
               </div>
 
-              <Button type="submit" form="checkout-form" className="w-full btn-glow" size="lg" disabled={submitting}>
-                {submitting ? (
-                  <span className="flex items-center gap-2">
-                    <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  `Place Order — $${total.toFixed(2)}`
-                )}
-              </Button>
+              {paymentMethod === "card" ? (
+                <PayPalButton
+                  amount={total}
+                  description={`Store Order - ${itemCount} items`}
+                  type="order"
+                  captureExtra={{
+                    orderData: {
+                      subtotal,
+                      discount: totalDiscount,
+                      items: items.map((item) => ({
+                        product_id: item.productId,
+                        size: item.size,
+                        color: item.color,
+                        quantity: item.quantity,
+                        unit_price: item.price,
+                      })),
+                    },
+                  }}
+                  onSuccess={(result) => {
+                    const invoiceData = {
+                      orderId: result.orderId,
+                      date: new Date(),
+                      customerName: "",
+                      customerEmail: user?.email || "",
+                      items: items.map(item => ({ name: item.name, size: item.size, color: item.color, quantity: item.quantity, price: item.price })),
+                      subtotal,
+                      tierDiscount,
+                      couponDiscount,
+                      total,
+                      paymentMethod: "paypal",
+                      couponCode: appliedCoupon?.code,
+                    };
+                    invoiceDataRef.current = invoiceData;
+                    setOrderId(result.orderId);
+                    clearCart();
+                    toast({ title: "🛍️ Order placed!", description: "Payment completed via PayPal." });
+                    try {
+                      const doc = generateInvoicePDF(invoiceData);
+                      doc.save(`hajj-wallet-invoice-${result.orderId.slice(0, 8).toUpperCase()}.pdf`);
+                    } catch (e) {
+                      console.error("PDF generation error:", e);
+                    }
+                  }}
+                  onError={(err) => {
+                    toast({ title: "Payment failed", description: err, variant: "destructive" });
+                  }}
+                />
+              ) : (
+                <Button type="submit" form="checkout-form" className="w-full btn-glow" size="lg" disabled={submitting}>
+                  {submitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      Processing...
+                    </span>
+                  ) : (
+                    `Place Order — $${total.toFixed(2)}`
+                  )}
+                </Button>
+              )}
 
               <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
                 <Shield className="h-3 w-3" />

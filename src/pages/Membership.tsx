@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/SEOHead";
 import { Crown, Check, Loader2, Wallet, ArrowRight, Shield, Star, Zap } from "lucide-react";
+import PayPalButton from "@/components/PayPalButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -238,18 +239,23 @@ const Membership = () => {
                             Current Plan
                           </Button>
                         ) : upgrade ? (
-                          <Button
-                            className="w-full rounded-full gap-2 btn-glow"
-                            onClick={() => handlePurchase(plan)}
-                            disabled={!!purchasing}
-                          >
-                            {purchasing === plan.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Wallet className="h-4 w-4" />
-                            )}
-                            Upgrade — ${plan.price}/mo
-                          </Button>
+                          <div className="space-y-2">
+                            <p className="text-xs text-center text-muted-foreground mb-1">Pay with PayPal — ${plan.price}/mo</p>
+                            <PayPalButton
+                              amount={plan.price}
+                              description={`${plan.name} Membership`}
+                              type="membership"
+                              captureExtra={{ planData: { id: plan.id, name: plan.name } }}
+                              onSuccess={() => {
+                                toast.success(`${plan.name} membership activated!`);
+                                setCurrentTier(plan.name);
+                                const endsAt = new Date();
+                                endsAt.setMonth(endsAt.getMonth() + 1);
+                                setActiveMembership({ plan_id: plan.id, ends_at: endsAt.toISOString(), plan: { name: plan.name } });
+                              }}
+                              onError={(err) => toast.error("Payment failed: " + err)}
+                            />
+                          </div>
                         ) : (
                           <Button disabled className="w-full rounded-full" variant="ghost">
                             Included in your plan
