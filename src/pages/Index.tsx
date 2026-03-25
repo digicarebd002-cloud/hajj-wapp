@@ -575,31 +575,34 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                whileHover={{ y: -6 }}
               >
-                <Link to={`/community/${post.id}`}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center overflow-hidden">
-                      {post.avatar_url ? (
-                        <img src={post.avatar_url} alt={post.author_name} className="w-full h-full object-cover rounded-full" />
-                      ) : (
-                        <User className="h-5 w-5 text-primary" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-card-foreground text-sm">{post.author_name}</p>
-                      <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
-                    </div>
+                <GlowCard gradientBorder className="h-full">
+                  <div className="p-6 cursor-pointer group">
+                    <Link to={`/community/${post.id}`}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-11 h-11 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center overflow-hidden">
+                          {post.avatar_url ? (
+                            <img src={post.avatar_url} alt={post.author_name} className="w-full h-full object-cover rounded-full" />
+                          ) : (
+                            <User className="h-5 w-5 text-primary" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-card-foreground text-sm">{post.author_name}</p>
+                          <p className="text-xs text-accent font-medium">{post.points} pts ⭐</p>
+                        </div>
+                      </div>
+                      <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <MessageCircle className="h-4 w-4" />
+                        {post.reply_count} replies
+                      </div>
+                    </Link>
                   </div>
-                  <h3 className="font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <MessageCircle className="h-4 w-4" />
-                    {post.reply_count} replies
-                  </div>
-                </Link>
+                </GlowCard>
               </motion.div>
             ))}
           </div>
@@ -681,6 +684,9 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ===== TESTIMONIALS ===== */}
+      <TestimonialCarousel />
 
       {/* ===== FINAL CTA ===== */}
       <section className="section-padding text-center relative overflow-hidden">
