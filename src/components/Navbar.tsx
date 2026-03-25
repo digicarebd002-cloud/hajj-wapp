@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart, LogOut, Settings, UserCircle } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import GlobalSearch from "@/components/GlobalSearch";
 import logoImg from "@/assets/logo.png";
@@ -10,6 +10,7 @@ import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/use-supabase-data";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
