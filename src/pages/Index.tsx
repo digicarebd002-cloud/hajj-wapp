@@ -152,8 +152,10 @@ const Index = () => {
             muted
             playsInline
             preload="auto"
+            disablePictureInPicture
             className="absolute inset-0 w-full h-full object-cover scale-110"
             src={c("hero_video", "/videos/hajj-bg.mp4")}
+            onCanPlay={(e) => (e.currentTarget as HTMLVideoElement).play()}
           />
         </motion.div>
         <div className="absolute inset-0" style={{
