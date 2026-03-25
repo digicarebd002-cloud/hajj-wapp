@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart, LogOut, Settings, UserCircle } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import GlobalSearch from "@/components/GlobalSearch";
 import logoImg from "@/assets/logo.png";
@@ -10,6 +10,7 @@ import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/use-supabase-data";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -24,9 +25,15 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
   const initials = profile?.full_name ? profile.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "?";
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -113,24 +120,45 @@ const Navbar = () => {
             </motion.div>
           </Link>
           <CartDrawer />
-          <Link to={user ? "/account" : "/auth"}>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              {user ? (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
-                  <Avatar className="h-7 w-7 border border-primary/20">
-                    <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
-                </div>
-              ) : (
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                    <Avatar className="h-7 w-7 border border-primary/20">
+                      <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium max-w-[100px] truncate">{profile?.full_name || "Account"}</span>
+                  </div>
+                </motion.div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/account")} className="cursor-pointer gap-2">
+                  <UserCircle className="h-4 w-4" />
+                  My Account
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/orders")} className="cursor-pointer gap-2">
+                  <ShoppingBag className="h-4 w-4" />
+                  My Orders
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/auth">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="outline" size="sm" className="gap-2 rounded-full px-5">
                   <User className="h-3.5 w-3.5" />
                   Login
                 </Button>
-              )}
-            </motion.div>
-          </Link>
+              </motion.div>
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -200,7 +228,7 @@ const Navbar = () => {
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
               >
                 <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full mt-3 gap-3 rounded-xl h-12">
+                  <Button className="w-full gap-3 rounded-xl h-12">
                     {user ? (
                       <>
                         <Avatar className="h-6 w-6 border border-primary-foreground/30">
@@ -217,6 +245,16 @@ const Navbar = () => {
                     )}
                   </Button>
                 </Link>
+                {user && (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-2 gap-3 rounded-xl h-12 text-destructive border-destructive/30 hover:bg-destructive/10"
+                    onClick={() => { setMobileOpen(false); handleLogout(); }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                )}
               </motion.div>
             </div>
           </motion.div>
