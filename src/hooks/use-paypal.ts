@@ -8,6 +8,18 @@ export function usePayPal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const invokePayPalFunction = useCallback(async (payload: Record<string, any>) => {
+    const { data, error: invokeError } = await supabase.functions.invoke("paypal-checkout", {
+      body: payload,
+    });
+
+    if (invokeError) {
+      throw new Error(invokeError.message || "Failed to contact payment service");
+    }
+
+    return data;
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -22,25 +34,12 @@ export function usePayPal() {
           return;
         }
 
-        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-        const res = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/paypal-checkout`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ action: "get-client-id" }),
-          }
-        );
+        const data = await invokePayPalFunction({ action: "get-client-id" });
+        const clientId = data?.clientId as string | undefined;
 
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to get PayPal config");
+        if (!clientId) {
+          throw new Error("Failed to get PayPal config");
         }
-
-        const { clientId } = await res.json();
 
         // Load PayPal JS SDK
         if (!paypalScriptPromise) {
@@ -70,7 +69,7 @@ export function usePayPal() {
 
     init();
     return () => { cancelled = true; };
-  }, []);
+  }, [invokePayPalFunction]);
 
   const createOrder = useCallback(
     async (amount: number, description: string, metadata?: Record<string, any>) => {
@@ -78,28 +77,21 @@ export function usePayPal() {
       const token = session?.session?.access_token;
       if (!token) throw new Error("Not authenticated");
 
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/paypal-checkout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ action: "create-order", amount, description, metadata }),
-        }
-      );
+      const data = await invokePayPalFunction({
+        action: "create-order",
+        amount,
+        description,
+        metadata,
+      });
+      const orderId = data?.orderId as string | undefined;
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to create order");
+      if (!orderId) {
+        throw new Error("Failed to create order");
       }
 
-      const { orderId } = await res.json();
       return orderId as string;
     },
-    []
+    [invokePayPalFunction]
   );
 
   const captureOrder = useCallback(
@@ -108,27 +100,14 @@ export function usePayPal() {
       const token = session?.session?.access_token;
       if (!token) throw new Error("Not authenticated");
 
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/paypal-checkout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ action: "capture-order", orderId, type, ...extra }),
-        }
-      );
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to capture payment");
-      }
-
-      return await res.json();
+      return await invokePayPalFunction({
+        action: "capture-order",
+        orderId,
+        type,
+        ...extra,
+      });
     },
-    []
+    [invokePayPalFunction]
   );
 
   return { ready, loading, error, createOrder, captureOrder };
