@@ -345,7 +345,7 @@ const Checkout = () => {
                     }`}
                   >
                     <CreditCard className="h-5 w-5" />
-                    Card Payment
+                    PayPal
                   </button>
                   <button
                     type="button"
@@ -360,9 +360,6 @@ const Checkout = () => {
                     Cash on Delivery
                   </button>
                 </div>
-                {paymentMethod === "card" && (
-                  <p className="text-xs text-muted-foreground mt-3">💡 Stripe payment integration coming soon. Order will be placed and you'll be contacted for payment.</p>
-                )}
               </div>
 
               {/* Coupon Code */}
