@@ -103,8 +103,7 @@ const Auth = () => {
     if (error) {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Account created!", description: "Check your email to confirm your account." });
-      // Store referral code to process after email confirmation
+      toast({ title: "Account created!", description: "Welcome to Hajj Wallet!" });
       if (referralInput) {
         localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
       }
