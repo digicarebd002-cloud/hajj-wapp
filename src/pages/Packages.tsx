@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PayPalButton from "@/components/PayPalButton";
 import SEOHead from "@/components/SEOHead";
 import { Check, Phone, CalendarDays, Shield, Syringe, RefreshCw, Download, CheckCircle, Users, Clock, Plane, Building2, MapPin, CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -219,7 +220,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
                   </span>
                 </Label>
               </div>
-              <div className="flex items-center space-x-3 rounded-lg border p-3"><RadioGroupItem value="card" id="card" /><Label htmlFor="card" className="cursor-pointer flex-1">💳 Credit/Debit Card</Label></div>
+              <div className="flex items-center space-x-3 rounded-lg border p-3"><RadioGroupItem value="paypal" id="paypal" /><Label htmlFor="paypal" className="cursor-pointer flex-1">🅿️ PayPal</Label></div>
               <div className="flex items-center space-x-3 rounded-lg border p-3"><RadioGroupItem value="plan" id="plan" /><Label htmlFor="plan" className="cursor-pointer flex-1">📅 Payment Plan</Label></div>
             </RadioGroup>
             {paymentMethod === "plan" && (
@@ -240,7 +241,7 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Payment</span>
               <span className="font-medium capitalize">
-                {paymentMethod === "plan" ? `${installmentPlan}-month plan` : paymentMethod === "wallet" ? "Wallet Balance" : "Credit Card"}
+                {paymentMethod === "plan" ? `${installmentPlan}-month plan` : paymentMethod === "wallet" ? "Wallet Balance" : paymentMethod === "paypal" ? "PayPal" : "Credit Card"}
               </span>
             </div>
             {paymentMethod === "wallet" && (
@@ -248,9 +249,34 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
             )}
             {installmentAmount && <div className="flex justify-between text-sm"><span className="text-muted-foreground">Per installment</span><span className="font-bold text-primary">${installmentAmount}/mo</span></div>}
           </div>
-          <Button type="submit" className="w-full" size="lg" disabled={submitting}>
-            {submitting ? "Processing..." : paymentMethod === "wallet" ? "Pay with Wallet" : "Confirm Booking"}
-          </Button>
+
+          {paymentMethod === "paypal" ? (
+            <PayPalButton
+              amount={price}
+              description={`Booking: ${pkg.name}`}
+              type="booking"
+              captureExtra={{
+                bookingData: {
+                  package_id: pkg.id,
+                  traveller_name: "",
+                  email: user?.email || "",
+                  phone: "",
+                  passport_number: "",
+                  special_requests: preferredDate ? `Preferred travel date: ${format(preferredDate, "PPP")}` : "",
+                },
+              }}
+              onSuccess={(result) => {
+                setConfirmedBookingId(result.bookingId || "paypal-" + Date.now());
+              }}
+              onError={(err) => {
+                toast({ title: "Payment failed", description: err, variant: "destructive" });
+              }}
+            />
+          ) : (
+            <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+              {submitting ? "Processing..." : paymentMethod === "wallet" ? "Pay with Wallet" : "Confirm Booking"}
+            </Button>
+          )}
         </form>
       </DialogContent>
     </Dialog>
