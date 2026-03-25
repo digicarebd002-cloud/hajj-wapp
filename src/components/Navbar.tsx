@@ -228,7 +228,7 @@ const Navbar = () => {
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
               >
                 <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full mt-3 gap-3 rounded-xl h-12">
+                  <Button className="w-full gap-3 rounded-xl h-12">
                     {user ? (
                       <>
                         <Avatar className="h-6 w-6 border border-primary-foreground/30">
@@ -245,6 +245,16 @@ const Navbar = () => {
                     )}
                   </Button>
                 </Link>
+                {user && (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-2 gap-3 rounded-xl h-12 text-destructive border-destructive/30 hover:bg-destructive/10"
+                    onClick={() => { setMobileOpen(false); handleLogout(); }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                )}
               </motion.div>
             </div>
           </motion.div>
