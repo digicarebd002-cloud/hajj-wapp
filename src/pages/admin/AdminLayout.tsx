@@ -62,7 +62,7 @@ function AdminSidebar() {
         {/* Logo area */}
         <div className="p-4 border-b border-sidebar-border">
           <Link to="/admin" className="flex items-center gap-3">
-            <img src={logoImg} alt="Hajj Wallet" className="w-11 h-11 rounded-lg object-contain shrink-0 shadow-lg shadow-primary/20" />
+            <img src={logoImg} alt="Hajj Wallet" className="w-12 h-12 object-contain shrink-0 shadow-lg shadow-primary/20" />
             {!collapsed && (
               <div>
                 <h2 className="text-base font-bold text-foreground tracking-tight">Admin</h2>
