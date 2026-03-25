@@ -144,8 +144,8 @@ const Index = () => {
         }}
       />
       {/* ===== HERO ===== */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
-        <motion.div style={{ y: heroY }} className="absolute inset-0">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden bg-black">
+        <motion.div style={{ y: heroY }} className="absolute inset-0 bg-black">
           <video
             autoPlay
             loop
@@ -156,6 +156,7 @@ const Index = () => {
             className="absolute inset-0 w-full h-full object-cover scale-110"
             src={c("hero_video", "/videos/hajj-bg.mp4")}
             onCanPlay={(e) => (e.currentTarget as HTMLVideoElement).play()}
+            onLoadedData={(e) => (e.currentTarget as HTMLVideoElement).play()}
           />
         </motion.div>
         <div className="absolute inset-0" style={{
