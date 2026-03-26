@@ -181,8 +181,8 @@ const Blog = () => {
                     <h2 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                       {post.title}
                     </h2>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{post.excerpt}</p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                       <span>{post.author_name}</span>
                       {post.published_at && (
                         <span className="flex items-center gap-1">
@@ -191,6 +191,9 @@ const Blog = () => {
                         </span>
                       )}
                     </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:gap-2.5 transition-all">
+                      Read More <ArrowRight className="h-4 w-4" />
+                    </span>
                   </div>
                 </Link>
               </motion.div>
