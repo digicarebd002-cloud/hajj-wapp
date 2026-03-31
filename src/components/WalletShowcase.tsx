@@ -9,6 +9,9 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   {
@@ -89,6 +92,32 @@ const RotatingRing = ({
 
 const WalletShowcase = () => {
   const { ref, visible } = useScrollReveal();
+  const { user } = useAuth();
+  const [walletData, setWalletData] = useState({ balance: 0, goal: 2500, monthly: 0 });
+
+  useEffect(() => {
+    if (!user) {
+      setWalletData({ balance: 0, goal: 2500, monthly: 0 });
+      return;
+    }
+    const fetchWallet = async () => {
+      const { data: wallet } = await supabase
+        .from("wallets")
+        .select("balance, goal_amount")
+        .eq("user_id", user.id)
+        .single();
+      if (wallet) {
+        setWalletData({
+          balance: wallet.balance || 0,
+          goal: wallet.goal_amount || 2500,
+          monthly: 0,
+        });
+      }
+    };
+    fetchWallet();
+  }, [user]);
+
+  const progressPercent = walletData.goal > 0 ? Math.round((walletData.balance / walletData.goal) * 100) : 0;
 
   return (
     <section
@@ -177,7 +206,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
               >
-                $1,250
+                ${walletData.balance.toLocaleString()}
               </motion.p>
               <motion.p
                 className="text-muted-foreground text-sm text-center mt-1"
@@ -200,7 +229,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.9, type: "spring" }}
               >
-                <p className="text-sm font-semibold text-primary">50% to Goal</p>
+                <p className="text-sm font-semibold text-primary">{progressPercent}% to Goal</p>
               </motion.div>
             </div>
 
@@ -214,7 +243,7 @@ const WalletShowcase = () => {
               transition={{ delay: 0.7, type: "spring" }}
             >
               <p className="text-xs text-muted-foreground">Monthly</p>
-              <p className="text-lg font-bold text-foreground">$250</p>
+              <p className="text-lg font-bold text-foreground">${walletData.monthly.toLocaleString()}</p>
             </motion.div>
 
             {/* Goal badge — bottom left */}
@@ -227,7 +256,7 @@ const WalletShowcase = () => {
               transition={{ delay: 0.8, type: "spring" }}
             >
               <p className="text-xs text-muted-foreground">Goal</p>
-              <p className="text-lg font-bold text-foreground">$2,500</p>
+              <p className="text-lg font-bold text-foreground">${walletData.goal.toLocaleString()}</p>
             </motion.div>
 
           </motion.div>
