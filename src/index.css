@@ -159,7 +159,13 @@
   }
 
   .card-shadow {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .card-elevated {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.1);
+    border: 1px solid hsl(var(--border));
   }
 
   .tier-badge-silver {
