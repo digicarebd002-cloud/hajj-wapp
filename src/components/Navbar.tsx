@@ -53,8 +53,8 @@ const Navbar = () => {
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/95 backdrop-blur-xl shadow-md border-b border-border"
-          : "bg-background backdrop-blur-sm border-b border-transparent"
+          ? "bg-card/98 backdrop-blur-xl shadow-lg border-b border-border"
+          : "bg-card backdrop-blur-sm border-b border-border/50"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
@@ -74,7 +74,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-0.5 bg-secondary/50 rounded-full p-1">
+        <div className="hidden md:flex items-center gap-0.5 bg-secondary rounded-full p-1 border border-border/50">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.path;
             return (
@@ -124,7 +124,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary hover:bg-secondary/80 border border-border/50 transition-colors cursor-pointer">
                     <Avatar className="h-7 w-7 border border-primary/20">
                       <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>

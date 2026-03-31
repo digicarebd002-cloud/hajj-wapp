@@ -24,7 +24,7 @@ const footerLinks = {
 
 const Footer = () => {
   return (
-    <footer className="relative bg-[hsl(142,40%,15%)] text-white overflow-hidden">
+    <footer className="relative bg-[hsl(160,30%,10%)] text-white overflow-hidden">
       {/* Decorative gradient orb */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
 

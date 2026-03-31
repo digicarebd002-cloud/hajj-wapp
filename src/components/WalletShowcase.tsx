@@ -107,7 +107,7 @@ const WalletShowcase = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center gap-2 bg-primary/15 text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20">
             <Wallet className="h-3.5 w-3.5" />
             Digital Wallet
           </span>
@@ -206,7 +206,7 @@ const WalletShowcase = () => {
 
             {/* Monthly badge — top right */}
             <motion.div
-              className="absolute z-10 bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl px-4 py-2 shadow-lg"
+              className="absolute z-10 bg-card backdrop-blur-sm border border-border rounded-xl px-4 py-2 shadow-lg"
               style={{ top: "18%", right: "5%" }}
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -219,7 +219,7 @@ const WalletShowcase = () => {
 
             {/* Goal badge — bottom left */}
             <motion.div
-              className="absolute z-10 bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl px-4 py-2 shadow-lg"
+              className="absolute z-10 bg-card backdrop-blur-sm border border-border rounded-xl px-4 py-2 shadow-lg"
               style={{ bottom: "18%", left: "5%" }}
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -242,7 +242,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 + i * 0.12, duration: 0.5 }}
                 whileHover={{ x: 6, scale: 1.01 }}
-                className="flex items-start gap-4 p-4 rounded-xl bg-card/50 border border-border/30 backdrop-blur-sm hover:bg-card/80 transition-colors duration-300 cursor-default group"
+                className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border backdrop-blur-sm hover:border-primary/30 hover:shadow-md transition-all duration-300 cursor-default group"
               >
                 <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
                   <step.icon className="h-5 w-5 text-primary" />

@@ -383,7 +383,7 @@ const Index = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-secondary text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
+              className="inline-flex items-center gap-2 bg-primary/15 text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20"
             >
               How It Works
             </motion.span>
@@ -445,14 +445,14 @@ const Index = () => {
       </section>
 
       {/* ===== PACKAGES PREVIEW ===== */}
-      <section className="section-padding bg-secondary/50" ref={packagesReveal.ref}>
+      <section className="section-padding bg-secondary" ref={packagesReveal.ref}>
         <div className="container mx-auto">
           <div className="text-center mb-14">
             <motion.span
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
+              className="inline-flex items-center gap-2 bg-primary/15 text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20"
             >
               Packages
             </motion.span>
@@ -549,7 +549,7 @@ const Index = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-secondary text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
+              className="inline-flex items-center gap-2 bg-primary/15 text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20"
             >
               Community
             </motion.span>
@@ -625,11 +625,11 @@ const Index = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             {[
-              { ref: stat1.ref, count: stat1.count, label: c("stat1_label", "Active Members"), suffix: "+" },
-              { ref: stat2.ref, count: stat2.count, label: c("stat2_label", "Successful Pilgrimages"), suffix: "+" },
-              { ref: stat3.ref, count: stat3.count, label: c("stat3_label", "Monthly Sponsorships"), suffix: "" },
+              { ref: stat1.ref, count: stat1.count, label: c("stat1_label", "Active Members"), suffix: "+", emoji: "👥" },
+              { ref: stat2.ref, count: stat2.count, label: c("stat2_label", "Successful Pilgrimages"), suffix: "+", emoji: "🕋" },
+              { ref: stat3.ref, count: stat3.count, label: c("stat3_label", "Monthly Sponsorships"), suffix: "", emoji: "❤️" },
             ].map((s, i) => (
               <motion.div
                 key={s.label}
@@ -637,13 +637,14 @@ const Index = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="text-center p-6"
+                className="text-center p-8 bg-card rounded-2xl card-shadow"
                 ref={s.ref}
               >
-                <p className="text-5xl font-bold text-primary mb-2">
+                <span className="text-3xl mb-3 block">{s.emoji}</span>
+                <p className="text-4xl font-extrabold text-primary mb-2">
                   {s.count.toLocaleString()}{s.suffix}
                 </p>
-                <p className="text-muted-foreground text-sm">{s.label}</p>
+                <p className="text-foreground font-medium text-sm">{s.label}</p>
               </motion.div>
             ))}
           </div>
@@ -675,10 +676,10 @@ const Index = () => {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Heart className="h-12 w-12 text-accent mx-auto mb-6" />
+              <Heart className="h-12 w-12 text-primary mx-auto mb-6" />
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">{c("sponsor_title", "Monthly Sponsorship Program")}</h2>
-            <p className="text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5 text-white">{c("sponsor_title", "Monthly Sponsorship Program")}</h2>
+            <p className="text-white/75 mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
               {c("sponsor_desc", "Every month, we select a community member to travel to Mecca fully sponsored — chosen by engagement, dedication, and faith.")}
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -697,17 +698,17 @@ const Index = () => {
 
       {/* ===== FINAL CTA ===== */}
       <section className="section-padding text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-transparent pointer-events-none" />
         <div className="container mx-auto max-w-2xl relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5 text-foreground">
               {c("cta_title", "Begin Your Sacred Journey Today")}
             </h2>
-            <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg">
+            <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg leading-relaxed">
               {c("cta_desc", "Join our community and take the first step toward fulfilling your spiritual obligation.")}
             </p>
             <Link to="/account">
