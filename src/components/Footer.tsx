@@ -9,6 +9,7 @@ const footerLinks = {
     { label: "Packages", path: "/packages" },
     { label: "Community", path: "/community" },
     { label: "Store", path: "/store" },
+    { label: "Sponsorship", path: "/sponsorship" },
     { label: "Blog", path: "/blog" },
   ],
   Support: [
