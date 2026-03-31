@@ -473,27 +473,35 @@ const AccountContent = () => {
 
           <TabsContent value="overview" className="space-y-6">
             {/* Membership Progress */}
-            <div className="bg-card rounded-xl card-shadow p-6">
-              <h3 className="font-semibold mb-4">Membership Tier Progress</h3>
-              <Progress value={tierProgress} className="h-3 mb-2" />
-              <div className="flex justify-between text-xs text-muted-foreground mb-2">
-                <span>Silver (0)</span><span>Gold (1,000)</span><span>Platinum (2,000)</span>
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Award className="h-5 w-5 text-primary" /> Membership Tier Progress
+              </h3>
+              <Progress value={tierProgress} className="h-3 mb-3" />
+              <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
+                <span className="px-2 py-0.5 rounded-full bg-muted">Silver (0)</span>
+                <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">Gold (1,000)</span>
+                <span className="px-2 py-0.5 rounded-full bg-muted">Platinum (2,000)</span>
               </div>
               {pointsToNext > 0 && (
-                <p className="text-sm text-primary font-medium">You're {pointsToNext} points away from {nextTier}!</p>
+                <p className="text-sm text-primary font-semibold mt-2">🎯 You're {pointsToNext} points away from {nextTier}!</p>
               )}
-            </div>
+            </motion.div>
 
             {/* Savings Goal */}
-            <div className="bg-card rounded-xl card-shadow p-6">
-              <h3 className="font-semibold mb-2">Hajj Savings Goal</h3>
-              <Progress value={savingsProgress} className="h-3 mb-2" />
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card rounded-xl card-shadow p-6">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" /> Hajj Savings Goal
+              </h3>
+              <Progress value={savingsProgress} className="h-4 mb-3" />
               <div className="flex justify-between text-sm mb-2 items-center">
-                <span className="font-bold text-primary">${Number(walletBalance).toLocaleString()}</span>
+                <span className="text-lg font-bold text-primary">${Number(walletBalance).toLocaleString()}</span>
                 <GoalEditor wallet={wallet} onSaved={refetchWallet} />
               </div>
-              <Link to="/wallet" className="text-sm text-primary hover:underline mt-2 inline-block">Add Funds →</Link>
-            </div>
+              <Link to="/wallet" className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline mt-2">
+                <CreditCard className="h-3.5 w-3.5" /> Add Funds →
+              </Link>
+            </motion.div>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
@@ -503,11 +511,13 @@ const AccountContent = () => {
                 { icon: <Plane className="h-5 w-5" />, title: "My Bookings", desc: "Installments", to: "/bookings" },
                 { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points", to: "/community" },
                 { icon: <FileText className="h-5 w-5" />, title: "My Wallet", desc: "View transactions", to: "/wallet" },
-              ].map((a) => (
-                <Link key={a.title} to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:shadow-lg transition-shadow flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">{a.icon}</div>
-                  <div><p className="font-medium text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
-                </Link>
+              ].map((a, i) => (
+                <motion.div key={a.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
+                  <Link to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:border-primary/40 transition-all flex items-start gap-3 h-full block">
+                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">{a.icon}</div>
+                    <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
 
