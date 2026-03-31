@@ -625,11 +625,11 @@ const Index = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             {[
-              { ref: stat1.ref, count: stat1.count, label: c("stat1_label", "Active Members"), suffix: "+" },
-              { ref: stat2.ref, count: stat2.count, label: c("stat2_label", "Successful Pilgrimages"), suffix: "+" },
-              { ref: stat3.ref, count: stat3.count, label: c("stat3_label", "Monthly Sponsorships"), suffix: "" },
+              { ref: stat1.ref, count: stat1.count, label: c("stat1_label", "Active Members"), suffix: "+", emoji: "👥" },
+              { ref: stat2.ref, count: stat2.count, label: c("stat2_label", "Successful Pilgrimages"), suffix: "+", emoji: "🕋" },
+              { ref: stat3.ref, count: stat3.count, label: c("stat3_label", "Monthly Sponsorships"), suffix: "", emoji: "❤️" },
             ].map((s, i) => (
               <motion.div
                 key={s.label}
@@ -637,13 +637,14 @@ const Index = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="text-center p-6"
+                className="text-center p-8 bg-card rounded-2xl card-shadow"
                 ref={s.ref}
               >
-                <p className="text-5xl font-bold text-primary mb-2">
+                <span className="text-3xl mb-3 block">{s.emoji}</span>
+                <p className="text-4xl font-extrabold text-primary mb-2">
                   {s.count.toLocaleString()}{s.suffix}
                 </p>
-                <p className="text-muted-foreground text-sm">{s.label}</p>
+                <p className="text-foreground font-medium text-sm">{s.label}</p>
               </motion.div>
             ))}
           </div>
