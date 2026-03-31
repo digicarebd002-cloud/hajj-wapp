@@ -698,17 +698,17 @@ const Index = () => {
 
       {/* ===== FINAL CTA ===== */}
       <section className="section-padding text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 to-transparent pointer-events-none" />
         <div className="container mx-auto max-w-2xl relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5 text-foreground">
               {c("cta_title", "Begin Your Sacred Journey Today")}
             </h2>
-            <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg">
+            <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg leading-relaxed">
               {c("cta_desc", "Join our community and take the first step toward fulfilling your spiritual obligation.")}
             </p>
             <Link to="/account">
