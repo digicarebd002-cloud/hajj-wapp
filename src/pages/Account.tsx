@@ -403,12 +403,12 @@ const AccountContent = () => {
       <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
       <div className="container mx-auto max-w-4xl">
         {/* Profile Header */}
-        <div className="bg-card rounded-xl card-shadow p-6 mb-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6 md:p-8 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               {/* Avatar with upload */}
               <div className="relative group">
-                <Avatar className="h-20 w-20 border-2 border-primary/20">
+                <Avatar className="h-20 w-20 ring-3 ring-primary/20 ring-offset-2 ring-offset-background">
                   <AvatarImage src={p.avatar_url || ""} alt={p.full_name} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
                     {initials}
@@ -446,19 +446,19 @@ const AccountContent = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { icon: "💰", label: "Wallet Balance", value: `$${Number(walletBalance).toLocaleString()}` },
-              { icon: "⭐", label: "Reward Points", value: p.points_total.toLocaleString() },
-              { icon: "💬", label: "Tier", value: p.tier },
-              { icon: "📊", label: "Status", value: p.membership_status },
+              { icon: "💰", label: "Wallet Balance", value: `$${Number(walletBalance).toLocaleString()}`, highlight: true },
+              { icon: "⭐", label: "Reward Points", value: p.points_total.toLocaleString(), highlight: false },
+              { icon: "🏅", label: "Tier", value: p.tier, highlight: false },
+              { icon: "📊", label: "Status", value: p.membership_status, highlight: p.membership_status === "active" },
             ].map((s) => (
-              <div key={s.label} className="bg-secondary rounded-lg p-3 text-center">
-                <span className="text-lg">{s.icon}</span>
-                <p className="text-lg font-bold capitalize">{s.value}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
+              <div key={s.label} className={`rounded-xl p-4 text-center border transition-all ${s.highlight ? "bg-primary/10 border-primary/30" : "bg-secondary border-border"}`}>
+                <span className="text-xl block mb-1">{s.icon}</span>
+                <p className={`text-lg font-bold capitalize ${s.highlight ? "text-primary" : "text-foreground"}`}>{s.value}</p>
+                <p className="text-xs text-muted-foreground font-medium">{s.label}</p>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
