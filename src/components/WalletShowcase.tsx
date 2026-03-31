@@ -243,7 +243,7 @@ const WalletShowcase = () => {
               transition={{ delay: 0.7, type: "spring" }}
             >
               <p className="text-xs text-muted-foreground">Monthly</p>
-              <p className="text-lg font-bold text-foreground">$250</p>
+              <p className="text-lg font-bold text-foreground">${walletData.monthly.toLocaleString()}</p>
             </motion.div>
 
             {/* Goal badge — bottom left */}
