@@ -74,8 +74,20 @@ const Index = () => {
   const communityReveal = useScrollReveal();
   const sponsorReveal = useScrollReveal();
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  const { user } = useAuth();
+  const [heroWallet, setHeroWallet] = useState({ balance: 0, goal: 2500 });
 
   useEffect(() => {
+    if (!user) { setHeroWallet({ balance: 0, goal: 2500 }); return; }
+    const fetch = async () => {
+      const { data } = await supabase.from("wallets").select("balance, goal_amount").eq("user_id", user.id).maybeSingle();
+      if (data) setHeroWallet({ balance: data.balance, goal: data.goal_amount || 2500 });
+    };
+    fetch();
+  }, [user]);
+
+  const heroProgress = heroWallet.goal > 0 ? Math.min(heroWallet.balance / heroWallet.goal, 1) : 0;
+
     const fetchPosts = async () => {
       // Get top 3 discussions with reply counts and author info
       const { data: discussions } = await supabase
