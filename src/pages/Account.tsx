@@ -627,17 +627,17 @@ const AccountContent = () => {
                   {hasActiveSub && subConfig?.subscription ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <CreditCard className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Monthly Fee</span>
+                            <CreditCard className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Monthly Fee</span>
                           </div>
                           <p className="text-xl font-bold text-primary">${subConfig.subscription.amount}/mo</p>
                         </div>
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-card border border-border rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Started</span>
+                            <CalendarDays className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Started</span>
                           </div>
                           <p className="text-sm font-semibold">
                             {subConfig.subscription.starts_at
@@ -645,10 +645,10 @@ const AccountContent = () => {
                               : "—"}
                           </p>
                         </div>
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-card border border-border rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Next Billing</span>
+                            <RefreshCw className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Next Billing</span>
                           </div>
                           <p className="text-sm font-semibold">
                             {subConfig.subscription.ends_at
