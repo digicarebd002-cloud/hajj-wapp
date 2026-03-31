@@ -306,6 +306,7 @@ const AccountContent = () => {
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: transactions } = useWalletTransactions();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const { config: subConfig, loading: subLoading, actionLoading: subActionLoading, subscribe, cancelSubscription, isActive: hasActiveSub, error: subError } = useWalletSubscription();
   const [userOrders, setUserOrders] = useState<{ total: number; created_at: string; status: string }[] | null>(null);
   const [userBookings, setUserBookings] = useState<{ created_at: string; status: string }[] | null>(null);
 
