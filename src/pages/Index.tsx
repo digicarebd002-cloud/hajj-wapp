@@ -4,8 +4,9 @@ import {
   Users, Wallet, Star, ArrowRight, Handshake, Award,
   Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe, User
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
 import GlowCard from "@/components/GlowCard";
@@ -73,6 +74,19 @@ const Index = () => {
   const communityReveal = useScrollReveal();
   const sponsorReveal = useScrollReveal();
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  const { user } = useAuth();
+  const [heroWallet, setHeroWallet] = useState({ balance: 0, goal: 2500 });
+
+  useEffect(() => {
+    if (!user) { setHeroWallet({ balance: 0, goal: 2500 }); return; }
+    const fetch = async () => {
+      const { data } = await supabase.from("wallets").select("balance, goal_amount").eq("user_id", user.id).maybeSingle();
+      if (data) setHeroWallet({ balance: data.balance, goal: data.goal_amount || 2500 });
+    };
+    fetch();
+  }, [user]);
+
+  const heroProgress = heroWallet.goal > 0 ? Math.min(heroWallet.balance / heroWallet.goal, 1) : 0;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -303,7 +317,7 @@ const Index = () => {
                     strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 78}
                     initial={{ strokeDashoffset: 2 * Math.PI * 78 }}
-                    animate={{ strokeDashoffset: 2 * Math.PI * 78 * 0.35 }}
+                    animate={{ strokeDashoffset: 2 * Math.PI * 78 * (1 - heroProgress) }}
                     transition={{ duration: 2, delay: 1, ease: "easeOut" }}
                     style={{ filter: "drop-shadow(0 0 8px hsl(var(--accent) / 0.5))" }}
                   />
@@ -325,10 +339,10 @@ const Index = () => {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1.5 }}
                     >
-                      $1,625
+                      ${heroWallet.balance.toLocaleString()}
                     </motion.p>
-                    <p className="text-accent text-sm font-medium mt-1">65% to Goal</p>
-                    <p className="text-white/40 text-xs mt-0.5">of $2,500</p>
+                    <p className="text-accent text-sm font-medium mt-1">{Math.round(heroProgress * 100)}% to Goal</p>
+                    <p className="text-white/40 text-xs mt-0.5">of ${heroWallet.goal.toLocaleString()}</p>
                   </motion.div>
                 </div>
 
