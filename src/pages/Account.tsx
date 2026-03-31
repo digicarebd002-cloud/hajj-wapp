@@ -403,12 +403,12 @@ const AccountContent = () => {
       <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
       <div className="container mx-auto max-w-4xl">
         {/* Profile Header */}
-        <div className="bg-card rounded-xl card-shadow p-6 mb-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6 md:p-8 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               {/* Avatar with upload */}
               <div className="relative group">
-                <Avatar className="h-20 w-20 border-2 border-primary/20">
+                <Avatar className="h-20 w-20 ring-3 ring-primary/20 ring-offset-2 ring-offset-background">
                   <AvatarImage src={p.avatar_url || ""} alt={p.full_name} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
                     {initials}
@@ -446,54 +446,62 @@ const AccountContent = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { icon: "💰", label: "Wallet Balance", value: `$${Number(walletBalance).toLocaleString()}` },
-              { icon: "⭐", label: "Reward Points", value: p.points_total.toLocaleString() },
-              { icon: "💬", label: "Tier", value: p.tier },
-              { icon: "📊", label: "Status", value: p.membership_status },
+              { icon: "💰", label: "Wallet Balance", value: `$${Number(walletBalance).toLocaleString()}`, highlight: true },
+              { icon: "⭐", label: "Reward Points", value: p.points_total.toLocaleString(), highlight: false },
+              { icon: "🏅", label: "Tier", value: p.tier, highlight: false },
+              { icon: "📊", label: "Status", value: p.membership_status, highlight: p.membership_status === "active" },
             ].map((s) => (
-              <div key={s.label} className="bg-secondary rounded-lg p-3 text-center">
-                <span className="text-lg">{s.icon}</span>
-                <p className="text-lg font-bold capitalize">{s.value}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
+              <div key={s.label} className={`rounded-xl p-4 text-center border transition-all ${s.highlight ? "bg-primary/10 border-primary/30" : "bg-secondary border-border"}`}>
+                <span className="text-xl block mb-1">{s.icon}</span>
+                <p className={`text-lg font-bold capitalize ${s.highlight ? "text-primary" : "text-foreground"}`}>{s.value}</p>
+                <p className="text-xs text-muted-foreground font-medium">{s.label}</p>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
-          <TabsList className="mb-6 flex-wrap">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="subscription" className="gap-1.5"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
-            <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsList className="mb-6 flex-wrap bg-card border border-border p-1 h-auto">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+            <TabsTrigger value="subscription" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
+            <TabsTrigger value="points" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
+            <TabsTrigger value="activity" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Activity</TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             {/* Membership Progress */}
-            <div className="bg-card rounded-xl card-shadow p-6">
-              <h3 className="font-semibold mb-4">Membership Tier Progress</h3>
-              <Progress value={tierProgress} className="h-3 mb-2" />
-              <div className="flex justify-between text-xs text-muted-foreground mb-2">
-                <span>Silver (0)</span><span>Gold (1,000)</span><span>Platinum (2,000)</span>
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Award className="h-5 w-5 text-primary" /> Membership Tier Progress
+              </h3>
+              <Progress value={tierProgress} className="h-3 mb-3" />
+              <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
+                <span className="px-2 py-0.5 rounded-full bg-muted">Silver (0)</span>
+                <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">Gold (1,000)</span>
+                <span className="px-2 py-0.5 rounded-full bg-muted">Platinum (2,000)</span>
               </div>
               {pointsToNext > 0 && (
-                <p className="text-sm text-primary font-medium">You're {pointsToNext} points away from {nextTier}!</p>
+                <p className="text-sm text-primary font-semibold mt-2">🎯 You're {pointsToNext} points away from {nextTier}!</p>
               )}
-            </div>
+            </motion.div>
 
             {/* Savings Goal */}
-            <div className="bg-card rounded-xl card-shadow p-6">
-              <h3 className="font-semibold mb-2">Hajj Savings Goal</h3>
-              <Progress value={savingsProgress} className="h-3 mb-2" />
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-card rounded-xl card-shadow p-6">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" /> Hajj Savings Goal
+              </h3>
+              <Progress value={savingsProgress} className="h-4 mb-3" />
               <div className="flex justify-between text-sm mb-2 items-center">
-                <span className="font-bold text-primary">${Number(walletBalance).toLocaleString()}</span>
+                <span className="text-lg font-bold text-primary">${Number(walletBalance).toLocaleString()}</span>
                 <GoalEditor wallet={wallet} onSaved={refetchWallet} />
               </div>
-              <Link to="/wallet" className="text-sm text-primary hover:underline mt-2 inline-block">Add Funds →</Link>
-            </div>
+              <Link to="/wallet" className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline mt-2">
+                <CreditCard className="h-3.5 w-3.5" /> Add Funds →
+              </Link>
+            </motion.div>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-4">
@@ -503,28 +511,33 @@ const AccountContent = () => {
                 { icon: <Plane className="h-5 w-5" />, title: "My Bookings", desc: "Installments", to: "/bookings" },
                 { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points", to: "/community" },
                 { icon: <FileText className="h-5 w-5" />, title: "My Wallet", desc: "View transactions", to: "/wallet" },
-              ].map((a) => (
-                <Link key={a.title} to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:shadow-lg transition-shadow flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">{a.icon}</div>
-                  <div><p className="font-medium text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
-                </Link>
+              ].map((a, i) => (
+                <motion.div key={a.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
+                  <Link to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:border-primary/40 transition-all flex items-start gap-3 h-full block">
+                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">{a.icon}</div>
+                    <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
 
             {/* Membership */}
-            <div className="bg-card rounded-xl card-shadow p-6">
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+              className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20 p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold flex items-center gap-2"><CreditCard className="h-5 w-5 text-accent" /> {p.tier} Membership</h3>
+                  <h3 className="font-semibold flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" /> {p.tier} Membership</h3>
                   <p className="text-sm text-muted-foreground capitalize">Status: {p.membership_status}</p>
                 </div>
-                <Badge className="bg-primary text-primary-foreground border-0 capitalize">{p.membership_status}</Badge>
+                <Badge className={`border-0 capitalize ${p.membership_status === "active" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{p.membership_status}</Badge>
               </div>
               {p.next_billing_date && (
-                <p className="text-xs text-muted-foreground">Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <CalendarDays className="h-3.5 w-3.5" /> Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                </p>
               )}
-              <Link to="/membership" className="text-sm text-primary hover:underline mt-3 inline-block">Manage Membership →</Link>
-            </div>
+              <Link to="/membership" className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline mt-3">Manage Membership →</Link>
+            </motion.div>
 
             {/* Referral Card */}
             {referralCode && (
@@ -572,25 +585,25 @@ const AccountContent = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.completed}</p>
-                    <p className="text-xs text-muted-foreground">Referrals</p>
+                    <p className="text-xs text-muted-foreground font-medium">Referrals</p>
                   </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.totalPoints}</p>
-                    <p className="text-xs text-muted-foreground">Points Earned</p>
+                    <p className="text-xs text-muted-foreground font-medium">Points Earned</p>
                   </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.total - referralStats.completed}</p>
-                    <p className="text-xs text-muted-foreground">Pending</p>
+                    <p className="text-xs text-muted-foreground font-medium">Pending</p>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            <div className="bg-secondary rounded-xl p-6 text-center">
+            <div className="bg-card rounded-xl card-shadow p-6 text-center">
               <h3 className="font-semibold mb-1">Need Help?</h3>
-              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4" /> 1-800-HAJJ-HELP</p>
+              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4 text-primary" /> <span className="font-semibold text-foreground">1-800-HAJJ-HELP</span></p>
             </div>
           </TabsContent>
 
@@ -614,17 +627,17 @@ const AccountContent = () => {
                   {hasActiveSub && subConfig?.subscription ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <CreditCard className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Monthly Fee</span>
+                            <CreditCard className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Monthly Fee</span>
                           </div>
                           <p className="text-xl font-bold text-primary">${subConfig.subscription.amount}/mo</p>
                         </div>
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-card border border-border rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Started</span>
+                            <CalendarDays className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Started</span>
                           </div>
                           <p className="text-sm font-semibold">
                             {subConfig.subscription.starts_at
@@ -632,10 +645,10 @@ const AccountContent = () => {
                               : "—"}
                           </p>
                         </div>
-                        <div className="bg-secondary rounded-lg p-4">
+                        <div className="bg-card border border-border rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-1">
-                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">Next Billing</span>
+                            <RefreshCw className="h-4 w-4 text-primary" />
+                            <span className="text-xs text-muted-foreground font-medium">Next Billing</span>
                           </div>
                           <p className="text-sm font-semibold">
                             {subConfig.subscription.ends_at
