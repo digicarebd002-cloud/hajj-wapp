@@ -92,6 +92,32 @@ const RotatingRing = ({
 
 const WalletShowcase = () => {
   const { ref, visible } = useScrollReveal();
+  const { user } = useAuth();
+  const [walletData, setWalletData] = useState({ balance: 0, goal: 2500, monthly: 0 });
+
+  useEffect(() => {
+    if (!user) {
+      setWalletData({ balance: 0, goal: 2500, monthly: 0 });
+      return;
+    }
+    const fetchWallet = async () => {
+      const { data: wallet } = await supabase
+        .from("wallets")
+        .select("balance, goal_amount")
+        .eq("user_id", user.id)
+        .single();
+      if (wallet) {
+        setWalletData({
+          balance: wallet.balance || 0,
+          goal: wallet.goal_amount || 2500,
+          monthly: 0,
+        });
+      }
+    };
+    fetchWallet();
+  }, [user]);
+
+  const progressPercent = walletData.goal > 0 ? Math.round((walletData.balance / walletData.goal) * 100) : 0;
 
   return (
     <section
