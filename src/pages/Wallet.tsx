@@ -12,8 +12,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { CreditCard, ChevronRight } from "lucide-react";
+import { CreditCard, ChevronRight, Shield, Crown, AlertCircle, Loader2 } from "lucide-react";
 import PayPalButton from "@/components/PayPalButton";
+import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const stagger = {
   hidden: {},
@@ -23,6 +35,148 @@ const stagger = {
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } },
+};
+
+// --- Subscription Banner ---
+const SubscriptionBanner = ({
+  isActive,
+  subscription,
+  price,
+  loading,
+  actionLoading,
+  onSubscribe,
+  onCancel,
+  error,
+}: {
+  isActive: boolean;
+  subscription: any;
+  price: number;
+  loading: boolean;
+  actionLoading: boolean;
+  onSubscribe: () => void;
+  onCancel: () => void;
+  error: string | null;
+}) => {
+  if (loading) {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-muted-foreground">Checking subscription status...</span>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (isActive) {
+    const endsAt = subscription?.ends_at ? new Date(subscription.ends_at) : null;
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-card rounded-xl card-shadow p-6 mb-8 border-2 border-primary/30"
+      >
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-primary/10 rounded-xl">
+              <Crown className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold">Wallet Access Active</h2>
+                <Badge className="bg-primary text-primary-foreground border-0">Active</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {endsAt
+                  ? `Renews on ${endsAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                  : "Monthly subscription active"}
+                {" · "}${price}/month
+              </p>
+            </div>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" disabled={actionLoading}>
+                {actionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                Cancel Subscription
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Cancel Wallet Subscription?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your wallet access will remain active until {endsAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) || "the end of your billing period"}.
+                  After that, you won't be able to add new funds, but your existing balance can still be used for bookings and purchases.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                <AlertDialogAction onClick={onCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Yes, Cancel
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Not subscribed
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-card rounded-xl card-shadow p-8 mb-8 border-2 border-amber-500/30"
+    >
+      <div className="flex items-start gap-4 mb-6">
+        <div className="p-3 bg-amber-500/10 rounded-xl shrink-0">
+          <Shield className="h-7 w-7 text-amber-500" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold mb-1">Wallet Subscription Required</h2>
+          <p className="text-muted-foreground">
+            To add funds to your Hajj savings wallet, you need an active monthly subscription.
+            This is a <strong>${price}/month</strong> service fee — it does not add to your wallet balance.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-secondary/50 rounded-lg p-4 mb-6 space-y-2 text-sm">
+        <p className="font-semibold flex items-center gap-2"><Crown className="h-4 w-4 text-primary" /> What you get:</p>
+        <ul className="space-y-1 ml-6 list-disc text-muted-foreground">
+          <li>Unlimited wallet contributions (any amount)</li>
+          <li>Your existing balance is always accessible for bookings & purchases</li>
+          <li>Cancel anytime — access remains until end of billing period</li>
+          <li>Auto-renews monthly via PayPal</li>
+        </ul>
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 text-destructive text-sm mb-4">
+          <AlertCircle className="h-4 w-4" />
+          {error}
+        </div>
+      )}
+
+      <Button
+        onClick={onSubscribe}
+        disabled={actionLoading}
+        className="w-full h-14 text-lg font-bold btn-glow"
+        size="lg"
+      >
+        {actionLoading ? (
+          <><Loader2 className="h-5 w-5 animate-spin mr-2" /> Processing...</>
+        ) : (
+          `Subscribe for $${price}/month`
+        )}
+      </Button>
+
+      <p className="text-center text-xs text-muted-foreground mt-3">
+        Secure payment via PayPal • Cancel anytime
+      </p>
+    </motion.div>
+  );
 };
 
 // --- Stats Cards ---
@@ -314,7 +468,15 @@ const WalletContent = () => {
   const { data: stats, loading: statsLoading, error: statsError, refetch: refetchStats } = useWalletStats();
   const { data: transactions, loading: txLoading, refetch: refetchTx } = useWalletTransactions();
   const { data: profile } = useProfile();
-  const [, setDummy] = useState(0); // force re-render on contribution
+  const {
+    config: subConfig,
+    loading: subLoading,
+    error: subError,
+    actionLoading: subActionLoading,
+    subscribe,
+    cancelSubscription,
+    isActive: hasActiveSubscription,
+  } = useWalletSubscription();
 
   // Real-time subscription for wallet_transactions
   useEffect(() => {
@@ -366,7 +528,24 @@ const WalletContent = () => {
         </motion.div>
 
         <StatsCards stats={stats} profile={profile} />
-        <ContributeSection onContributed={handleContributed} />
+
+        {/* Subscription Banner - always shown */}
+        <SubscriptionBanner
+          isActive={hasActiveSubscription}
+          subscription={subConfig?.subscription}
+          price={subConfig?.price ?? 15}
+          loading={subLoading}
+          actionLoading={subActionLoading}
+          onSubscribe={subscribe}
+          onCancel={cancelSubscription}
+          error={subError}
+        />
+
+        {/* Contribute Section - only shown if subscription is active */}
+        {hasActiveSubscription && (
+          <ContributeSection onContributed={handleContributed} />
+        )}
+
         <MembershipCard profile={profile} />
         <SavingsProgress stats={stats} />
         <RecentContributions transactions={transactions} txLoading={txLoading} setAmount={() => {}} />
