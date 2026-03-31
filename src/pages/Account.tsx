@@ -462,13 +462,13 @@ const AccountContent = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
-          <TabsList className="mb-6 flex-wrap">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="subscription" className="gap-1.5"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
-            <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsList className="mb-6 flex-wrap bg-card border border-border p-1 h-auto">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+            <TabsTrigger value="subscription" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
+            <TabsTrigger value="points" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
+            <TabsTrigger value="activity" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Activity</TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
