@@ -317,7 +317,7 @@ const Index = () => {
                     strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 78}
                     initial={{ strokeDashoffset: 2 * Math.PI * 78 }}
-                    animate={{ strokeDashoffset: 2 * Math.PI * 78 * 0.35 }}
+                    animate={{ strokeDashoffset: 2 * Math.PI * 78 * (1 - heroProgress) }}
                     transition={{ duration: 2, delay: 1, ease: "easeOut" }}
                     style={{ filter: "drop-shadow(0 0 8px hsl(var(--accent) / 0.5))" }}
                   />
