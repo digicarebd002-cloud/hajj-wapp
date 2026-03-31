@@ -215,15 +215,6 @@ const Navbar = () => {
               <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: navLinks.length * 0.05 }}
-                className="flex items-center justify-between px-4 py-2"
-              >
-                <span className="text-sm text-muted-foreground font-medium">Theme</span>
-                <ThemeToggle />
-              </motion.div>
-              <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: (navLinks.length + 1) * 0.05 }}
               >
                 <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}>
