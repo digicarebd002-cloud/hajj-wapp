@@ -676,10 +676,10 @@ const Index = () => {
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Heart className="h-12 w-12 text-accent mx-auto mb-6" />
+              <Heart className="h-12 w-12 text-primary mx-auto mb-6" />
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5">{c("sponsor_title", "Monthly Sponsorship Program")}</h2>
-            <p className="text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
+            <h2 className="text-3xl md:text-4xl font-bold mb-5 text-white">{c("sponsor_title", "Monthly Sponsorship Program")}</h2>
+            <p className="text-white/75 mb-10 leading-relaxed max-w-2xl mx-auto text-lg">
               {c("sponsor_desc", "Every month, we select a community member to travel to Mecca fully sponsored — chosen by engagement, dedication, and faith.")}
             </p>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
