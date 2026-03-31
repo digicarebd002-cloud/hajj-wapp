@@ -68,7 +68,7 @@ const Index = () => {
   const stat1 = useCountUp(parseInt(c("stat1_value", "1200")) || 1200);
   const stat2 = useCountUp(parseInt(c("stat2_value", "350")) || 350);
   const stat3 = useCountUp(parseInt(c("stat3_value", "12")) || 12);
-  const stepsReveal = useScrollReveal();
+  
   const packagesReveal = useScrollReveal();
   const communityReveal = useScrollReveal();
   const sponsorReveal = useScrollReveal();
