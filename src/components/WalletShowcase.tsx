@@ -219,7 +219,7 @@ const WalletShowcase = () => {
 
             {/* Goal badge — bottom left */}
             <motion.div
-              className="absolute z-10 bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl px-4 py-2 shadow-lg"
+              className="absolute z-10 bg-card backdrop-blur-sm border border-border rounded-xl px-4 py-2 shadow-lg"
               style={{ bottom: "18%", left: "5%" }}
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
