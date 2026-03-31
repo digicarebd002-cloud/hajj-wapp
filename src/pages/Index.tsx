@@ -339,10 +339,10 @@ const Index = () => {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1.5 }}
                     >
-                      $1,625
+                      ${heroWallet.balance.toLocaleString()}
                     </motion.p>
-                    <p className="text-accent text-sm font-medium mt-1">65% to Goal</p>
-                    <p className="text-white/40 text-xs mt-0.5">of $2,500</p>
+                    <p className="text-accent text-sm font-medium mt-1">{Math.round(heroProgress * 100)}% to Goal</p>
+                    <p className="text-white/40 text-xs mt-0.5">of ${heroWallet.goal.toLocaleString()}</p>
                   </motion.div>
                 </div>
 
