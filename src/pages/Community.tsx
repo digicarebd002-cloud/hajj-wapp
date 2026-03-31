@@ -422,66 +422,77 @@ const Community = () => {
         }}
       />
 
-      {/* ===== HERO BANNER ===== */}
-      <section className="relative bg-gradient-to-br from-primary via-primary to-primary/80 overflow-hidden">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/3 translate-y-1/3" />
-          <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+      {/* ===== HERO SECTION — Warm & Social ===== */}
+      <section className="relative bg-background border-b border-border overflow-hidden">
+        {/* Soft decorative blobs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-16 -right-16 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="container mx-auto max-w-6xl px-4 py-14 md:py-20 relative z-10">
+        <div className="container mx-auto max-w-6xl px-4 pt-10 pb-8 md:pt-16 md:pb-12 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+            transition={{ duration: 0.5 }}
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", delay: 0.2 }}
-              className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-5"
-            >
-              <Users className="h-8 w-8 text-white" />
-            </motion.div>
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-              Community Forum
-            </h1>
-            <p className="text-white/80 max-w-xl mx-auto text-base md:text-lg mb-8 leading-relaxed">
-              Connect with fellow pilgrims, share experiences, ask questions, and support each other on the journey to Hajj.
-            </p>
+            {/* Top row: greeting + CTA */}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+              <div>
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                  className="flex items-center gap-3 mb-3"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <MessageSquare className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
+                    Community
+                  </span>
+                </motion.div>
+                <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
+                  Share, Ask & Connect 💬
+                </h1>
+                <p className="text-muted-foreground max-w-lg text-base leading-relaxed">
+                  Join conversations with fellow pilgrims. Ask questions, share your experience, and earn reward points along the way.
+                </p>
+              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Button
+                  size="lg"
+                  onClick={handleNewDiscussion}
+                  className="font-bold text-base px-7 h-12 rounded-xl shadow-lg shadow-primary/20 gap-2"
+                >
+                  <PenSquare className="h-5 w-5" />
+                  Start a Discussion
+                </Button>
+              </motion.div>
+            </div>
 
-            {/* Quick Stats in Hero */}
+            {/* Stats cards row */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex items-center justify-center gap-6 md:gap-10 mb-8"
+              transition={{ delay: 0.25 }}
+              className="grid grid-cols-3 gap-3 md:gap-4 max-w-lg"
             >
               {[
-                { label: "Members", value: statsLoading ? "—" : stats.members, icon: <Users className="h-4 w-4" /> },
-                { label: "Discussions", value: statsLoading ? "—" : stats.discussions, icon: <MessageSquare className="h-4 w-4" /> },
-                { label: "Replies", value: statsLoading ? "—" : stats.replies, icon: <MessageCircle className="h-4 w-4" /> },
+                { label: "Members", value: statsLoading ? "—" : stats.members, icon: <Users className="h-4 w-4 text-primary" />, bg: "bg-primary/8" },
+                { label: "Discussions", value: statsLoading ? "—" : stats.discussions, icon: <MessageSquare className="h-4 w-4 text-blue-500" />, bg: "bg-blue-500/8" },
+                { label: "Replies", value: statsLoading ? "—" : stats.replies, icon: <MessageCircle className="h-4 w-4 text-violet-500" />, bg: "bg-violet-500/8" },
               ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-white/60 mb-1">{s.icon}<span className="text-xs font-medium">{s.label}</span></div>
-                  <p className="text-2xl md:text-3xl font-bold text-white">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
+                <div key={s.label} className="bg-card rounded-xl border border-border p-3 md:p-4 text-center hover:border-primary/20 transition-colors">
+                  <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-2`}>{s.icon}</div>
+                  <p className="text-xl md:text-2xl font-bold text-foreground">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
+                  <p className="text-[11px] text-muted-foreground font-medium">{s.label}</p>
                 </div>
               ))}
-            </motion.div>
-
-            {/* CTA Button */}
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}>
-              <Button
-                size="lg"
-                onClick={handleNewDiscussion}
-                className="bg-white text-primary hover:bg-white/90 font-bold text-base px-8 h-12 rounded-xl shadow-lg gap-2"
-              >
-                <PenSquare className="h-5 w-5" />
-                Start New Discussion
-              </Button>
             </motion.div>
           </motion.div>
         </div>
