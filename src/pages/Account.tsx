@@ -585,25 +585,25 @@ const AccountContent = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.completed}</p>
-                    <p className="text-xs text-muted-foreground">Referrals</p>
+                    <p className="text-xs text-muted-foreground font-medium">Referrals</p>
                   </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.totalPoints}</p>
-                    <p className="text-xs text-muted-foreground">Points Earned</p>
+                    <p className="text-xs text-muted-foreground font-medium">Points Earned</p>
                   </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                     <p className="text-lg font-bold text-primary">{referralStats.total - referralStats.completed}</p>
-                    <p className="text-xs text-muted-foreground">Pending</p>
+                    <p className="text-xs text-muted-foreground font-medium">Pending</p>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            <div className="bg-secondary rounded-xl p-6 text-center">
+            <div className="bg-card rounded-xl card-shadow p-6 text-center">
               <h3 className="font-semibold mb-1">Need Help?</h3>
-              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4" /> 1-800-HAJJ-HELP</p>
+              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4 text-primary" /> <span className="font-semibold text-foreground">1-800-HAJJ-HELP</span></p>
             </div>
           </TabsContent>
 
