@@ -56,6 +56,7 @@ import AdminMarketing from "./pages/admin/AdminMarketing";
 import AdminSupportTickets from "./pages/admin/AdminSupportTickets";
 import AdminInventory from "./pages/admin/AdminInventory";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
+import { ScrollToTopOnRouteChange } from "./components/ScrollToTop";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTopOnRouteChange />
               <Routes>
                 {/* Admin routes - no main Layout */}
                 <Route path="/admin/login" element={<AdminLogin />} />
