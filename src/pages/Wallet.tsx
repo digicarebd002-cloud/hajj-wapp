@@ -12,7 +12,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { CreditCard, ChevronRight, Crown, Loader2 } from "lucide-react";
+import {
+  Wallet as WalletIcon,
+  ChevronRight,
+  Crown,
+  Loader2,
+  TrendingUp,
+  Target,
+  ArrowUpRight,
+  ArrowDownRight,
+  Plus,
+  History,
+  Shield,
+  CreditCard,
+  DollarSign,
+  Zap,
+  Calendar,
+  CheckCircle2,
+} from "lucide-react";
 import PayPalButton from "@/components/PayPalButton";
 import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
 import {
@@ -27,187 +44,158 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25 } },
 };
 
-// --- Stats Cards ---
-const StatsCards = ({ stats, profile }: { stats: any; profile: any }) => {
-  const cards = [
-    {
-      label: "Current Balance",
-      value: `$${Number(stats.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-      sub: `${stats.contribution_count ?? 0} contributions made`,
-      highlight: true,
-    },
-    {
-      label: "Goal Amount",
-      value: `$${Number(stats.goal_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-      sub: `$${Math.max(Number(stats.remaining), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} remaining`,
-    },
-    {
-      label: "Membership",
-      value: profile?.membership_status ?? "—",
-      sub: `Tier: ${profile?.tier ?? "—"}`,
-      badge: profile?.membership_status === "active",
-    },
-  ];
-
-  return (
-    <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-      {cards.map((card, i) => (
-        <motion.div
-          key={card.label}
-          variants={fadeUp}
-          whileHover={{ y: -6, boxShadow: "0 15px 30px -8px hsl(var(--primary) / 0.12)" }}
-          className="bg-card rounded-xl card-shadow p-6"
-        >
-          <p className="text-sm text-muted-foreground mb-1">{card.label}</p>
-          <motion.p
-            className={`text-3xl font-bold ${card.highlight ? "text-primary" : ""} ${card.label === "Membership" ? "capitalize" : ""}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
-          >
-            {card.value}
-          </motion.p>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-xs text-muted-foreground">{card.sub}</p>
-            {card.badge && <Badge className="bg-primary text-primary-foreground border-0 text-[10px]">Active</Badge>}
-          </div>
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-};
-
-// --- Savings Progress ---
-const SavingsProgress = ({ stats }: { stats: any }) => {
+// --- Hero Balance Card (Fintech style) ---
+const BalanceHero = ({ stats, profile }: { stats: any; profile: any }) => {
+  const balance = Number(stats.balance);
+  const goalAmount = Number(stats.goal_amount);
   const progress = Number(stats.progress_percent) || 0;
   const remaining = Math.max(Number(stats.remaining), 0);
-  const goalAmount = Number(stats.goal_amount);
-  const weeksToGoal = (weekly: number) => remaining <= 0 ? 0 : Math.ceil(remaining / weekly);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 25 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3 }}
-      whileHover={{ boxShadow: "0 15px 30px -8px hsl(var(--primary) / 0.08)" }}
-      className="bg-card rounded-xl card-shadow p-6 mb-8"
+      transition={{ duration: 0.5 }}
+      className="relative overflow-hidden rounded-2xl p-8 md:p-10 mb-6"
+      style={{
+        background: "linear-gradient(135deg, hsl(142, 72%, 32%) 0%, hsl(142, 60%, 22%) 50%, hsl(160, 50%, 14%) 100%)",
+      }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Savings Progress</h2>
-        <motion.span className="text-sm text-primary font-medium" key={progress} initial={{ scale: 1.3 }} animate={{ scale: 1 }}>
-          {progress.toFixed(1)}% of goal reached
-        </motion.span>
+      {/* Subtle pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px",
+        }}
+      />
+
+      {/* Top row */}
+      <div className="relative z-10 flex items-start justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/10">
+            <WalletIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-white/70 text-sm font-medium">Hajj Savings Wallet</p>
+            <div className="flex items-center gap-2">
+              <span className="text-white/90 text-xs capitalize">{profile?.tier ?? "Silver"} Tier</span>
+              {profile?.membership_status === "active" && (
+                <span className="inline-flex items-center gap-1 bg-white/15 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                  <CheckCircle2 className="h-3 w-3" /> Active
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+            <Shield className="h-4 w-4 text-white/70" />
+          </div>
+        </div>
       </div>
-      <Progress value={progress} className="h-3 mb-2" />
-      <div className="flex justify-between text-xs text-muted-foreground mb-6">
-        <span>$0</span><span>${goalAmount.toLocaleString()}</span>
-      </div>
-      {remaining > 0 && (
-        <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-3 gap-4 text-sm">
-          {[50, 100, 200].map((w) => (
-            <motion.div key={w} variants={fadeUp} whileHover={{ scale: 1.05, y: -2 }} className="bg-secondary rounded-lg p-3 text-center">
-              <p className="text-muted-foreground">At ${w}/week</p>
-              <p className="font-semibold text-primary">{weeksToGoal(w)} weeks</p>
-            </motion.div>
-          ))}
+
+      {/* Balance */}
+      <div className="relative z-10 mb-8">
+        <p className="text-white/60 text-sm font-medium mb-1 tracking-wide uppercase">Available Balance</p>
+        <motion.div
+          className="flex items-baseline gap-1"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        >
+          <span className="text-white/60 text-3xl font-light">$</span>
+          <span className="text-white text-5xl md:text-6xl font-bold tracking-tight">
+            {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
         </motion.div>
-      )}
-    </motion.div>
-  );
-};
+      </div>
 
-// --- Contribute Section ---
-const ContributeSection = ({ onContributed }: { onContributed: () => void }) => {
-  const [amount, setAmount] = useState("");
-  const [showPayPal, setShowPayPal] = useState(false);
-  const quickAmounts = [25, 50, 100];
-  const parsedAmount = parseFloat(amount) || 0;
+      {/* Goal progress bar */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between text-sm mb-2">
+          <span className="text-white/60 font-medium">Goal Progress</span>
+          <span className="text-white font-semibold">{progress.toFixed(1)}%</span>
+        </div>
+        <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: "linear-gradient(90deg, hsl(45, 93%, 55%), hsl(45, 93%, 47%))" }}
+            initial={{ width: 0 }}
+            animate={{ width: `${Math.min(progress, 100)}%` }}
+            transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+          />
+        </div>
+        <div className="flex items-center justify-between text-xs mt-2">
+          <span className="text-white/50">${balance.toLocaleString()} saved</span>
+          <span className="text-white/50">${goalAmount.toLocaleString()} goal</span>
+        </div>
+      </div>
 
-  const handlePayNow = () => {
-    if (parsedAmount > 0) {
-      setShowPayPal(true);
-    }
-  };
-
-  useEffect(() => {
-    setShowPayPal(false);
-  }, [amount]);
-
-  return (
-    <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-xl card-shadow p-8 mb-8 border-2 border-primary/20">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="p-3 bg-primary/10 rounded-xl">
-          <CreditCard className="h-6 w-6 text-primary" />
+      {/* Bottom stats row */}
+      <div className="relative z-10 grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/10">
+        <div>
+          <p className="text-white/50 text-xs font-medium mb-1">Contributions</p>
+          <p className="text-white text-lg font-bold">{stats.contribution_count ?? 0}</p>
         </div>
         <div>
-          <h2 className="text-xl font-bold">Make a Contribution</h2>
-          <p className="text-sm font-medium text-muted-foreground">Add funds to your Hajj savings wallet via PayPal</p>
+          <p className="text-white/50 text-xs font-medium mb-1">Remaining</p>
+          <p className="text-white text-lg font-bold">${remaining.toLocaleString()}</p>
+        </div>
+        <div>
+          <p className="text-white/50 text-xs font-medium mb-1">Monthly Avg</p>
+          <p className="text-white text-lg font-bold">
+            ${stats.contribution_count > 0 ? Math.round(balance / Math.max(stats.contribution_count, 1)).toLocaleString() : "0"}
+          </p>
         </div>
       </div>
-
-      <div className="flex gap-3 mt-5 mb-4">
-        {quickAmounts.map((amt) => (
-          <motion.div key={amt} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-            <Button variant={amount === String(amt) ? "default" : "outline"} className="text-base font-bold px-6 h-12" onClick={() => setAmount(String(amt))}>
-              ${amt}
-            </Button>
-          </motion.div>
-        ))}
-      </div>
-      <Input type="number" placeholder="Custom amount ($)" value={amount} onChange={(e) => setAmount(e.target.value)} className="mb-5 h-12 text-base font-medium" />
-
-      {!showPayPal ? (
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button
-            onClick={handlePayNow}
-            disabled={parsedAmount <= 0}
-            className="w-full h-14 text-lg font-bold btn-glow"
-            size="lg"
-          >
-            {parsedAmount > 0 ? `Pay $${parsedAmount.toFixed(2)} Now` : "Enter an amount to continue"}
-          </Button>
-        </motion.div>
-      ) : (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <PayPalButton
-            amount={parsedAmount}
-            description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
-            type="wallet"
-            onSuccess={() => {
-              toast({ title: "✅ Contribution successful!", description: `$${parsedAmount.toFixed(2)} added to your Hajj fund!` });
-              setAmount("");
-              setShowPayPal(false);
-              onContributed();
-            }}
-            onError={(err) => {
-              toast({ title: "Payment failed", description: err, variant: "destructive" });
-            }}
-          />
-          <Button variant="ghost" size="sm" className="w-full mt-2 text-muted-foreground" onClick={() => setShowPayPal(false)}>
-            ← Change amount
-          </Button>
-        </motion.div>
-      )}
-
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="bg-secondary rounded-lg p-4 mt-5 text-sm font-medium text-muted-foreground">
-        💡 <strong>Tip:</strong> Set up recurring contributions to reach your goal faster!
-      </motion.div>
     </motion.div>
   );
 };
 
-// --- Membership Card (with subscription integration) ---
-const MembershipCard = ({
+// --- Quick Actions ---
+const QuickActions = ({ hasActiveSubscription, onAddMoney }: { hasActiveSubscription: boolean; onAddMoney: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.15 }}
+    className="grid grid-cols-3 gap-3 mb-6"
+  >
+    <button
+      onClick={hasActiveSubscription ? onAddMoney : undefined}
+      className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 ${
+        hasActiveSubscription
+          ? "bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 cursor-pointer"
+          : "bg-muted/30 border-border cursor-not-allowed opacity-50"
+      }`}
+    >
+      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${hasActiveSubscription ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+        <Plus className="h-5 w-5" />
+      </div>
+      <span className="text-xs font-semibold text-foreground">Add Money</span>
+    </button>
+    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
+        <Target className="h-5 w-5" />
+      </div>
+      <span className="text-xs font-semibold text-foreground">Set Goal</span>
+    </button>
+    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
+        <History className="h-5 w-5" />
+      </div>
+      <span className="text-xs font-semibold text-foreground">History</span>
+    </button>
+  </motion.div>
+);
+
+// --- Membership Banner ---
+const MembershipBanner = ({
   profile,
   isActive,
   subscription,
@@ -229,144 +217,301 @@ const MembershipCard = ({
   subError: string | null;
 }) => {
   if (!profile) return null;
-
   const endsAt = subscription?.ends_at ? new Date(subscription.ends_at) : null;
 
   if (subLoading) {
     return (
-      <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
+      <div className="bg-card rounded-xl border border-border p-5 mb-6">
         <div className="flex items-center gap-3">
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
-          <span className="text-muted-foreground">Checking membership status...</span>
+          <span className="text-muted-foreground text-sm">Checking membership…</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isActive) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-card rounded-xl border border-primary/15 p-5 mb-6"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Crown className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-sm">Active Membership</p>
+                <Badge className="bg-primary/10 text-primary border-0 text-[10px] font-bold">${price}/mo</Badge>
+              </div>
+              {endsAt && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Renews {endsAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })} · PayPal
+                </p>
+              )}
+            </div>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-destructive" disabled={actionLoading}>
+                {actionLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Cancel"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Cancel Membership?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your membership stays active until{" "}
+                  {endsAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) || "the end of your billing period"}.
+                  You won't be able to add new funds after that.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep Membership</AlertDialogCancel>
+                <AlertDialogAction onClick={onCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Yes, Cancel
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </motion.div>
     );
   }
 
+  // Inactive — CTA to subscribe
   return (
     <motion.div
-      initial={{ opacity: 0, y: 25 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.35 }}
-      className={`bg-card rounded-xl card-shadow p-6 mb-8 ${isActive ? "border-2 border-primary/30" : "border-2 border-muted/30"}`}
+      transition={{ delay: 0.2 }}
+      className="rounded-xl border-2 border-dashed border-primary/25 p-6 mb-6 bg-primary/[0.02]"
     >
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${isActive ? "bg-primary/10" : "bg-muted/20"}`}>
-            {isActive ? <Crown className="h-5 w-5 text-primary" /> : <CreditCard className="h-5 w-5 text-muted-foreground" />}
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold">Membership Status</h2>
-            <p className="text-sm text-muted-foreground capitalize">
-              {profile.tier} Tier • {isActive ? "Active" : "Inactive"}
-            </p>
-          </div>
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <Zap className="h-6 w-6 text-primary" />
         </div>
-
-        {isActive ? (
-          <div className="flex items-center gap-3">
-            <Badge className="bg-primary text-primary-foreground border-0">Active</Badge>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" disabled={actionLoading}>
-                  {actionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                  Cancel
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel Membership?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Your membership will remain active until{" "}
-                    {endsAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) || "the end of your billing period"}.
-                    After that, you won't be able to add new funds to your wallet, but your existing balance can still be used for bookings and purchases.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Keep Membership</AlertDialogCancel>
-                  <AlertDialogAction onClick={onCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                    Yes, Cancel
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+        <div className="flex-1">
+          <h3 className="font-bold text-base mb-1">Activate Membership to Add Funds</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Subscribe for ${price}/mo to unlock wallet contributions. Your existing balance remains usable anytime.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button onClick={onSubscribe} disabled={actionLoading} className="btn-glow font-semibold h-11">
+              {actionLoading ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing…</>
+              ) : (
+                <>Activate — ${price}/mo</>
+              )}
+            </Button>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1"><CheckCircle2 className="h-3 w-3 text-primary" /> Cancel anytime</span>
+              <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-primary" /> Via PayPal</span>
+            </div>
           </div>
-        ) : (
-          <Button
-            onClick={onSubscribe}
-            disabled={actionLoading}
-            className="btn-glow font-semibold"
-          >
-            {actionLoading ? (
-              <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...</>
-            ) : (
-              `Activate — $${price}/mo`
-            )}
-          </Button>
-        )}
+          {subError && <p className="text-destructive text-xs mt-3">{subError}</p>}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Contribute Section (Fintech style) ---
+const ContributeSection = ({ onContributed }: { onContributed: () => void }) => {
+  const [amount, setAmount] = useState("");
+  const [showPayPal, setShowPayPal] = useState(false);
+  const quickAmounts = [25, 50, 100, 250];
+  const parsedAmount = parseFloat(amount) || 0;
+
+  const handlePayNow = () => {
+    if (parsedAmount > 0) setShowPayPal(true);
+  };
+
+  useEffect(() => { setShowPayPal(false); }, [amount]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25 }}
+      className="bg-card rounded-xl border border-border p-6 mb-6"
+    >
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+          <DollarSign className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h3 className="font-bold text-base">Add Funds</h3>
+          <p className="text-xs text-muted-foreground">Contribute to your Hajj savings via PayPal</p>
+        </div>
       </div>
 
-      {/* Active subscription details */}
-      {isActive && endsAt && (
-        <p className="text-xs text-muted-foreground mt-3 ml-11">
-          Renews on {endsAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · ${price}/month via PayPal
-        </p>
-      )}
+      {/* Quick amounts */}
+      <div className="grid grid-cols-4 gap-2 mb-4">
+        {quickAmounts.map((amt) => (
+          <button
+            key={amt}
+            onClick={() => setAmount(String(amt))}
+            className={`h-12 rounded-xl text-sm font-bold transition-all duration-200 border ${
+              amount === String(amt)
+                ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
+                : "bg-secondary/50 text-foreground border-border hover:border-primary/30 hover:bg-primary/5"
+            }`}
+          >
+            ${amt}
+          </button>
+        ))}
+      </div>
 
-      {/* Inactive — explain benefits */}
-      {!isActive && (
-        <div className="mt-4 ml-11 bg-secondary/50 rounded-lg p-4 text-sm space-y-2">
-          <p className="font-medium">Membership required to add funds to your wallet:</p>
-          <ul className="space-y-1 ml-4 list-disc text-muted-foreground text-xs">
-            <li>Unlimited wallet contributions (any amount)</li>
-            <li>Existing balance always usable for bookings & purchases</li>
-            <li>Cancel anytime — access until end of billing period</li>
-            <li>Auto-renews monthly via PayPal</li>
-          </ul>
-          {subError && (
-            <p className="text-destructive text-xs mt-2">{subError}</p>
+      {/* Custom input */}
+      <div className="relative mb-5">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-lg">$</span>
+        <Input
+          type="number"
+          placeholder="Enter custom amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="pl-9 h-14 text-lg font-semibold border-2 focus:border-primary rounded-xl"
+        />
+      </div>
+
+      {!showPayPal ? (
+        <Button
+          onClick={handlePayNow}
+          disabled={parsedAmount <= 0}
+          className="w-full h-13 text-base font-bold rounded-xl btn-glow"
+          size="lg"
+        >
+          {parsedAmount > 0 ? (
+            <span className="flex items-center gap-2">
+              <ArrowUpRight className="h-5 w-5" />
+              Add ${parsedAmount.toFixed(2)} to Wallet
+            </span>
+          ) : (
+            "Enter an amount"
           )}
-        </div>
+        </Button>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <PayPalButton
+            amount={parsedAmount}
+            description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
+            type="wallet"
+            onSuccess={() => {
+              toast({ title: "✅ Contribution successful!", description: `$${parsedAmount.toFixed(2)} added to your Hajj wallet.` });
+              setAmount("");
+              setShowPayPal(false);
+              onContributed();
+            }}
+            onError={(err) => {
+              toast({ title: "Payment failed", description: err, variant: "destructive" });
+            }}
+          />
+          <Button variant="ghost" size="sm" className="w-full mt-2 text-muted-foreground text-xs" onClick={() => setShowPayPal(false)}>
+            ← Change amount
+          </Button>
+        </motion.div>
       )}
     </motion.div>
   );
 };
 
-// --- Transactions Drawer ---
-const TransactionRow = ({ tx, isLast }: { tx: any; isLast: boolean }) => (
-  <div className={`flex items-center justify-between px-4 py-3 ${!isLast ? "border-b" : ""}`}>
-    <div>
-      <p className="font-semibold text-primary">+${Number(tx.amount).toLocaleString()}</p>
-      <p className="text-sm text-muted-foreground">
-        {new Date(tx.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-      </p>
+// --- Savings Projection ---
+const SavingsProjection = ({ stats }: { stats: any }) => {
+  const remaining = Math.max(Number(stats.remaining), 0);
+  if (remaining <= 0) return null;
+
+  const projections = [
+    { weekly: 50, label: "$50/wk" },
+    { weekly: 100, label: "$100/wk" },
+    { weekly: 200, label: "$200/wk" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="bg-card rounded-xl border border-border p-6 mb-6"
+    >
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+          <TrendingUp className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h3 className="font-bold text-base">Savings Projection</h3>
+          <p className="text-xs text-muted-foreground">${remaining.toLocaleString()} remaining to reach your goal</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        {projections.map((p) => {
+          const weeks = Math.ceil(remaining / p.weekly);
+          const months = Math.round(weeks / 4.33);
+          return (
+            <div key={p.weekly} className="text-center p-4 rounded-xl bg-secondary/40 border border-border">
+              <p className="text-xs text-muted-foreground font-medium mb-2">{p.label}</p>
+              <p className="text-2xl font-bold text-foreground">{weeks}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">weeks ({months} mo)</p>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Transaction Row ---
+const TransactionItem = ({ tx, isLast }: { tx: any; isLast: boolean }) => (
+  <div className={`flex items-center justify-between py-4 ${!isLast ? "border-b border-border" : ""}`}>
+    <div className="flex items-center gap-3">
+      <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
+        tx.type === "recurring" ? "bg-primary/10" : "bg-secondary"
+      }`}>
+        {tx.type === "recurring" ? (
+          <Calendar className="h-4 w-4 text-primary" />
+        ) : (
+          <ArrowUpRight className="h-4 w-4 text-primary" />
+        )}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-foreground">
+          {tx.type === "recurring" ? "Recurring Contribution" : "One-time Contribution"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {new Date(tx.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+        </p>
+      </div>
     </div>
-    <div className="flex items-center gap-2">
-      <Badge variant={tx.status === "completed" ? "default" : "secondary"} className="text-xs capitalize">{tx.status}</Badge>
-      <Badge variant={tx.type === "recurring" ? "default" : "secondary"} className="text-xs">
-        {tx.type === "recurring" ? "Recurring" : "One-time"}
-      </Badge>
+    <div className="text-right">
+      <p className="text-sm font-bold text-primary">+${Number(tx.amount).toLocaleString()}</p>
+      <p className="text-[10px] text-muted-foreground capitalize">{tx.status}</p>
     </div>
   </div>
 );
 
+// --- All Transactions Drawer ---
 const AllTransactionsDrawer = ({ transactions }: { transactions: any[] | null }) => (
   <Sheet>
     <SheetTrigger asChild>
-      <Button variant="ghost" size="sm" className="gap-1 text-primary">
-        View All <ChevronRight className="h-4 w-4" />
-      </Button>
+      <button className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5">
+        View All <ChevronRight className="h-3.5 w-3.5" />
+      </button>
     </SheetTrigger>
     <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>All Transactions</SheetTitle>
+        <SheetTitle>Transaction History</SheetTitle>
       </SheetHeader>
-      <div className="mt-4">
+      <div className="mt-4 px-1">
         {!transactions || transactions.length === 0 ? (
           <EmptyState icon="💰" title="No transactions" description="Your transaction history will appear here." />
         ) : (
           transactions.map((tx, i) => (
-            <TransactionRow key={tx.id} tx={tx} isLast={i === transactions.length - 1} />
+            <TransactionItem key={tx.id} tx={tx} isLast={i === transactions.length - 1} />
           ))
         )}
       </div>
@@ -374,40 +519,43 @@ const AllTransactionsDrawer = ({ transactions }: { transactions: any[] | null })
   </Sheet>
 );
 
-// --- Recent Contributions ---
-const RecentContributions = ({ transactions, txLoading }: { transactions: any[] | null; txLoading: boolean }) => {
+// --- Recent Transactions ---
+const RecentTransactions = ({ transactions, txLoading }: { transactions: any[] | null; txLoading: boolean }) => {
   const recentSix = transactions?.slice(0, 6) ?? [];
 
   return (
-    <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Recent Contributions</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35 }}
+      className="bg-card rounded-xl border border-border p-6 mb-6"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <History className="h-5 w-5 text-primary" />
+          </div>
+          <h3 className="font-bold text-base">Recent Transactions</h3>
+        </div>
         <AllTransactionsDrawer transactions={transactions} />
-      </motion.div>
+      </div>
 
       {txLoading ? <CardSkeleton /> : recentSix.length === 0 ? (
-        <EmptyState icon="💰" title="No contributions yet" description="Activate your membership and make your first contribution!" />
+        <div className="text-center py-8">
+          <div className="w-14 h-14 rounded-full bg-secondary mx-auto flex items-center justify-center mb-3">
+            <WalletIcon className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <p className="text-sm font-medium text-muted-foreground">No transactions yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Your contributions will show up here</p>
+        </div>
       ) : (
-        <motion.div variants={stagger} initial="hidden" animate="show" className="bg-card rounded-xl card-shadow overflow-hidden mb-4">
+        <div>
           {recentSix.map((tx, i) => (
-            <motion.div
-              key={tx.id}
-              variants={fadeUp}
-              whileHover={{ backgroundColor: "hsl(var(--secondary) / 0.5)" }}
-              className={`flex items-center justify-between px-6 py-4 transition-colors ${i < recentSix.length - 1 ? "border-b" : ""}`}
-            >
-              <div>
-                <p className="font-semibold text-primary">+${Number(tx.amount).toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">{new Date(tx.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
-              </div>
-              <Badge variant={tx.type === "recurring" ? "default" : "secondary"} className="text-xs">
-                {tx.type === "recurring" ? "Recurring" : "One-time"}
-              </Badge>
-            </motion.div>
+            <TransactionItem key={tx.id} tx={tx} isLast={i === recentSix.length - 1} />
           ))}
-        </motion.div>
+        </div>
       )}
-    </>
+    </motion.div>
   );
 };
 
@@ -427,7 +575,8 @@ const WalletContent = () => {
     isActive: hasActiveSubscription,
   } = useWalletSubscription();
 
-  // Real-time subscription for wallet_transactions
+  const [showContribute, setShowContribute] = useState(false);
+
   useEffect(() => {
     if (!user?.id) return;
     const channel = supabase
@@ -441,45 +590,65 @@ const WalletContent = () => {
         }
       )
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [user?.id, refetchStats, refetchTx]);
 
   const handleContributed = () => {
     refetchStats();
     refetchTx();
+    setShowContribute(false);
   };
 
   if (statsLoading) return (
-    <div className="section-padding min-h-screen"><div className="container mx-auto max-w-4xl space-y-6">
-      <CardSkeleton /><CardSkeleton /><CardSkeleton />
-    </div></div>
+    <div className="section-padding min-h-screen">
+      <div className="container mx-auto max-w-2xl space-y-4">
+        <CardSkeleton /><CardSkeleton /><CardSkeleton />
+      </div>
+    </div>
   );
 
   if (statsError) return (
-    <div className="section-padding min-h-screen"><div className="container mx-auto max-w-4xl">
-      <ErrorState message={statsError} onRetry={refetchStats} />
-    </div></div>
+    <div className="section-padding min-h-screen">
+      <div className="container mx-auto max-w-2xl">
+        <ErrorState message={statsError} onRetry={refetchStats} />
+      </div>
+    </div>
   );
 
   if (!stats) return (
-    <div className="section-padding min-h-screen"><div className="container mx-auto max-w-4xl">
-      <EmptyState icon="💰" title="No wallet found" description="Your wallet hasn't been set up yet. Please contact support." />
-    </div></div>
+    <div className="section-padding min-h-screen">
+      <div className="container mx-auto max-w-2xl">
+        <EmptyState icon="💰" title="No wallet found" description="Your wallet hasn't been set up yet." />
+      </div>
+    </div>
   );
 
   return (
-    <div className="section-padding min-h-screen">
-      <div className="container mx-auto max-w-4xl">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">My Hajj Wallet</h1>
-          <p className="text-muted-foreground">Track your progress toward your sacred journey</p>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto max-w-2xl px-4 py-8 md:py-12">
+        {/* Page header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between mb-6"
+        >
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Wallet</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Hajj Savings Account</p>
+          </div>
         </motion.div>
 
-        <StatsCards stats={stats} profile={profile} />
+        {/* Balance Hero */}
+        <BalanceHero stats={stats} profile={profile} />
 
-        {/* Membership Card — serves as subscription gate */}
-        <MembershipCard
+        {/* Quick Actions */}
+        <QuickActions
+          hasActiveSubscription={hasActiveSubscription}
+          onAddMoney={() => setShowContribute(!showContribute)}
+        />
+
+        {/* Membership */}
+        <MembershipBanner
           profile={profile}
           isActive={hasActiveSubscription}
           subscription={subConfig?.subscription}
@@ -491,13 +660,33 @@ const WalletContent = () => {
           subError={subError}
         />
 
-        {/* Contribute Section — only if membership is active */}
-        {hasActiveSubscription && (
+        {/* Contribute (toggled) */}
+        {hasActiveSubscription && showContribute && (
           <ContributeSection onContributed={handleContributed} />
         )}
 
-        <SavingsProgress stats={stats} />
-        <RecentContributions transactions={transactions} txLoading={txLoading} />
+        {/* Always show contribute if active but not toggled — show inline */}
+        {hasActiveSubscription && !showContribute && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-6"
+          >
+            <Button
+              onClick={() => setShowContribute(true)}
+              className="w-full h-13 rounded-xl font-bold text-base btn-glow"
+              size="lg"
+            >
+              <Plus className="h-5 w-5 mr-2" /> Add Money to Wallet
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Savings Projection */}
+        <SavingsProjection stats={stats} />
+
+        {/* Recent Transactions */}
+        <RecentTransactions transactions={transactions} txLoading={txLoading} />
       </div>
     </div>
   );
