@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image, CreditCard, Eye, EyeOff, ToggleLeft, ToggleRight } from "lucide-react";
+import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image, CreditCard, Eye, EyeOff, ToggleLeft, ToggleRight, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { Switch } from "@/components/ui/switch";
