@@ -88,6 +88,7 @@ const Index = () => {
 
   const heroProgress = heroWallet.goal > 0 ? Math.min(heroWallet.balance / heroWallet.goal, 1) : 0;
 
+  useEffect(() => {
     const fetchPosts = async () => {
       // Get top 3 discussions with reply counts and author info
       const { data: discussions } = await supabase
