@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image, CreditCard, Eye, EyeOff, ToggleLeft, ToggleRight } from "lucide-react";
+import { Settings, Palette, Globe, Share2, Code, Save, Upload, Image, CreditCard, Eye, EyeOff, ToggleLeft, ToggleRight, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { Switch } from "@/components/ui/switch";
@@ -400,6 +400,34 @@ export default function AdminSettings() {
             )}
           </div>
         )}
+      </Section>
+
+      {/* ===== WALLET SUBSCRIPTION ===== */}
+      <Section icon={Crown} title="💳 Wallet Subscription">
+        <p className="text-xs text-muted-foreground">Users must subscribe monthly to add funds to their wallet. This fee is a service charge, not added to their balance.</p>
+        <div className="flex items-center justify-between py-1">
+          <div>
+            <Label className="text-sm font-semibold">Enable Wallet Subscription</Label>
+            <p className="text-xs text-muted-foreground">Require subscription to add wallet funds</p>
+          </div>
+          <Switch
+            checked={form.wallet_subscription_enabled !== "false"}
+            onCheckedChange={v => setForm(f => ({ ...f, wallet_subscription_enabled: v ? "true" : "false" }))}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Monthly Price (USD)</Label>
+          <Input
+            type="number"
+            value={form.wallet_subscription_price || "15"}
+            onChange={e => setForm(f => ({ ...f, wallet_subscription_price: e.target.value }))}
+            placeholder="15"
+            className="bg-secondary/50 font-mono text-sm max-w-[200px]"
+            min="1"
+            step="0.01"
+          />
+          <p className="text-xs text-muted-foreground">⚠️ Changing this price will only affect new subscriptions. Existing subscriptions keep their original rate until renewed.</p>
+        </div>
       </Section>
 
       {/* ===== PAYMENT OPTIONS ===== */}
