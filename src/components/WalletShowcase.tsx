@@ -229,7 +229,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.9, type: "spring" }}
               >
-                <p className="text-sm font-semibold text-primary">50% to Goal</p>
+                <p className="text-sm font-semibold text-primary">{progressPercent}% to Goal</p>
               </motion.div>
             </div>
 
