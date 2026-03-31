@@ -21,7 +21,7 @@ import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import Messages from "./pages/Messages";
+
 import Install from "./pages/Install";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
@@ -114,7 +114,7 @@ const App = () => (
                       <Route path="/checkout" element={<Checkout />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/sponsorship" element={<Sponsorship />} />
-                      <Route path="/messages" element={<Messages />} />
+                      
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
