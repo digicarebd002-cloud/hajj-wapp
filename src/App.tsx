@@ -70,6 +70,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTopOnRouteChange />
               <Routes>
                 {/* Admin routes - no main Layout */}
                 <Route path="/admin/login" element={<AdminLogin />} />
