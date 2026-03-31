@@ -464,6 +464,7 @@ const AccountContent = () => {
         <Tabs defaultValue="overview">
           <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="subscription" className="gap-1.5"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
             <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
