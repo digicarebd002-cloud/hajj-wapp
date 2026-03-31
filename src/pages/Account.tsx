@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3 } from "lucide-react";
+import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3, CalendarDays, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
 import PushNotificationToggle from "@/components/PushNotificationToggle";
 import TwoFactorSetup from "@/components/TwoFactorSetup";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
+import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useReferral } from "@/hooks/use-referral";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
