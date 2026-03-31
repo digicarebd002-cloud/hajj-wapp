@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3 } from "lucide-react";
+import { Camera, Loader2, Gift, Copy, Users, Share2, BarChart3, CalendarDays, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 import UserAnalytics from "@/components/UserAnalytics";
 import PushNotificationToggle from "@/components/PushNotificationToggle";
 import TwoFactorSetup from "@/components/TwoFactorSetup";
 import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth, EmptyState, CardSkeleton, ErrorState } from "@/components/StateHelpers";
 import { useProfile, usePointsLedger, useNotificationPreferences, useWallet, useWalletTransactions } from "@/hooks/use-supabase-data";
+import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useReferral } from "@/hooks/use-referral";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -304,6 +306,7 @@ const AccountContent = () => {
   const { data: wallet, loading: walletLoading, refetch: refetchWallet } = useWallet();
   const { data: transactions } = useWalletTransactions();
   const { data: notifPrefs, loading: notifsLoading } = useNotificationPreferences();
+  const { config: subConfig, loading: subLoading, actionLoading: subActionLoading, subscribe, cancelSubscription, isActive: hasActiveSub, error: subError } = useWalletSubscription();
   const [userOrders, setUserOrders] = useState<{ total: number; created_at: string; status: string }[] | null>(null);
   const [userBookings, setUserBookings] = useState<{ created_at: string; status: string }[] | null>(null);
 
@@ -461,6 +464,7 @@ const AccountContent = () => {
         <Tabs defaultValue="overview">
           <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="subscription" className="gap-1.5"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
             <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
             <TabsTrigger value="points" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -588,6 +592,145 @@ const AccountContent = () => {
               <h3 className="font-semibold mb-1">Need Help?</h3>
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4" /> 1-800-HAJJ-HELP</p>
             </div>
+          </TabsContent>
+
+          {/* Subscription Tab */}
+          <TabsContent value="subscription" className="space-y-6">
+            {subLoading ? (
+              <CardSkeleton />
+            ) : (
+              <>
+                {/* Subscription Status Card */}
+                <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-semibold text-lg flex items-center gap-2">
+                      <CreditCard className="h-5 w-5 text-primary" /> Membership Subscription
+                    </h3>
+                    <Badge className={hasActiveSub ? "bg-primary/15 text-primary border-primary/30" : "bg-destructive/15 text-destructive border-destructive/30"}>
+                      {hasActiveSub ? "Active" : "Inactive"}
+                    </Badge>
+                  </div>
+
+                  {hasActiveSub && subConfig?.subscription ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-secondary rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">Monthly Fee</span>
+                          </div>
+                          <p className="text-xl font-bold text-primary">${subConfig.subscription.amount}/mo</p>
+                        </div>
+                        <div className="bg-secondary rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">Started</span>
+                          </div>
+                          <p className="text-sm font-semibold">
+                            {subConfig.subscription.starts_at
+                              ? new Date(subConfig.subscription.starts_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                              : "—"}
+                          </p>
+                        </div>
+                        <div className="bg-secondary rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">Next Billing</span>
+                          </div>
+                          <p className="text-sm font-semibold">
+                            {subConfig.subscription.ends_at
+                              ? new Date(subConfig.subscription.ends_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                              : "—"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Payment Method */}
+                      <div className="bg-secondary/50 rounded-lg p-4 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                          <span className="text-lg font-bold text-blue-500">P</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">PayPal</p>
+                          <p className="text-xs text-muted-foreground">Subscription ID: {subConfig.subscription.paypal_subscription_id.slice(0, 16)}...</p>
+                        </div>
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                      </div>
+
+                      {/* Benefits */}
+                      <div className="bg-primary/5 border border-primary/10 rounded-lg p-4">
+                        <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary" /> Active Benefits
+                        </h4>
+                        <ul className="text-sm text-muted-foreground space-y-1.5">
+                          <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Add funds to your Hajj Savings Wallet</li>
+                          <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Access to exclusive member discounts</li>
+                          <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Priority support & booking assistance</li>
+                          <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Earn reward points on contributions</li>
+                        </ul>
+                      </div>
+
+                      {/* Cancel */}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10">
+                            Cancel Subscription
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Your membership will remain active until the end of your current billing cycle. After that, you won't be able to add new funds to your wallet, but existing balance remains usable.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={cancelSubscription}
+                              disabled={subActionLoading}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              {subActionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                              Yes, Cancel
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 space-y-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+                        <XCircle className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg">No Active Subscription</h4>
+                        <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
+                          Subscribe to unlock wallet contributions, member discounts, and more.
+                          {subConfig?.price && <span className="font-semibold text-primary"> Only ${subConfig.price}/month.</span>}
+                        </p>
+                      </div>
+                      {subError && <p className="text-sm text-destructive">{subError}</p>}
+                      <Button onClick={subscribe} disabled={subActionLoading} className="gap-2">
+                        {subActionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+                        Activate Membership — ${subConfig?.price ?? 15}/mo
+                      </Button>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Cancelled Subscription Info */}
+                {subConfig?.subscription?.cancelled_at && (
+                  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                    <p className="text-sm font-medium text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4" />
+                      Subscription cancelled on {new Date(subConfig.subscription.cancelled_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}. 
+                      Access remains until end of billing cycle.
+                    </p>
+                  </motion.div>
+                )}
+              </>
+            )}
           </TabsContent>
 
           {/* Analytics Tab */}
