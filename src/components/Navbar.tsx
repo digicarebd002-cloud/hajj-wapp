@@ -74,7 +74,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-0.5 bg-secondary/50 rounded-full p-1">
+        <div className="hidden md:flex items-center gap-0.5 bg-secondary rounded-full p-1 border border-border/50">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.path;
             return (
