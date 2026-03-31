@@ -242,7 +242,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 + i * 0.12, duration: 0.5 }}
                 whileHover={{ x: 6, scale: 1.01 }}
-                className="flex items-start gap-4 p-4 rounded-xl bg-card/50 border border-border/30 backdrop-blur-sm hover:bg-card/80 transition-colors duration-300 cursor-default group"
+                className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border backdrop-blur-sm hover:border-primary/30 hover:shadow-md transition-all duration-300 cursor-default group"
               >
                 <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
                   <step.icon className="h-5 w-5 text-primary" />
