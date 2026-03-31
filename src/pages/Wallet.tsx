@@ -10,9 +10,9 @@ import { useWalletStats, useWalletTransactions, useProfile } from "@/hooks/use-s
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { CreditCard, ChevronRight, Shield, Crown, AlertCircle, Loader2 } from "lucide-react";
+import { CreditCard, ChevronRight, Crown, Loader2 } from "lucide-react";
 import PayPalButton from "@/components/PayPalButton";
 import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
 import {
@@ -35,148 +35,6 @@ const stagger = {
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } },
-};
-
-// --- Subscription Banner ---
-const SubscriptionBanner = ({
-  isActive,
-  subscription,
-  price,
-  loading,
-  actionLoading,
-  onSubscribe,
-  onCancel,
-  error,
-}: {
-  isActive: boolean;
-  subscription: any;
-  price: number;
-  loading: boolean;
-  actionLoading: boolean;
-  onSubscribe: () => void;
-  onCancel: () => void;
-  error: string | null;
-}) => {
-  if (loading) {
-    return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
-        <div className="flex items-center gap-3">
-          <Loader2 className="h-5 w-5 animate-spin text-primary" />
-          <span className="text-muted-foreground">Checking subscription status...</span>
-        </div>
-      </motion.div>
-    );
-  }
-
-  if (isActive) {
-    const endsAt = subscription?.ends_at ? new Date(subscription.ends_at) : null;
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-card rounded-xl card-shadow p-6 mb-8 border-2 border-primary/30"
-      >
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-primary/10 rounded-xl">
-              <Crown className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold">Wallet Access Active</h2>
-                <Badge className="bg-primary text-primary-foreground border-0">Active</Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {endsAt
-                  ? `Renews on ${endsAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
-                  : "Monthly subscription active"}
-                {" · "}${price}/month
-              </p>
-            </div>
-          </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" disabled={actionLoading}>
-                {actionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                Cancel Subscription
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Cancel Wallet Subscription?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Your wallet access will remain active until {endsAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) || "the end of your billing period"}.
-                  After that, you won't be able to add new funds, but your existing balance can still be used for bookings and purchases.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
-                <AlertDialogAction onClick={onCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Yes, Cancel
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // Not subscribed
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card rounded-xl card-shadow p-8 mb-8 border-2 border-amber-500/30"
-    >
-      <div className="flex items-start gap-4 mb-6">
-        <div className="p-3 bg-amber-500/10 rounded-xl shrink-0">
-          <Shield className="h-7 w-7 text-amber-500" />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold mb-1">Wallet Subscription Required</h2>
-          <p className="text-muted-foreground">
-            To add funds to your Hajj savings wallet, you need an active monthly subscription.
-            This is a <strong>${price}/month</strong> service fee — it does not add to your wallet balance.
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-secondary/50 rounded-lg p-4 mb-6 space-y-2 text-sm">
-        <p className="font-semibold flex items-center gap-2"><Crown className="h-4 w-4 text-primary" /> What you get:</p>
-        <ul className="space-y-1 ml-6 list-disc text-muted-foreground">
-          <li>Unlimited wallet contributions (any amount)</li>
-          <li>Your existing balance is always accessible for bookings & purchases</li>
-          <li>Cancel anytime — access remains until end of billing period</li>
-          <li>Auto-renews monthly via PayPal</li>
-        </ul>
-      </div>
-
-      {error && (
-        <div className="flex items-center gap-2 text-destructive text-sm mb-4">
-          <AlertCircle className="h-4 w-4" />
-          {error}
-        </div>
-      )}
-
-      <Button
-        onClick={onSubscribe}
-        disabled={actionLoading}
-        className="w-full h-14 text-lg font-bold btn-glow"
-        size="lg"
-      >
-        {actionLoading ? (
-          <><Loader2 className="h-5 w-5 animate-spin mr-2" /> Processing...</>
-        ) : (
-          `Subscribe for $${price}/month`
-        )}
-      </Button>
-
-      <p className="text-center text-xs text-muted-foreground mt-3">
-        Secure payment via PayPal • Cancel anytime
-      </p>
-    </motion.div>
-  );
 };
 
 // --- Stats Cards ---
@@ -281,7 +139,6 @@ const ContributeSection = ({ onContributed }: { onContributed: () => void }) => 
     }
   };
 
-  // Reset PayPal when amount changes
   useEffect(() => {
     setShowPayPal(false);
   }, [amount]);
@@ -349,35 +206,127 @@ const ContributeSection = ({ onContributed }: { onContributed: () => void }) => 
   );
 };
 
-// --- Membership Card ---
-const MembershipCard = ({ profile }: { profile: any }) => {
+// --- Membership Card (with subscription integration) ---
+const MembershipCard = ({
+  profile,
+  isActive,
+  subscription,
+  price,
+  subLoading,
+  actionLoading,
+  onSubscribe,
+  onCancel,
+  subError,
+}: {
+  profile: any;
+  isActive: boolean;
+  subscription: any;
+  price: number;
+  subLoading: boolean;
+  actionLoading: boolean;
+  onSubscribe: () => void;
+  onCancel: () => void;
+  subError: string | null;
+}) => {
   if (!profile) return null;
-  const isActive = profile.membership_status === "active";
+
+  const endsAt = subscription?.ends_at ? new Date(subscription.ends_at) : null;
+
+  if (subLoading) {
+    return (
+      <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-muted-foreground">Checking membership status...</span>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
-      <div className="flex items-center justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35 }}
+      className={`bg-card rounded-xl card-shadow p-6 mb-8 ${isActive ? "border-2 border-primary/30" : "border-2 border-muted/30"}`}
+    >
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <CreditCard className="h-5 w-5 text-primary" />
+          <div className={`p-2 rounded-lg ${isActive ? "bg-primary/10" : "bg-muted/20"}`}>
+            {isActive ? <Crown className="h-5 w-5 text-primary" /> : <CreditCard className="h-5 w-5 text-muted-foreground" />}
           </div>
           <div>
             <h2 className="text-lg font-semibold">Membership Status</h2>
-            <p className="text-sm text-muted-foreground capitalize">{profile.tier} Tier • {profile.membership_status}</p>
+            <p className="text-sm text-muted-foreground capitalize">
+              {profile.tier} Tier • {isActive ? "Active" : "Inactive"}
+            </p>
           </div>
         </div>
+
         {isActive ? (
-          <Badge className="bg-primary text-primary-foreground border-0">Active</Badge>
+          <div className="flex items-center gap-3">
+            <Badge className="bg-primary text-primary-foreground border-0">Active</Badge>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" disabled={actionLoading}>
+                  {actionLoading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                  Cancel
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Cancel Membership?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Your membership will remain active until{" "}
+                    {endsAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) || "the end of your billing period"}.
+                    After that, you won't be able to add new funds to your wallet, but your existing balance can still be used for bookings and purchases.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Keep Membership</AlertDialogCancel>
+                  <AlertDialogAction onClick={onCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Yes, Cancel
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         ) : (
-          <Button size="sm" disabled title="Stripe not configured yet">
-            Activate Membership
+          <Button
+            onClick={onSubscribe}
+            disabled={actionLoading}
+            className="btn-glow font-semibold"
+          >
+            {actionLoading ? (
+              <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...</>
+            ) : (
+              `Activate — $${price}/mo`
+            )}
           </Button>
         )}
       </div>
-      {isActive && profile.next_billing_date && (
-        <p className="text-xs text-muted-foreground mt-3">
-          Next billing: {new Date(profile.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+
+      {/* Active subscription details */}
+      {isActive && endsAt && (
+        <p className="text-xs text-muted-foreground mt-3 ml-11">
+          Renews on {endsAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · ${price}/month via PayPal
         </p>
+      )}
+
+      {/* Inactive — explain benefits */}
+      {!isActive && (
+        <div className="mt-4 ml-11 bg-secondary/50 rounded-lg p-4 text-sm space-y-2">
+          <p className="font-medium">Membership required to add funds to your wallet:</p>
+          <ul className="space-y-1 ml-4 list-disc text-muted-foreground text-xs">
+            <li>Unlimited wallet contributions (any amount)</li>
+            <li>Existing balance always usable for bookings & purchases</li>
+            <li>Cancel anytime — access until end of billing period</li>
+            <li>Auto-renews monthly via PayPal</li>
+          </ul>
+          {subError && (
+            <p className="text-destructive text-xs mt-2">{subError}</p>
+          )}
+        </div>
       )}
     </motion.div>
   );
@@ -426,7 +375,7 @@ const AllTransactionsDrawer = ({ transactions }: { transactions: any[] | null })
 );
 
 // --- Recent Contributions ---
-const RecentContributions = ({ transactions, txLoading, setAmount }: { transactions: any[] | null; txLoading: boolean; setAmount: (v: string) => void }) => {
+const RecentContributions = ({ transactions, txLoading }: { transactions: any[] | null; txLoading: boolean }) => {
   const recentSix = transactions?.slice(0, 6) ?? [];
 
   return (
@@ -437,7 +386,7 @@ const RecentContributions = ({ transactions, txLoading, setAmount }: { transacti
       </motion.div>
 
       {txLoading ? <CardSkeleton /> : recentSix.length === 0 ? (
-        <EmptyState icon="💰" title="No contributions yet" description="Make your first contribution to start your Hajj savings journey!" actionLabel="Make a Contribution" onAction={() => setAmount("50")} />
+        <EmptyState icon="💰" title="No contributions yet" description="Activate your membership and make your first contribution!" />
       ) : (
         <motion.div variants={stagger} initial="hidden" animate="show" className="bg-card rounded-xl card-shadow overflow-hidden mb-4">
           {recentSix.map((tx, i) => (
@@ -529,26 +478,26 @@ const WalletContent = () => {
 
         <StatsCards stats={stats} profile={profile} />
 
-        {/* Subscription Banner - always shown */}
-        <SubscriptionBanner
+        {/* Membership Card — serves as subscription gate */}
+        <MembershipCard
+          profile={profile}
           isActive={hasActiveSubscription}
           subscription={subConfig?.subscription}
           price={subConfig?.price ?? 15}
-          loading={subLoading}
+          subLoading={subLoading}
           actionLoading={subActionLoading}
           onSubscribe={subscribe}
           onCancel={cancelSubscription}
-          error={subError}
+          subError={subError}
         />
 
-        {/* Contribute Section - only shown if subscription is active */}
+        {/* Contribute Section — only if membership is active */}
         {hasActiveSubscription && (
           <ContributeSection onContributed={handleContributed} />
         )}
 
-        <MembershipCard profile={profile} />
         <SavingsProgress stats={stats} />
-        <RecentContributions transactions={transactions} txLoading={txLoading} setAmount={() => {}} />
+        <RecentContributions transactions={transactions} txLoading={txLoading} />
       </div>
     </div>
   );
