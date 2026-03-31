@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart, LogOut, Settings, UserCircle } from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
+
 import GlobalSearch from "@/components/GlobalSearch";
 import logoImg from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
