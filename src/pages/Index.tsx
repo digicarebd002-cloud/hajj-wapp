@@ -4,8 +4,9 @@ import {
   Users, Wallet, Star, ArrowRight, Handshake, Award,
   Plane, Hotel, MessageCircle, Heart, Check, Sparkles, Shield, Globe, User
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import WalletShowcase from "@/components/WalletShowcase";
 import { Button } from "@/components/ui/button";
 import GlowCard from "@/components/GlowCard";
