@@ -206,7 +206,7 @@ const WalletShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
               >
-                $1,250
+                ${walletData.balance.toLocaleString()}
               </motion.p>
               <motion.p
                 className="text-muted-foreground text-sm text-center mt-1"
