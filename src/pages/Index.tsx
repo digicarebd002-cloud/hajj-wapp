@@ -420,12 +420,10 @@ const Index = () => {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
               { name: "Essential Package", price: 2500, img: packageMadinah, popular: false, desc: "Complete your sacred pilgrimage with comfort and guidance.", features: ["Airfare included", "Shared accommodation (3-star)", "Ground transport", "English-speaking guide", "Group support"] },
               { name: "Premium Package", price: 3500, img: packageMakkah, popular: true, desc: "Premium experience with private amenities and dedicated support.", features: ["Premium airfare", "Private accommodation (4-star)", "Private transport", "Dedicated scholar + guide", "Extended stay", "VIP support"] },
-              { name: "Family Package", price: 4500, img: packageMadinah, popular: false, desc: "Designed for families traveling together with kids-friendly services.", features: ["Family airfare deal", "Connecting rooms (4-star)", "Family transport", "Multilingual guide", "Kids program", "24/7 family support"] },
-              { name: "VIP Package", price: 7500, img: packageMakkah, popular: false, desc: "The ultimate luxury Hajj experience with exclusive services.", features: ["Business class airfare", "5-star suite near Haram", "Luxury private transport", "Personal scholar + guide", "Extended Medina stay", "Concierge service", "Travel insurance"] },
             ].map((pkg, i) => (
               <motion.div
                 key={pkg.name}
