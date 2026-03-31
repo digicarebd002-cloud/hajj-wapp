@@ -124,7 +124,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary hover:bg-secondary/80 border border-border/50 transition-colors cursor-pointer">
                     <Avatar className="h-7 w-7 border border-primary/20">
                       <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">{initials}</AvatarFallback>
