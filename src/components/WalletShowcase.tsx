@@ -9,6 +9,9 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   {
