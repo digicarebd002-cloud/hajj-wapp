@@ -462,13 +462,24 @@ const AccountContent = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
-          <TabsList className="mb-6 flex-wrap bg-card border border-border p-1 h-auto">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-            <TabsTrigger value="subscription" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><CreditCard className="h-3.5 w-3.5" /> Subscription</TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><BarChart3 className="h-3.5 w-3.5" /> Analytics</TabsTrigger>
-            <TabsTrigger value="points" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Award className="h-3.5 w-3.5" /> Points</TabsTrigger>
-            <TabsTrigger value="activity" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Activity</TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
+          <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-6 gap-2 bg-transparent h-auto p-0">
+            {[
+              { value: "overview", icon: <TrendingUp className="h-5 w-5" />, label: "Overview" },
+              { value: "subscription", icon: <CreditCard className="h-5 w-5" />, label: "Subscription" },
+              { value: "analytics", icon: <BarChart3 className="h-5 w-5" />, label: "Analytics" },
+              { value: "points", icon: <Award className="h-5 w-5" />, label: "Points" },
+              { value: "activity", icon: <MessageCircle className="h-5 w-5" />, label: "Activity" },
+              { value: "settings", icon: <Lock className="h-5 w-5" />, label: "Settings" },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border border-border bg-card shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-md data-[state=active]:scale-[1.03] hover:border-primary/40 h-auto"
+              >
+                {tab.icon}
+                <span className="text-xs font-semibold">{tab.label}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
