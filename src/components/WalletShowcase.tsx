@@ -107,7 +107,7 @@ const WalletShowcase = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <span className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center gap-2 bg-primary/15 text-primary px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/20">
             <Wallet className="h-3.5 w-3.5" />
             Digital Wallet
           </span>
