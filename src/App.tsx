@@ -57,13 +57,12 @@ import AdminSupportTickets from "./pages/admin/AdminSupportTickets";
 import AdminInventory from "./pages/admin/AdminInventory";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ScrollToTopOnRouteChange } from "./components/ScrollToTop";
-import { ThemeProvider } from "./contexts/ThemeContext";
+
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
     <AuthProvider>
       <CartProvider>
         <SiteSettingsProvider>
@@ -137,7 +136,6 @@ const App = () => (
         </SiteSettingsProvider>
       </CartProvider>
     </AuthProvider>
-    </ThemeProvider>
   </QueryClientProvider>
 );
 
