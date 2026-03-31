@@ -1342,6 +1342,48 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_subscriptions: {
+        Row: {
+          amount: number
+          cancelled_at: string | null
+          created_at: string
+          ends_at: string | null
+          id: string
+          paypal_plan_id: string | null
+          paypal_subscription_id: string
+          starts_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          cancelled_at?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          paypal_plan_id?: string | null
+          paypal_subscription_id: string
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          cancelled_at?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          paypal_plan_id?: string | null
+          paypal_subscription_id?: string
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wallet_transactions: {
         Row: {
           amount: number
