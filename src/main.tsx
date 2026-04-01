@@ -10,12 +10,37 @@ heroVideo.type = "video/mp4";
 heroVideo.href = "/videos/hajj-bg.mp4";
 document.head.appendChild(heroVideo);
 
-// Register PWA service worker
+// Keep preview always fresh: remove SW + caches in preview/iframe/dev
+const isInIframe = (() => {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+})();
+
+const isPreviewOrDevHost =
+  window.location.hostname.includes("id-preview--") ||
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
-      // SW registration failed silently
-    });
+    if (!isInIframe && !isPreviewOrDevHost) return;
+
+    navigator.serviceWorker
+      .getRegistrations()
+      .then(async (registrations) => {
+        await Promise.all(registrations.map((registration) => registration.unregister()));
+
+        if ("caches" in window) {
+          const keys = await window.caches.keys();
+          await Promise.all(keys.map((key) => window.caches.delete(key)));
+        }
+      })
+      .catch(() => {
+        // Ignore cache cleanup failures in preview
+      });
   });
 }
 
