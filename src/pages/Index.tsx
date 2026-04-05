@@ -141,7 +141,7 @@ const Index = () => {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const scrollToHowItWorks = () => {
-    document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+    setTutorialOpen(true);
   };
 
   return (
