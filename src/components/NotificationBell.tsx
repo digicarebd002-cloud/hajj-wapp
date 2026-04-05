@@ -67,7 +67,7 @@ const NotificationBell = () => {
     const channel = supabase
       .channel("user-notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, (payload) => {
-        setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 10));
+        setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 20));
         setUnreadCount((c) => c + 1);
       })
       .subscribe();
