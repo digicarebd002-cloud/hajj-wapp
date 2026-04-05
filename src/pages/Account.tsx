@@ -403,14 +403,39 @@ const AccountContent = () => {
       <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
       <div className="container mx-auto max-w-4xl">
         {/* Profile Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6 md:p-8 mb-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl p-6 md:p-8 mb-6 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(150, 45%, 14%), hsl(142, 50%, 22%), hsl(150, 45%, 14%))" }}>
+          {/* Animated dots overlay */}
+          <div className="absolute inset-0 opacity-10">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full bg-white"
+                style={{
+                  width: 3 + Math.random() * 4,
+                  height: 3 + Math.random() * 4,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  opacity: [0.3, 0.8, 0.3],
+                  scale: [1, 1.3, 1],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 3,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
+          </div>
+          <div className="relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               {/* Avatar with upload */}
               <div className="relative group">
-                <Avatar className="h-20 w-20 ring-3 ring-primary/20 ring-offset-2 ring-offset-background">
+                <Avatar className="h-20 w-20 ring-3 ring-white/30 ring-offset-2 ring-offset-transparent">
                   <AvatarImage src={p.avatar_url || ""} alt={p.full_name} />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
+                  <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
