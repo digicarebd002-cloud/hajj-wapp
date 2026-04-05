@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import GlowCard from "@/components/GlowCard";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import FloatingShapes from "@/components/FloatingShapes";
+import HowItWorksTutorial from "@/components/HowItWorksTutorial";
 
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
