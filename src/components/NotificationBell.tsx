@@ -45,7 +45,7 @@ const NotificationBell = () => {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(20);
     if (data) setNotifications(data);
   };
 
