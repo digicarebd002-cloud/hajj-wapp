@@ -9,6 +9,7 @@ import { useTierWatch } from "@/hooks/use-tier-watch";
 import OnboardingTour from "./OnboardingTour";
 import ScrollToTop from "./ScrollToTop";
 import Breadcrumbs from "./Breadcrumbs";
+import AnimatedDots from "./AnimatedDots";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
