@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Check, CheckCheck, MessageSquare, CreditCard, Award, ShoppingBag, Info } from "lucide-react";
+import { Bell, Check, CheckCheck, MessageSquare, CreditCard, Award, ShoppingBag, Info, Package, Plane, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,9 +22,11 @@ interface Notification {
 
 const typeIcon: Record<string, React.ReactNode> = {
   contribution: <CreditCard className="h-4 w-4 text-primary" />,
-  booking: <ShoppingBag className="h-4 w-4 text-primary" />,
-  community: <MessageSquare className="h-4 w-4 text-primary" />,
-  membership: <Award className="h-4 w-4 text-primary" />,
+  booking: <Plane className="h-4 w-4 text-blue-500" />,
+  order: <Package className="h-4 w-4 text-orange-500" />,
+  community: <MessageSquare className="h-4 w-4 text-violet-500" />,
+  membership: <Award className="h-4 w-4 text-amber-500" />,
+  sponsorship: <Heart className="h-4 w-4 text-pink-500" />,
   system: <Info className="h-4 w-4 text-muted-foreground" />,
 };
 
@@ -43,7 +45,7 @@ const NotificationBell = () => {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(20);
     if (data) setNotifications(data);
   };
 
@@ -65,7 +67,7 @@ const NotificationBell = () => {
     const channel = supabase
       .channel("user-notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, (payload) => {
-        setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 10));
+        setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 20));
         setUnreadCount((c) => c + 1);
       })
       .subscribe();
@@ -87,10 +89,12 @@ const NotificationBell = () => {
       setUnreadCount((c) => Math.max(0, c - 1));
     }
     setOpen(false);
-    if (n.type === "booking") navigate("/account");
+    if (n.type === "booking") navigate("/my-bookings");
+    else if (n.type === "order") navigate("/my-orders");
     else if (n.type === "community" && n.reference_id) navigate(`/community/${n.reference_id}`);
-    else if (n.type === "membership") navigate("/account");
+    else if (n.type === "membership") navigate("/membership");
     else if (n.type === "contribution") navigate("/wallet");
+    else if (n.type === "sponsorship") navigate("/sponsorship");
   };
 
   if (!user) return null;
