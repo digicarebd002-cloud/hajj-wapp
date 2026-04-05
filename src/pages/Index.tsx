@@ -666,6 +666,8 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      <HowItWorksTutorial open={tutorialOpen} onOpenChange={setTutorialOpen} />
     </div>
   );
 };
