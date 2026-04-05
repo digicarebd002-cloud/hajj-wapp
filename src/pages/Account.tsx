@@ -460,11 +460,11 @@ const AccountContent = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-2xl font-bold">{p.full_name || "New Member"}</h2>
+                  <h2 className="text-2xl font-bold text-white">{p.full_name || "New Member"}</h2>
                   <span className={tierBadgeClass[p.tier]}>{p.tier}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
-                <p className="text-xs text-muted-foreground">Member since {new Date(p.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</p>
+                <p className="text-sm text-white/70">{user?.email}</p>
+                <p className="text-xs text-white/50">Member since {new Date(p.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</p>
               </div>
             </div>
           </div>
@@ -476,12 +476,13 @@ const AccountContent = () => {
               { icon: "🏅", label: "Tier", value: p.tier, highlight: false },
               { icon: "📊", label: "Status", value: p.membership_status, highlight: p.membership_status === "active" },
             ].map((s) => (
-              <div key={s.label} className={`rounded-xl p-4 text-center border transition-all ${s.highlight ? "bg-primary/10 border-primary/30" : "bg-secondary border-border"}`}>
+              <div key={s.label} className={`rounded-xl p-4 text-center border transition-all ${s.highlight ? "bg-white/15 border-white/20" : "bg-white/10 border-white/10"}`}>
                 <span className="text-xl block mb-1">{s.icon}</span>
-                <p className={`text-lg font-bold capitalize ${s.highlight ? "text-primary" : "text-foreground"}`}>{s.value}</p>
-                <p className="text-xs text-muted-foreground font-medium">{s.label}</p>
+                <p className={`text-lg font-bold capitalize ${s.highlight ? "text-white" : "text-white"}`}>{s.value}</p>
+                <p className="text-xs text-white/60 font-medium">{s.label}</p>
               </div>
             ))}
+          </div>
           </div>
         </motion.div>
 
