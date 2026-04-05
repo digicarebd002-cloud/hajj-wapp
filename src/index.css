@@ -63,9 +63,11 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
     background-image:
-      radial-gradient(circle at 18% 12%, hsl(var(--primary) / 0.08), transparent 0 16%),
-      radial-gradient(circle at 82% 10%, hsl(var(--primary) / 0.05), transparent 0 14%),
-      linear-gradient(180deg, hsl(var(--background)), hsl(140 24% 95%));
+      radial-gradient(circle, hsl(var(--primary) / 0.12) 1px, transparent 1px),
+      radial-gradient(circle at 18% 12%, hsl(var(--primary) / 0.06), transparent 16%),
+      radial-gradient(circle at 82% 10%, hsl(var(--primary) / 0.04), transparent 14%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(140 24% 94.5%));
+    background-size: 28px 28px, 100% 100%, 100% 100%, 100% 100%;
     background-attachment: fixed;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
