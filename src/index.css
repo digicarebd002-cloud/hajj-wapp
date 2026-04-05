@@ -6,22 +6,22 @@
 
 @layer base {
   :root {
-    --background: 140 20% 97%;
+    --background: 140 24% 96%;
     --foreground: 160 20% 8%;
 
-    --card: 140 15% 99%;
+    --card: 140 28% 97.5%;
     --card-foreground: 160 20% 8%;
 
-    --popover: 140 15% 99%;
+    --popover: 140 28% 97.5%;
     --popover-foreground: 160 20% 8%;
 
     --primary: 142 72% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 145 18% 90%;
+    --secondary: 140 24% 92%;
     --secondary-foreground: 160 20% 15%;
 
-    --muted: 145 12% 88%;
+    --muted: 140 18% 89%;
     --muted-foreground: 160 10% 42%;
 
     --accent: 142 72% 40%;
@@ -30,8 +30,8 @@
     --destructive: 0 84% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 145 12% 78%;
-    --input: 145 10% 82%;
+    --border: 145 14% 80%;
+    --input: 145 12% 84%;
     --ring: 142 72% 40%;
 
     --radius: 0.75rem;
@@ -42,13 +42,13 @@
     --gold: 45 93% 47%;
     --gold-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 100%;
+    --sidebar-background: 140 28% 97.5%;
     --sidebar-foreground: 160 20% 15%;
     --sidebar-primary: 142 72% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 145 50% 92%;
+    --sidebar-accent: 145 40% 93%;
     --sidebar-accent-foreground: 142 50% 25%;
-    --sidebar-border: 145 12% 78%;
+    --sidebar-border: 145 14% 80%;
     --sidebar-ring: 142 72% 40%;
   }
 
@@ -62,6 +62,11 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
+    background-image:
+      radial-gradient(circle at 18% 12%, hsl(var(--primary) / 0.08), transparent 0 16%),
+      radial-gradient(circle at 82% 10%, hsl(var(--primary) / 0.05), transparent 0 14%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(140 24% 95%));
+    background-attachment: fixed;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
