@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   Handshake, Wallet, Star, Award, ArrowRight, ArrowLeft, X,
   CreditCard, Users, MessageSquare, ShoppingBag, Heart,
@@ -14,11 +13,13 @@ interface TutorialStep {
   icon: React.ReactNode;
   badge: string;
   badgeColor: string;
+  heroGradient: string;
+  heroIconBg: string;
   title: string;
   subtitle: string;
   description: string;
   features: { icon: React.ReactNode; text: string }[];
-  illustration: React.ReactNode;
+  heroContent: React.ReactNode;
   ctaLabel?: string;
   ctaLink?: string;
 }
@@ -26,81 +27,92 @@ interface TutorialStep {
 const tutorialSteps: TutorialStep[] = [
   {
     id: "welcome",
-    icon: <Sparkles className="h-6 w-6" />,
+    icon: <Sparkles className="h-5 w-5" />,
     badge: "Welcome",
-    badgeColor: "bg-primary/15 text-primary border-primary/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(150,45%,14%)] via-[hsl(142,50%,22%)] to-[hsl(150,45%,14%)]",
+    heroIconBg: "bg-white/15",
     title: "Welcome to Hajj Wallet",
     subtitle: "Your complete platform for Hajj savings",
-    description: "Hajj Wallet is an all-in-one platform designed to help Muslims save for their sacred pilgrimage to Mecca. We combine savings management, community engagement, rewards, and travel booking into one seamless experience.",
+    description: "An all-in-one platform designed to help Muslims save for their sacred pilgrimage to Mecca — savings management, community engagement, rewards, and travel booking in one seamless experience.",
     features: [
-      { icon: <Shield className="h-4 w-4" />, text: "Bank-grade security for your savings" },
-      { icon: <Globe className="h-4 w-4" />, text: "Global community of Muslims" },
-      { icon: <Sparkles className="h-4 w-4" />, text: "Earn rewards for engagement" },
-      { icon: <Heart className="h-4 w-4" />, text: "Monthly sponsorship program" },
+      { icon: <Shield className="h-4 w-4" />, text: "Bank-grade security" },
+      { icon: <Globe className="h-4 w-4" />, text: "Global Muslim community" },
+      { icon: <Sparkles className="h-4 w-4" />, text: "Earn rewards daily" },
+      { icon: <Heart className="h-4 w-4" />, text: "Sponsorship program" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center">
+    heroContent: (
+      <>
         <motion.div
-          className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center"
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          className="w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-2xl"
+          animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
+          transition={{ duration: 4, repeat: Infinity }}
         >
-          <motion.div
-            className="w-16 h-16 rounded-full bg-primary/30 flex items-center justify-center"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-          >
-            <Sparkles className="h-8 w-8 text-primary" />
-          </motion.div>
+          <Sparkles className="h-9 w-9 text-white" />
         </motion.div>
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2, 3, 4, 5].map((i) => (
           <motion.div
             key={i}
-            className="absolute w-3 h-3 bg-primary/40 rounded-full"
-            style={{ top: "50%", left: "50%" }}
+            className="absolute w-2 h-2 bg-white/40 rounded-full"
+            style={{ top: `${20 + Math.random() * 60}%`, left: `${10 + Math.random() * 80}%` }}
             animate={{
-              x: [Math.cos(i * 1.57) * 70, Math.cos(i * 1.57 + Math.PI) * 70, Math.cos(i * 1.57) * 70],
-              y: [Math.sin(i * 1.57) * 70, Math.sin(i * 1.57 + Math.PI) * 70, Math.sin(i * 1.57) * 70],
+              opacity: [0.2, 0.8, 0.2],
+              scale: [0.8, 1.4, 0.8],
+              y: [0, -12, 0],
             }}
-            transition={{ duration: 6, repeat: Infinity, delay: i * 0.3 }}
+            transition={{ duration: 2.5 + i * 0.5, repeat: Infinity, delay: i * 0.4 }}
           />
         ))}
-      </div>
+      </>
     ),
   },
   {
     id: "membership",
-    icon: <Handshake className="h-6 w-6" />,
+    icon: <Handshake className="h-5 w-5" />,
     badge: "Step 1",
-    badgeColor: "bg-blue-500/15 text-blue-600 border-blue-500/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(210,70%,30%)] via-[hsl(220,60%,40%)] to-[hsl(210,70%,30%)]",
+    heroIconBg: "bg-white/15",
     title: "Join the Community",
     subtitle: "Become a member for $25/month",
-    description: "Start by creating your free account, then activate your membership subscription. Your $25/month membership unlocks the ability to add funds to your Hajj savings wallet, access member-only discounts in our store, and participate in the monthly sponsorship program.",
+    description: "Create your account, activate your membership, and unlock wallet contributions, member-only store discounts, and the monthly sponsorship program.",
     features: [
-      { icon: <CreditCard className="h-4 w-4" />, text: "Easy PayPal subscription setup" },
-      { icon: <Wallet className="h-4 w-4" />, text: "Unlock wallet contribution access" },
-      { icon: <ShoppingBag className="h-4 w-4" />, text: "Member-only store discounts" },
-      { icon: <Heart className="h-4 w-4" />, text: "Sponsorship program eligibility" },
+      { icon: <CreditCard className="h-4 w-4" />, text: "Easy PayPal setup" },
+      { icon: <Wallet className="h-4 w-4" />, text: "Unlock wallet access" },
+      { icon: <ShoppingBag className="h-4 w-4" />, text: "Store discounts" },
+      { icon: <Heart className="h-4 w-4" />, text: "Sponsorship eligibility" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center gap-4">
-        {["Sign Up", "Subscribe", "Activated!"].map((label, i) => (
+    heroContent: (
+      <div className="flex items-center gap-3">
+        {["Sign Up", "Subscribe", "Active!"].map((label, i) => (
           <motion.div
             key={label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.3 }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 + i * 0.25, type: "spring" }}
             className="flex flex-col items-center gap-2"
           >
             <motion.div
-              className={`w-14 h-14 rounded-xl flex items-center justify-center ${i === 2 ? "bg-primary text-primary-foreground" : "bg-primary/15 text-primary"}`}
-              animate={i === 2 ? { scale: [1, 1.1, 1] } : {}}
+              className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg ${
+                i === 2 ? "bg-white text-[hsl(210,70%,35%)]" : "bg-white/15 text-white border border-white/20"
+              }`}
+              animate={i === 2 ? { scale: [1, 1.12, 1] } : {}}
               transition={{ duration: 2, repeat: Infinity }}
             >
               {i === 0 ? <Users className="h-6 w-6" /> : i === 1 ? <CreditCard className="h-6 w-6" /> : <Check className="h-6 w-6" />}
             </motion.div>
-            <span className="text-xs font-semibold text-muted-foreground">{label}</span>
-            {i < 2 && <ArrowRight className="h-4 w-4 text-muted-foreground absolute" style={{ left: `${30 + i * 33}%`, top: "35%" }} />}
+            <span className="text-[11px] font-bold text-white/80">{label}</span>
+          </motion.div>
+        ))}
+        {[0, 1].map((i) => (
+          <motion.div
+            key={`arrow-${i}`}
+            className="absolute text-white/40"
+            style={{ left: `${32 + i * 28}%`, top: "38%" }}
+            animate={{ x: [0, 4, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
+          >
+            <ArrowRight className="h-4 w-4" />
           </motion.div>
         ))}
       </div>
@@ -110,85 +122,100 @@ const tutorialSteps: TutorialStep[] = [
   },
   {
     id: "wallet",
-    icon: <Wallet className="h-6 w-6" />,
+    icon: <Wallet className="h-5 w-5" />,
     badge: "Step 2",
-    badgeColor: "bg-emerald-500/15 text-emerald-600 border-emerald-500/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(150,45%,14%)] via-[hsl(142,50%,22%)] to-[hsl(150,45%,14%)]",
+    heroIconBg: "bg-white/15",
     title: "Build Your Wallet",
     subtitle: "Save at your own pace",
-    description: "Once your membership is active, you can add money to your personal Hajj savings wallet anytime. Set a savings goal (default $2,500), contribute any amount via PayPal, and track your progress with real-time updates. The Hajj Savings Calculator helps you plan how long it'll take to reach your goal.",
+    description: "Add money to your Hajj savings wallet anytime. Set a savings goal, contribute any amount via PayPal, and track your progress with real-time updates and projections.",
     features: [
-      { icon: <TrendingUp className="h-4 w-4" />, text: "Real-time progress tracking" },
-      { icon: <CreditCard className="h-4 w-4" />, text: "Flexible contribution amounts" },
-      { icon: <Shield className="h-4 w-4" />, text: "Secure PayPal payments" },
-      { icon: <Sparkles className="h-4 w-4" />, text: "Savings calculator & projections" },
+      { icon: <TrendingUp className="h-4 w-4" />, text: "Real-time tracking" },
+      { icon: <CreditCard className="h-4 w-4" />, text: "Flexible amounts" },
+      { icon: <Shield className="h-4 w-4" />, text: "Secure payments" },
+      { icon: <Sparkles className="h-4 w-4" />, text: "Savings calculator" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center">
-        <motion.div className="w-56 bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-4 text-primary-foreground shadow-xl">
-          <p className="text-[10px] uppercase tracking-wider opacity-75 mb-1">Available Balance</p>
-          <motion.p
-            className="text-2xl font-bold"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            $2,500
-          </motion.p>
-          <div className="mt-3">
-            <div className="flex justify-between text-[10px] opacity-75 mb-1">
-              <span>Goal Progress</span>
-              <span>100%</span>
-            </div>
-            <div className="h-1.5 bg-primary-foreground/20 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-primary-foreground rounded-full"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2, delay: 0.3 }}
-              />
-            </div>
+    heroContent: (
+      <motion.div
+        className="w-64 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 shadow-2xl"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-1">Available Balance</p>
+        <motion.p
+          className="text-3xl font-extrabold text-white"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, type: "spring" }}
+        >
+          $2,500
+        </motion.p>
+        <div className="mt-4">
+          <div className="flex justify-between text-[10px] text-white/60 font-semibold mb-1.5">
+            <span>Goal Progress</span>
+            <span>100%</span>
           </div>
-        </motion.div>
-      </div>
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: "linear-gradient(90deg, hsl(45,93%,47%), hsl(35,90%,50%))" }}
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2, delay: 0.4, ease: "easeOut" }}
+            />
+          </div>
+          <div className="flex justify-between text-[9px] text-white/40 mt-1">
+            <span>$0</span>
+            <span>$2,500 goal</span>
+          </div>
+        </div>
+      </motion.div>
     ),
     ctaLabel: "Go to Wallet",
     ctaLink: "/wallet",
   },
   {
     id: "community",
-    icon: <MessageSquare className="h-6 w-6" />,
+    icon: <MessageSquare className="h-5 w-5" />,
     badge: "Step 3",
-    badgeColor: "bg-violet-500/15 text-violet-600 border-violet-500/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(270,50%,30%)] via-[hsl(260,45%,40%)] to-[hsl(270,50%,30%)]",
+    heroIconBg: "bg-white/15",
     title: "Earn Points & Rewards",
     subtitle: "Engage with the community",
-    description: "Participate in the community forum by creating discussions, replying to threads, and receiving likes. Every action earns you reward points that determine your membership tier — Silver, Gold, or Platinum. Higher tiers unlock better store discounts and increase your chances of being selected for the monthly Hajj sponsorship.",
+    description: "Create discussions, reply to threads, and receive likes. Every action earns reward points that determine your tier — Silver, Gold, or Platinum — unlocking better discounts and sponsorship chances.",
     features: [
-      { icon: <MessageSquare className="h-4 w-4" />, text: "Create discussions (+10 pts)" },
-      { icon: <Star className="h-4 w-4" />, text: "Reply to threads (+5 pts)" },
-      { icon: <Award className="h-4 w-4" />, text: "Tier upgrades: Silver → Gold → Platinum" },
-      { icon: <Gift className="h-4 w-4" />, text: "Refer friends for bonus points" },
+      { icon: <MessageSquare className="h-4 w-4" />, text: "Discussions (+10 pts)" },
+      { icon: <Star className="h-4 w-4" />, text: "Replies (+5 pts)" },
+      { icon: <Award className="h-4 w-4" />, text: "Tier upgrades" },
+      { icon: <Gift className="h-4 w-4" />, text: "Referral bonuses" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center">
-        <div className="flex gap-3">
-          {[
-            { tier: "Silver", pts: "0+", color: "bg-muted text-muted-foreground" },
-            { tier: "Gold", pts: "1,000+", color: "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground" },
-            { tier: "Platinum", pts: "2,000+", color: "bg-gradient-to-br from-primary/90 to-primary/60 text-primary-foreground" },
-          ].map((t, i) => (
+    heroContent: (
+      <div className="flex gap-3">
+        {[
+          { tier: "Silver", pts: "0+", bg: "bg-white/10 border-white/15", text: "text-white/80" },
+          { tier: "Gold", pts: "1,000+", bg: "bg-white/20 border-white/25", text: "text-white" },
+          { tier: "Platinum", pts: "2,000+", bg: "bg-white text-[hsl(270,50%,30%)]", text: "" },
+        ].map((t, i) => (
+          <motion.div
+            key={t.tier}
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: i === 2 ? 1.08 : 1 }}
+            transition={{ delay: i * 0.2, type: "spring" }}
+            className={`${t.bg} rounded-xl p-4 text-center w-24 border shadow-xl ${i === 2 ? "" : "border-white/15"}`}
+          >
             <motion.div
-              key={t.tier}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.2 }}
-              className={`${t.color} rounded-xl p-4 text-center w-24 shadow-md`}
+              animate={i === 2 ? { rotate: [0, 10, -10, 0] } : {}}
+              transition={{ duration: 3, repeat: Infinity }}
             >
-              <Award className="h-6 w-6 mx-auto mb-2" />
-              <p className="text-xs font-bold">{t.tier}</p>
-              <p className="text-[10px] opacity-75 mt-0.5">{t.pts} pts</p>
+              <Award className={`h-7 w-7 mx-auto mb-2 ${t.text || ""}`} />
             </motion.div>
-          ))}
-        </div>
+            <p className={`text-xs font-extrabold ${t.text}`}>{t.tier}</p>
+            <p className={`text-[10px] mt-0.5 opacity-70 ${t.text}`}>{t.pts}</p>
+          </motion.div>
+        ))}
       </div>
     ),
     ctaLabel: "Visit Community",
@@ -196,34 +223,44 @@ const tutorialSteps: TutorialStep[] = [
   },
   {
     id: "packages",
-    icon: <Plane className="h-6 w-6" />,
+    icon: <Plane className="h-5 w-5" />,
     badge: "Step 4",
-    badgeColor: "bg-amber-500/15 text-amber-600 border-amber-500/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(35,70%,30%)] via-[hsl(30,60%,40%)] to-[hsl(35,70%,30%)]",
+    heroIconBg: "bg-white/15",
     title: "Book Your Journey",
     subtitle: "Choose your Hajj package",
-    description: "When you've saved enough, browse our curated Hajj packages with options for every budget. Choose from Essential to Premium packages with everything included — flights, accommodation, transportation, and guided tours. You can pay in full or choose convenient installment plans.",
+    description: "Browse curated Hajj packages for every budget — flights, accommodation, transportation, and guided tours included. Pay in full or choose convenient installment plans.",
     features: [
-      { icon: <Plane className="h-4 w-4" />, text: "All-inclusive packages from $2,500" },
-      { icon: <CreditCard className="h-4 w-4" />, text: "Flexible installment payment plans" },
-      { icon: <Users className="h-4 w-4" />, text: "Group and private options" },
-      { icon: <Shield className="h-4 w-4" />, text: "Dedicated guide & 24/7 support" },
+      { icon: <Plane className="h-4 w-4" />, text: "All-inclusive from $2,500" },
+      { icon: <CreditCard className="h-4 w-4" />, text: "Installment plans" },
+      { icon: <Users className="h-4 w-4" />, text: "Group & private" },
+      { icon: <Shield className="h-4 w-4" />, text: "24/7 support" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center gap-4">
+    heroContent: (
+      <div className="flex gap-4">
         {["Essential", "Premium"].map((name, i) => (
           <motion.div
             key={name}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.3 }}
-            className={`rounded-xl p-4 w-36 border ${i === 1 ? "border-primary bg-primary/5 shadow-lg" : "border-border bg-card"}`}
+            transition={{ delay: i * 0.3, type: "spring" }}
+            className={`rounded-2xl p-5 w-36 shadow-xl ${
+              i === 1
+                ? "bg-white text-[hsl(35,70%,30%)] scale-105"
+                : "bg-white/10 text-white border border-white/20"
+            }`}
           >
             {i === 1 && (
-              <span className="text-[9px] font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full">POPULAR</span>
+              <span className="text-[9px] font-extrabold bg-[hsl(35,70%,30%)] text-white px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                Popular
+              </span>
             )}
-            <p className="font-bold text-sm mt-2">{name}</p>
-            <p className="text-lg font-extrabold text-primary mt-1">${i === 0 ? "2,500" : "3,500"}</p>
-            <p className="text-[10px] text-muted-foreground">/person</p>
+            <p className="font-extrabold text-sm mt-2">{name}</p>
+            <p className={`text-2xl font-black mt-1 ${i === 1 ? "text-[hsl(35,70%,30%)]" : "text-white"}`}>
+              ${i === 0 ? "2,500" : "3,500"}
+            </p>
+            <p className={`text-[10px] ${i === 1 ? "text-[hsl(35,70%,30%)]/60" : "text-white/50"}`}>/person</p>
           </motion.div>
         ))}
       </div>
@@ -233,37 +270,50 @@ const tutorialSteps: TutorialStep[] = [
   },
   {
     id: "sponsorship",
-    icon: <Heart className="h-6 w-6" />,
+    icon: <Heart className="h-5 w-5" />,
     badge: "Bonus",
-    badgeColor: "bg-pink-500/15 text-pink-600 border-pink-500/25",
+    badgeColor: "bg-white/20 text-white border-white/30",
+    heroGradient: "from-[hsl(340,50%,30%)] via-[hsl(350,55%,40%)] to-[hsl(340,50%,30%)]",
+    heroIconBg: "bg-white/15",
     title: "Monthly Sponsorship",
     subtitle: "Get sponsored for Hajj",
-    description: "Every month, we select a deserving community member for a fully-sponsored Hajj trip. Selection is based on community engagement, points earned, membership tier, and personal circumstances. Stay active, build your tier, and you could be our next sponsored pilgrim!",
+    description: "Every month, we select a deserving community member for a fully-sponsored Hajj trip based on engagement, tier level, and personal circumstances. Stay active and you could be next!",
     features: [
-      { icon: <Heart className="h-4 w-4" />, text: "Fully-sponsored trip to Mecca" },
-      { icon: <Award className="h-4 w-4" />, text: "Based on engagement & tier level" },
-      { icon: <Users className="h-4 w-4" />, text: "Community-driven selection" },
-      { icon: <Sparkles className="h-4 w-4" />, text: "Monthly selections announced" },
+      { icon: <Heart className="h-4 w-4" />, text: "Fully-sponsored trip" },
+      { icon: <Award className="h-4 w-4" />, text: "Engagement-based" },
+      { icon: <Users className="h-4 w-4" />, text: "Community-driven" },
+      { icon: <Sparkles className="h-4 w-4" />, text: "Monthly selections" },
     ],
-    illustration: (
-      <div className="relative w-full h-48 flex items-center justify-center">
+    heroContent: (
+      <motion.div
+        className="relative"
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 3, repeat: Infinity }}
+      >
         <motion.div
-          className="relative"
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          className="w-24 h-24 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl"
+          animate={{ rotate: [0, 3, -3, 0] }}
+          transition={{ duration: 5, repeat: Infinity }}
         >
-          <div className="w-20 h-20 bg-gradient-to-br from-pink-500/20 to-pink-500/10 rounded-full flex items-center justify-center">
-            <Heart className="h-10 w-10 text-pink-500" />
-          </div>
-          <motion.div
-            className="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-lg"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Sparkles className="h-4 w-4 text-primary-foreground" />
-          </motion.div>
+          <Heart className="h-12 w-12 text-white" />
         </motion.div>
-      </div>
+        <motion.div
+          className="absolute -top-3 -right-3 w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-xl"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <Sparkles className="h-5 w-5 text-[hsl(340,50%,35%)]" />
+        </motion.div>
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/50 rounded-full"
+            style={{ top: `${20 + i * 25}%`, left: `${-20 + i * 10}%` }}
+            animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.3, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+          />
+        ))}
+      </motion.div>
     ),
     ctaLabel: "Apply for Sponsorship",
     ctaLink: "/sponsorship",
@@ -279,7 +329,6 @@ const HowItWorksTutorial = ({ open, onOpenChange }: Props) => {
   const [currentStep, setCurrentStep] = useState(0);
   const step = tutorialSteps[currentStep];
   const totalSteps = tutorialSteps.length;
-  const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const goNext = () => {
     if (currentStep < totalSteps - 1) setCurrentStep((s) => s + 1);
@@ -296,106 +345,121 @@ const HowItWorksTutorial = ({ open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden border-border/50 shadow-2xl [&>button]:hidden">
-        {/* Header with progress */}
-        <div className="px-6 pt-5 pb-3">
-          <div className="flex items-center justify-between mb-3">
-            <span className={`text-xs font-bold px-3 py-1 rounded-full border ${step.badgeColor}`}>
-              {step.badge}
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground font-medium">
-                {currentStep + 1} / {totalSteps}
-              </span>
-              <button
-                onClick={() => handleOpenChange(false)}
-                className="w-7 h-7 rounded-full bg-secondary hover:bg-muted flex items-center justify-center transition-colors"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-          <Progress value={progress} className="h-1.5" />
-        </div>
-
-        {/* Content */}
+      <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden border-0 shadow-2xl rounded-2xl [&>button]:hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={step.id}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="px-6 pb-6"
           >
-            {/* Illustration */}
-            <div className="mb-4">{step.illustration}</div>
+            {/* Hero Section with deep gradient */}
+            <div className={`relative bg-gradient-to-br ${step.heroGradient} px-6 pt-5 pb-8 overflow-hidden`}>
+              {/* Decorative grid overlay */}
+              <div className="absolute inset-0 opacity-[0.04]" style={{
+                backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }} />
 
-            {/* Title */}
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                {step.icon}
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-foreground">{step.title}</h3>
-                <p className="text-xs text-muted-foreground font-medium">{step.subtitle}</p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              {step.description}
-            </p>
-
-            {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
-              {step.features.map((f, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.05 }}
-                  className="flex items-center gap-2.5 bg-secondary/60 rounded-lg px-3 py-2.5"
-                >
-                  <span className="text-primary shrink-0">{f.icon}</span>
-                  <span className="text-xs font-medium text-foreground">{f.text}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={goPrev}
-                disabled={currentStep === 0}
-                className="gap-1.5"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" /> Back
-              </Button>
-
-              <div className="flex gap-1.5">
-                {tutorialSteps.map((_, i) => (
+              {/* Header row */}
+              <div className="relative z-10 flex items-center justify-between mb-6">
+                <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border backdrop-blur-sm ${step.badgeColor}`}>
+                  {step.badge}
+                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] text-white/60 font-bold">
+                    {currentStep + 1} / {totalSteps}
+                  </span>
                   <button
+                    onClick={() => handleOpenChange(false)}
+                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors backdrop-blur-sm"
+                  >
+                    <X className="h-3.5 w-3.5 text-white/80" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Step progress dots in hero */}
+              <div className="relative z-10 flex gap-1.5 mb-6">
+                {tutorialSteps.map((_, i) => (
+                  <motion.div
                     key={i}
-                    onClick={() => setCurrentStep(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === currentStep
-                        ? "bg-primary w-5"
-                        : i < currentStep
-                        ? "bg-primary/40"
-                        : "bg-muted"
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      i === currentStep ? "bg-white w-8" : i < currentStep ? "bg-white/50 w-4" : "bg-white/20 w-4"
                     }`}
+                    layoutId={`dot-${i}`}
                   />
                 ))}
               </div>
 
-              <Button size="sm" onClick={goNext} className="gap-1.5">
-                {currentStep === totalSteps - 1 ? "Get Started" : "Next"}
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
+              {/* Hero Illustration */}
+              <div className="relative z-10 flex items-center justify-center min-h-[140px]">
+                {step.heroContent}
+              </div>
             </div>
+
+            {/* Content Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="px-6 pt-5 pb-5"
+            >
+              {/* Title row */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  {step.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-foreground leading-tight">{step.title}</h3>
+                  <p className="text-[11px] text-muted-foreground font-semibold">{step.subtitle}</p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
+                {step.description}
+              </p>
+
+              {/* Features grid */}
+              <div className="grid grid-cols-2 gap-2 mb-5">
+                {step.features.map((f, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.06 }}
+                    className="flex items-center gap-2 bg-secondary/70 rounded-lg px-3 py-2.5 border border-border/50"
+                  >
+                    <span className="text-primary shrink-0">{f.icon}</span>
+                    <span className="text-[11px] font-semibold text-foreground">{f.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Navigation */}
+              <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={goPrev}
+                  disabled={currentStep === 0}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" /> Back
+                </Button>
+
+                <Button
+                  size="sm"
+                  onClick={goNext}
+                  className="gap-1.5 px-5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                >
+                  {currentStep === totalSteps - 1 ? "Get Started" : "Next"}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
         </AnimatePresence>
       </DialogContent>
