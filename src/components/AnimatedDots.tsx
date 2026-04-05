@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 
-const DOT_COUNT = 72;
-const DOT_SIZE_MIN = 2.5;
-const DOT_SIZE_MAX = 6;
+const DOT_COUNT = 90;
+const DOT_SIZE_MIN = 4;
+const DOT_SIZE_MAX = 9;
 
 interface Dot {
   x: number;
@@ -26,10 +26,6 @@ const AnimatedDots = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const primaryColor =
-      getComputedStyle(document.documentElement).getPropertyValue("--primary").trim() ||
-      "142 72% 40%";
-
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -40,10 +36,10 @@ const AnimatedDots = () => {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: DOT_SIZE_MIN + Math.random() * (DOT_SIZE_MAX - DOT_SIZE_MIN),
-        opacity: 0.18 + Math.random() * 0.24,
-        speedX: (Math.random() - 0.5) * 0.18,
-        speedY: (Math.random() - 0.5) * 0.18,
-        pulseSpeed: 0.01 + Math.random() * 0.015,
+        opacity: 0.25 + Math.random() * 0.35,
+        speedX: (Math.random() - 0.5) * 0.15,
+        speedY: (Math.random() - 0.5) * 0.15,
+        pulseSpeed: 0.008 + Math.random() * 0.012,
         pulseOffset: Math.random() * Math.PI * 2,
       }));
     };
@@ -71,18 +67,18 @@ const AnimatedDots = () => {
         dot.x += dot.speedX;
         dot.y += dot.speedY;
 
-        if (dot.x < -12) dot.x = canvas.width + 12;
-        if (dot.x > canvas.width + 12) dot.x = -12;
-        if (dot.y < -12) dot.y = canvas.height + 12;
-        if (dot.y > canvas.height + 12) dot.y = -12;
+        if (dot.x < -15) dot.x = canvas.width + 15;
+        if (dot.x > canvas.width + 15) dot.x = -15;
+        if (dot.y < -15) dot.y = canvas.height + 15;
+        if (dot.y > canvas.height + 15) dot.y = -15;
 
         const pulse = Math.sin(time * dot.pulseSpeed + dot.pulseOffset);
-        const currentOpacity = dot.opacity + pulse * 0.08;
-        const currentSize = dot.size + pulse * 0.9;
+        const currentOpacity = dot.opacity + pulse * 0.1;
+        const currentSize = dot.size + pulse * 1.2;
 
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, Math.max(0.8, currentSize), 0, Math.PI * 2);
-        ctx.fillStyle = `hsl(${primaryColor} / ${Math.max(0.08, currentOpacity)})`;
+        ctx.arc(dot.x, dot.y, Math.max(1, currentSize), 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(142, 72%, 40%, ${Math.max(0.12, currentOpacity)})`;
         ctx.fill();
       });
 
