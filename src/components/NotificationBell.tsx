@@ -89,10 +89,12 @@ const NotificationBell = () => {
       setUnreadCount((c) => Math.max(0, c - 1));
     }
     setOpen(false);
-    if (n.type === "booking") navigate("/account");
+    if (n.type === "booking") navigate("/my-bookings");
+    else if (n.type === "order") navigate("/my-orders");
     else if (n.type === "community" && n.reference_id) navigate(`/community/${n.reference_id}`);
-    else if (n.type === "membership") navigate("/account");
+    else if (n.type === "membership") navigate("/membership");
     else if (n.type === "contribution") navigate("/wallet");
+    else if (n.type === "sponsorship") navigate("/sponsorship");
   };
 
   if (!user) return null;
