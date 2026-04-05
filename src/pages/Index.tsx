@@ -77,6 +77,7 @@ const Index = () => {
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
   const { user } = useAuth();
   const [heroWallet, setHeroWallet] = useState({ balance: 0, goal: 2500 });
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     if (!user) { setHeroWallet({ balance: 0, goal: 2500 }); return; }
