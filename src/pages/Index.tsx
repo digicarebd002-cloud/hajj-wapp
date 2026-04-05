@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import GlowCard from "@/components/GlowCard";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import FloatingShapes from "@/components/FloatingShapes";
+import HowItWorksTutorial from "@/components/HowItWorksTutorial";
 
 import { useCountUp } from "@/hooks/use-count-up";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
@@ -76,6 +77,7 @@ const Index = () => {
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
   const { user } = useAuth();
   const [heroWallet, setHeroWallet] = useState({ balance: 0, goal: 2500 });
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     if (!user) { setHeroWallet({ balance: 0, goal: 2500 }); return; }
@@ -139,7 +141,7 @@ const Index = () => {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const scrollToHowItWorks = () => {
-    document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+    setTutorialOpen(true);
   };
 
   return (
@@ -664,6 +666,8 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      <HowItWorksTutorial open={tutorialOpen} onOpenChange={setTutorialOpen} />
     </div>
   );
 };
