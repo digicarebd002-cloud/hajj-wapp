@@ -9,6 +9,7 @@ import { useTierWatch } from "@/hooks/use-tier-watch";
 import OnboardingTour from "./OnboardingTour";
 import ScrollToTop from "./ScrollToTop";
 import Breadcrumbs from "./Breadcrumbs";
+import AnimatedDots from "./AnimatedDots";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -22,7 +23,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const showBreadcrumbs = location.pathname !== "/" && location.pathname !== "/auth" && location.pathname !== "/reset-password";
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      <AnimatedDots />
       <OfflineBanner />
       <Navbar />
       {upgradedTo && <TierUpgradeModal tier={upgradedTo} onDismiss={dismissUpgrade} />}
