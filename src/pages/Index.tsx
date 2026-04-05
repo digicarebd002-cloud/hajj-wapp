@@ -248,7 +248,7 @@ const Index = () => {
                 transition={{ duration: 0.6, delay: 0.8 }}
                 className="flex flex-wrap gap-4"
               >
-                <Link to="/account">
+                <Link to="/wallet">
                   <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button size="lg" className="gap-2.5 rounded-full btn-glow">
                       Start Your Journey <ArrowRight className="h-5 w-5" />
