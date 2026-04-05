@@ -41,7 +41,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           initial="initial"
           animate="animate"
           exit="exit"
-          className="flex-1"
+          className="flex-1 relative z-10"
         >
           {children}
         </motion.main>
