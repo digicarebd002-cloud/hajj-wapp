@@ -684,7 +684,7 @@ const WalletContent = () => {
           profile={profile}
           isActive={hasActiveSubscription}
           subscription={subConfig?.subscription}
-          price={subConfig?.price ?? 15}
+          price={subConfig?.price ?? 25}
           subLoading={subLoading}
           actionLoading={subActionLoading}
           onSubscribe={subscribe}
