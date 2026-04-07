@@ -205,9 +205,9 @@ const Store = () => {
       </div>
 
       {/* Product Grid */}
-      <section className="container mx-auto px-4 py-8 md:py-12">
+      <section className="container mx-auto px-6 md:px-10 lg:px-16 py-8 md:py-12">
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
             <CardSkeleton /><CardSkeleton /><CardSkeleton /><CardSkeleton />
           </div>
         ) : error ? (
@@ -221,7 +221,7 @@ const Store = () => {
               variants={containerVariants}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7"
             >
               {filtered.map((product) => {
                 const sel = getSelection(product.id);
