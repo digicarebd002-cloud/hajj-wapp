@@ -465,11 +465,6 @@ const Checkout = () => {
                     orderData: {
                       subtotal,
                       discount: totalDiscount,
-                      shipping_address: (() => {
-                        const form = document.getElementById("checkout-form") as HTMLFormElement | null;
-                        if (!form) return {};
-                        return getShippingAddress(form);
-                      })(),
                       items: items.map((item) => ({
                         product_id: item.productId,
                         size: item.size,
@@ -479,11 +474,19 @@ const Checkout = () => {
                       })),
                     },
                   }}
-                  onSuccess={(result) => {
+                  onSuccess={async (result) => {
+                    // Save shipping address to the order after PayPal capture
+                    const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+                    if (form && result.orderId) {
+                      const shipping = getShippingAddress(form);
+                      await supabase.from("orders").update({ shipping_address: shipping }).eq("id", result.orderId);
+                    }
+
+                    const customerName = form ? (new FormData(form).get("name") as string)?.trim() || "" : "";
                     const invoiceData = {
                       orderId: result.orderId,
                       date: new Date(),
-                      customerName: "",
+                      customerName,
                       customerEmail: user?.email || "",
                       items: items.map(item => ({ name: item.name, size: item.size, color: item.color, quantity: item.quantity, price: item.price })),
                       subtotal,
