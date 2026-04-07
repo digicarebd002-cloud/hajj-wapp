@@ -131,13 +131,13 @@ const Navbar = () => {
                   <UserCircle className="h-4 w-4" />
                   My Account
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/wallet")} className="cursor-pointer gap-2">
+                  <Wallet className="h-4 w-4" />
+                  My Wallet
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/orders")} className="cursor-pointer gap-2">
                   <ShoppingBag className="h-4 w-4" />
                   My Orders
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/messages")} className="cursor-pointer gap-2">
-                  <Mail className="h-4 w-4" />
-                  Messages
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
