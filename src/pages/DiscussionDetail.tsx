@@ -114,6 +114,7 @@ const DiscussionDetail = () => {
 
   const authorName = (discussion.profiles as any)?.full_name || "Anonymous";
   const authorTier = (discussion.profiles as any)?.tier || null;
+  const authorAvatar = (discussion.profiles as any)?.avatar_url;
   const initials = authorName.split(" ").map((n: string) => n[0]).join("").slice(0, 2);
   const isAuthor = user?.id === discussion.user_id;
   const discLiked = likedDiscussions.has(discussion.id);
@@ -128,7 +129,10 @@ const DiscussionDetail = () => {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">{initials}</div>
+            <Avatar className="h-12 w-12 ring-2 ring-primary/10">
+              {authorAvatar ? <AvatarImage src={authorAvatar} alt={authorName} /> : <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`} alt={authorName} />}
+              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">{initials}</AvatarFallback>
+            </Avatar>
             <div>
               <div className="flex items-center gap-2"><span className="font-semibold">{authorName}</span><TierBadge tier={authorTier} /></div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -183,7 +187,10 @@ const DiscussionDetail = () => {
                   className={`bg-card rounded-xl card-shadow p-5 ${reply.is_best_answer ? "ring-2 ring-accent" : ""}`}>
                   {reply.is_best_answer && <div className="flex items-center gap-1 text-accent text-xs font-semibold mb-3"><Award className="h-4 w-4" /> Best Answer</div>}
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold">{rInitials}</div>
+                    <Avatar className="h-9 w-9">
+                      {(reply.profiles as any)?.avatar_url ? <AvatarImage src={(reply.profiles as any).avatar_url} alt={rName} /> : <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(rName)}`} alt={rName} />}
+                      <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-bold">{rInitials}</AvatarFallback>
+                    </Avatar>
                     <div>
                       <div className="flex items-center gap-2"><span className="text-sm font-semibold">{rName}</span><TierBadge tier={rTier} /></div>
                       <span className="text-xs text-muted-foreground">{getTimeAgo(reply.created_at)}</span>
