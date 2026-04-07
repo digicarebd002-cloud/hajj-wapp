@@ -32,8 +32,8 @@ const ResetPassword = () => {
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 6) {
-      toast({ title: "Password too short", description: "Minimum 6 characters", variant: "destructive" });
+    if (password.length < 8) {
+      toast({ title: "Password too short", description: "Minimum 8 characters", variant: "destructive" });
       return;
     }
     setLoading(true);
@@ -78,11 +78,11 @@ const ResetPassword = () => {
               <Label>New Password</Label>
               <Input
                 type="password"
-                placeholder="Min 6 characters"
+                placeholder="Min 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
