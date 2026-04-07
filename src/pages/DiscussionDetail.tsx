@@ -191,11 +191,11 @@ const DiscussionDetail = () => {
                   </div>
                   <p className="text-sm text-foreground/90 whitespace-pre-line leading-relaxed mb-3">{reply.body}</p>
                   <div className="flex items-center gap-4">
-                    <button onClick={() => toggleReplyLike(reply.id)} className={`flex items-center gap-1 text-sm transition-colors ${isLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
+                    <button onClick={() => toggleReplyLike(reply.id, reply.user_id)} className={`flex items-center gap-1 text-sm transition-colors ${isLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
                       <Heart className={`h-4 w-4 ${isLiked ? "fill-primary" : ""}`} /> {reply.like_count ?? 0}
                     </button>
                     {isAuthor && !reply.is_best_answer && !hasBestAnswer && (
-                      <button onClick={() => markBestAnswer(reply.id)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors">
+                      <button onClick={() => markBestAnswer(reply.id, reply.user_id)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors">
                         <CheckCircle className="h-3.5 w-3.5" /> Mark Best Answer
                       </button>
                     )}
