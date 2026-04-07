@@ -575,24 +575,6 @@ const AccountContent = () => {
               ))}
             </div>
 
-            {/* Membership */}
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-              className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" /> {p.tier} Membership</h3>
-                  <p className="text-sm text-muted-foreground capitalize">Status: {p.membership_status}</p>
-                </div>
-                <Badge className={`border-0 capitalize ${p.membership_status === "active" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{p.membership_status}</Badge>
-              </div>
-              {p.next_billing_date && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CalendarDays className="h-3.5 w-3.5" /> Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                </p>
-              )}
-              <Link to="/membership" className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline mt-3">Manage Membership →</Link>
-            </motion.div>
-
             {/* Referral Card */}
             {referralCode && (
               <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
@@ -654,11 +636,6 @@ const AccountContent = () => {
                 </div>
               </motion.div>
             )}
-
-            <div className="bg-card rounded-xl card-shadow p-6 text-center">
-              <h3 className="font-semibold mb-1">Need Help?</h3>
-              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4 text-primary" /> <span className="font-semibold text-foreground">1-800-HAJJ-HELP</span></p>
-            </div>
           </TabsContent>
 
           {/* Subscription Tab */}
