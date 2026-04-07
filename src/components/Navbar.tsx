@@ -19,6 +19,7 @@ const navLinks = [
   { label: "Store", path: "/store", icon: ShoppingBag },
   { label: "Packages", path: "/packages", icon: Plane },
   { label: "Community", path: "/community", icon: MessageCircle },
+  { label: "Account", path: "/account", icon: UserCircle },
 ];
 
 const Navbar = () => {

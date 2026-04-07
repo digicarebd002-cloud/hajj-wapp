@@ -398,36 +398,36 @@ const AccountContent = () => {
   const savingsProgress = goalAmount > 0 ? Math.min((walletBalance / goalAmount) * 100, 100) : 0;
   const initials = p.full_name ? p.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2) : "?";
 
-  return (
-    <div className="section-padding min-h-screen">
-      <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
-      <div className="container mx-auto max-w-4xl">
-        {/* Profile Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl p-6 md:p-8 mb-6 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(150, 45%, 14%), hsl(142, 50%, 22%), hsl(150, 45%, 14%))" }}>
-          {/* Animated dots overlay */}
-          <div className="absolute inset-0 opacity-10">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: 3 + Math.random() * 4,
-                  height: 3 + Math.random() * 4,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  opacity: [0.3, 0.8, 0.3],
-                  scale: [1, 1.3, 1],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 3,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
-              />
-            ))}
-          </div>
+    return (
+      <div className="section-padding min-h-screen">
+        <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
+        <div className="container mx-auto max-w-5xl">
+          {/* Profile Header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-6 md:p-8 mb-6 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(150, 45%, 14%), hsl(142, 50%, 22%), hsl(150, 45%, 14%))" }}>
+            {/* Animated dots overlay */}
+            <div className="absolute inset-0 opacity-10">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    width: 3 + Math.random() * 4,
+                    height: 3 + Math.random() * 4,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    opacity: [0.3, 0.8, 0.3],
+                    scale: [1, 1.3, 1],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+            </div>
           <div className="relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
@@ -521,6 +521,10 @@ const AccountContent = () => {
             ))}
           </TabsList>
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+
           <TabsContent value="overview" className="space-y-6">
             {/* Membership Progress */}
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
@@ -554,40 +558,21 @@ const AccountContent = () => {
             </motion.div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "Member discount", to: "/store" },
-                { icon: <Package className="h-5 w-5" />, title: "My Orders", desc: "Track shipping", to: "/orders" },
-                { icon: <Plane className="h-5 w-5" />, title: "My Bookings", desc: "Installments", to: "/bookings" },
-                { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points", to: "/community" },
-                { icon: <FileText className="h-5 w-5" />, title: "My Wallet", desc: "View transactions", to: "/wallet" },
+                { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "10% member discount", to: "/store" },
+                { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points by helping", to: "/community" },
+                { icon: <Plane className="h-5 w-5" />, title: "Book Package", desc: "Use wallet balance", to: "/packages" },
+                { icon: <FileText className="h-5 w-5" />, title: "Download Reports", desc: "Transaction history", to: "/wallet" },
               ].map((a, i) => (
                 <motion.div key={a.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
-                  <Link to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:border-primary/40 transition-all flex items-start gap-3 h-full block">
-                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">{a.icon}</div>
+                  <Link to={a.to} className="bg-card rounded-xl border p-4 hover:border-primary/40 hover:shadow-md transition-all flex items-start gap-3 h-full block group">
+                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{a.icon}</div>
                     <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
                   </Link>
                 </motion.div>
               ))}
             </div>
-
-            {/* Membership */}
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-              className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" /> {p.tier} Membership</h3>
-                  <p className="text-sm text-muted-foreground capitalize">Status: {p.membership_status}</p>
-                </div>
-                <Badge className={`border-0 capitalize ${p.membership_status === "active" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{p.membership_status}</Badge>
-              </div>
-              {p.next_billing_date && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CalendarDays className="h-3.5 w-3.5" /> Next billing: {new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                </p>
-              )}
-              <Link to="/membership" className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline mt-3">Manage Membership →</Link>
-            </motion.div>
 
             {/* Referral Card */}
             {referralCode && (
@@ -650,11 +635,6 @@ const AccountContent = () => {
                 </div>
               </motion.div>
             )}
-
-            <div className="bg-card rounded-xl card-shadow p-6 text-center">
-              <h3 className="font-semibold mb-1">Need Help?</h3>
-              <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">Contact Support: <Phone className="h-4 w-4 text-primary" /> <span className="font-semibold text-foreground">1-800-HAJJ-HELP</span></p>
-            </div>
           </TabsContent>
 
           {/* Subscription Tab */}
@@ -873,6 +853,76 @@ const AccountContent = () => {
               </div>
             </form>
           </TabsContent>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Membership Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl border p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CreditCard className="h-4 w-4 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-sm">{p.tier} Membership</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Monthly Fee</span>
+                    <span className="font-bold text-primary">$25</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Status</span>
+                    <Badge className={`text-xs ${p.membership_status === "active" ? "bg-primary/15 text-primary border-primary/30" : "bg-muted text-muted-foreground"}`}>
+                      {p.membership_status}
+                    </Badge>
+                  </div>
+                  {p.next_billing_date && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Next Billing</span>
+                      <span className="font-medium text-xs">{new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <Link to="/membership" className="text-xs text-primary font-semibold hover:underline">Manage Membership →</Link>
+                </div>
+              </motion.div>
+
+              {/* Benefits Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-card rounded-xl border p-5">
+                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-primary" /> Your Benefits
+                </h3>
+                <p className="text-xs text-muted-foreground mb-3">{p.tier} Member Perks</p>
+                <ul className="space-y-2.5">
+                  {["Priority support", "10% store discount", "Exclusive content", "Monthly webinars"].map((b) => (
+                    <li key={b} className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                {p.tier !== "Platinum" && (
+                  <Link to="/membership" className="block mt-4 text-xs text-primary font-semibold hover:underline">
+                    Upgrade to {p.tier === "Silver" ? "Gold" : "Platinum"} →
+                  </Link>
+                )}
+              </motion.div>
+
+              {/* Need Help Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-secondary/50 rounded-xl border p-5 text-center">
+                <Phone className="h-5 w-5 mx-auto text-primary mb-2" />
+                <h3 className="font-semibold text-sm mb-1">Need Help?</h3>
+                <p className="text-xs text-muted-foreground mb-3">Contact Support</p>
+                <a href="tel:+18004255435" className="text-sm font-bold text-primary hover:underline">1-800-HAJJ-HELP</a>
+                <div className="mt-3">
+                  <Link to="/contact">
+                    <Button variant="outline" size="sm" className="w-full rounded-lg text-xs">Send Message</Button>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>
