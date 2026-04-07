@@ -135,6 +135,10 @@ const Navbar = () => {
                   <ShoppingBag className="h-4 w-4" />
                   My Orders
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/messages")} className="cursor-pointer gap-2">
+                  <Mail className="h-4 w-4" />
+                  Messages
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
                   <LogOut className="h-4 w-4" />
