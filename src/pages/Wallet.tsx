@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SEOHead from "@/components/SEOHead";
 import WalletPublicLanding from "@/components/wallet/WalletPublicLanding";
 import { Button } from "@/components/ui/button";
@@ -159,7 +159,7 @@ const BalanceHero = ({ stats, profile }: { stats: any; profile: any }) => {
 };
 
 // --- Quick Actions ---
-const QuickActions = ({ onAddMoney }: { onAddMoney: () => void }) => (
+const QuickActions = ({ onAddMoney, onSetGoal, onHistory }: { onAddMoney: () => void; onSetGoal: () => void; onHistory: () => void }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -175,13 +175,13 @@ const QuickActions = ({ onAddMoney }: { onAddMoney: () => void }) => (
       </div>
       <span className="text-xs font-semibold text-foreground">Add Money</span>
     </button>
-    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+    <button onClick={onSetGoal} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
         <Target className="h-5 w-5" />
       </div>
       <span className="text-xs font-semibold text-foreground">Set Goal</span>
     </button>
-    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+    <button onClick={onHistory} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
         <History className="h-5 w-5" />
       </div>
@@ -608,6 +608,10 @@ const WalletContent = () => {
   } = useWalletSubscription();
 
   const [showContribute, setShowContribute] = useState(false);
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [goalInput, setGoalInput] = useState("");
+  const [goalSaving, setGoalSaving] = useState(false);
+  const txSectionRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -629,6 +633,22 @@ const WalletContent = () => {
     refetchStats();
     refetchTx();
     setShowContribute(false);
+  };
+
+  const handleSetGoal = async () => {
+    const val = parseFloat(goalInput);
+    if (!val || val <= 0 || !user?.id) return;
+    setGoalSaving(true);
+    const { error } = await supabase.from("wallets").update({ goal_amount: val }).eq("user_id", user.id);
+    setGoalSaving(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "✅ Goal updated!", description: `Your savings goal is now $${val.toLocaleString()}.` });
+      setShowGoalDialog(false);
+      setGoalInput("");
+      refetchStats();
+    }
   };
 
   if (statsLoading) return (
@@ -676,7 +696,40 @@ const WalletContent = () => {
         {/* Quick Actions */}
         <QuickActions
           onAddMoney={() => setShowContribute(!showContribute)}
+          onSetGoal={() => { setGoalInput(String(stats.goal_amount ?? 2500)); setShowGoalDialog(true); }}
+          onHistory={() => txSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
         />
+
+        {/* Goal Dialog */}
+        <AlertDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Set Savings Goal</AlertDialogTitle>
+              <AlertDialogDescription>
+                Enter your target amount for your Hajj savings goal.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-lg">$</span>
+                <Input
+                  type="number"
+                  value={goalInput}
+                  onChange={(e) => setGoalInput(e.target.value)}
+                  className="pl-9 h-14 text-lg font-semibold"
+                  placeholder="e.g. 5000"
+                />
+              </div>
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSetGoal} disabled={goalSaving || !parseFloat(goalInput)}>
+                {goalSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                Save Goal
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Membership */}
         <MembershipBanner
@@ -745,7 +798,9 @@ const WalletContent = () => {
         <SavingsProjection stats={stats} />
 
         {/* Recent Transactions */}
-        <RecentTransactions transactions={transactions} txLoading={txLoading} />
+        <div ref={txSectionRef}>
+          <RecentTransactions transactions={transactions} txLoading={txLoading} />
+        </div>
       </div>
     </div>
   );
