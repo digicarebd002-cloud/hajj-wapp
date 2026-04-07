@@ -877,6 +877,76 @@ const AccountContent = () => {
               </div>
             </form>
           </TabsContent>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Membership Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-xl border p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CreditCard className="h-4 w-4 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-sm">{p.tier} Membership</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Monthly Fee</span>
+                    <span className="font-bold text-primary">$25</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Status</span>
+                    <Badge className={`text-xs ${p.membership_status === "active" ? "bg-primary/15 text-primary border-primary/30" : "bg-muted text-muted-foreground"}`}>
+                      {p.membership_status}
+                    </Badge>
+                  </div>
+                  {p.next_billing_date && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Next Billing</span>
+                      <span className="font-medium text-xs">{new Date(p.next_billing_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <Link to="/membership" className="text-xs text-primary font-semibold hover:underline">Manage Membership →</Link>
+                </div>
+              </motion.div>
+
+              {/* Benefits Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-card rounded-xl border p-5">
+                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-primary" /> Your Benefits
+                </h3>
+                <p className="text-xs text-muted-foreground mb-3">{p.tier} Member Perks</p>
+                <ul className="space-y-2.5">
+                  {["Priority support", "10% store discount", "Exclusive content", "Monthly webinars"].map((b) => (
+                    <li key={b} className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                {p.tier !== "Platinum" && (
+                  <Link to="/membership" className="block mt-4 text-xs text-primary font-semibold hover:underline">
+                    Upgrade to {p.tier === "Silver" ? "Gold" : "Platinum"} →
+                  </Link>
+                )}
+              </motion.div>
+
+              {/* Need Help Card */}
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-secondary/50 rounded-xl border p-5 text-center">
+                <Phone className="h-5 w-5 mx-auto text-primary mb-2" />
+                <h3 className="font-semibold text-sm mb-1">Need Help?</h3>
+                <p className="text-xs text-muted-foreground mb-3">Contact Support</p>
+                <a href="tel:+18004255435" className="text-sm font-bold text-primary hover:underline">1-800-HAJJ-HELP</a>
+                <div className="mt-3">
+                  <Link to="/contact">
+                    <Button variant="outline" size="sm" className="w-full rounded-lg text-xs">Send Message</Button>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>
