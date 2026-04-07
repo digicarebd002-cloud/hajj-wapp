@@ -422,52 +422,49 @@ const Community = () => {
         }}
       />
 
-      {/* ===== HERO SECTION — Warm & Social ===== */}
-      <section className="relative bg-background border-b border-border overflow-hidden">
-        {/* Soft decorative blobs */}
+      {/* ===== HERO SECTION ===== */}
+      <section className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(142, 72%, 32%) 0%, hsl(142, 60%, 22%) 50%, hsl(160, 50%, 14%) 100%)" }}>
+        {/* Decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-20 -left-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-16 -right-16 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full translate-y-1/3 -translate-x-1/4" />
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "28px 28px" }} />
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-40 h-40 border border-white/10 rounded-full"
+              style={{ left: `${15 + i * 30}%`, top: "50%", translateY: "-50%" }}
+              animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.12, 0.05] }}
+              transition={{ duration: 5 + i, repeat: Infinity, delay: i * 0.8 }}
+            />
+          ))}
         </div>
 
-        <div className="container mx-auto max-w-6xl px-4 pt-10 pb-8 md:pt-16 md:pb-12 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className="container mx-auto max-w-6xl px-4 pt-12 pb-10 md:pt-20 md:pb-16 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {/* Top row: greeting + CTA */}
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
               <div>
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 }}
-                  className="flex items-center gap-3 mb-3"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                    <MessageSquare className="h-6 w-6 text-primary" />
+                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }} className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/10">
+                    <MessageSquare className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
-                    Community
+                  <span className="text-xs font-bold uppercase tracking-wider text-white bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    Community Forum
                   </span>
                 </motion.div>
-                <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
-                  Share, Ask & Connect 💬
+                <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-3 leading-tight">
+                  Share, Ask &<br className="hidden md:block" /> Connect 💬
                 </h1>
-                <p className="text-muted-foreground max-w-lg text-base leading-relaxed">
+                <p className="text-white/70 max-w-lg text-base md:text-lg leading-relaxed">
                   Join conversations with fellow pilgrims. Ask questions, share your experience, and earn reward points along the way.
                 </p>
               </div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
-              >
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
                 <Button
                   size="lg"
                   onClick={handleNewDiscussion}
-                  className="font-bold text-base px-7 h-12 rounded-xl shadow-lg shadow-primary/20 gap-2"
+                  className="bg-white text-primary hover:bg-white/90 font-bold text-base px-8 h-12 rounded-xl shadow-lg gap-2"
                 >
                   <PenSquare className="h-5 w-5" />
                   Start a Discussion
@@ -476,21 +473,16 @@ const Community = () => {
             </div>
 
             {/* Stats cards row */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="grid grid-cols-3 gap-3 md:gap-4 max-w-lg"
-            >
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="grid grid-cols-3 gap-3 md:gap-4 max-w-lg">
               {[
-                { label: "Members", value: statsLoading ? "—" : stats.members, icon: <Users className="h-4 w-4 text-primary" />, bg: "bg-primary/8" },
-                { label: "Discussions", value: statsLoading ? "—" : stats.discussions, icon: <MessageSquare className="h-4 w-4 text-blue-500" />, bg: "bg-blue-500/8" },
-                { label: "Replies", value: statsLoading ? "—" : stats.replies, icon: <MessageCircle className="h-4 w-4 text-violet-500" />, bg: "bg-violet-500/8" },
+                { label: "Members", value: statsLoading ? "—" : stats.members, icon: <Users className="h-4 w-4 text-white" /> },
+                { label: "Discussions", value: statsLoading ? "—" : stats.discussions, icon: <MessageSquare className="h-4 w-4 text-white" /> },
+                { label: "Replies", value: statsLoading ? "—" : stats.replies, icon: <MessageCircle className="h-4 w-4 text-white" /> },
               ].map((s) => (
-                <div key={s.label} className="bg-card rounded-xl border border-border p-3 md:p-4 text-center hover:border-primary/20 transition-colors">
-                  <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-2`}>{s.icon}</div>
-                  <p className="text-xl md:text-2xl font-bold text-foreground">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
-                  <p className="text-[11px] text-muted-foreground font-medium">{s.label}</p>
+                <div key={s.label} className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 p-3 md:p-4 text-center hover:bg-white/15 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center mx-auto mb-2">{s.icon}</div>
+                  <p className="text-xl md:text-2xl font-bold text-white">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
+                  <p className="text-[11px] text-white/60 font-medium">{s.label}</p>
                 </div>
               ))}
             </motion.div>
