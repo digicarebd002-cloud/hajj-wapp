@@ -10,7 +10,7 @@ import { useWalletStats, useWalletTransactions, useProfile } from "@/hooks/use-s
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   Wallet as WalletIcon,
@@ -609,6 +609,7 @@ const WalletContent = () => {
 
   const [showContribute, setShowContribute] = useState(false);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [showGoalOnboarding, setShowGoalOnboarding] = useState(false);
   const [goalInput, setGoalInput] = useState("");
   const [goalSaving, setGoalSaving] = useState(false);
   const txSectionRef = React.useRef<HTMLDivElement>(null);
@@ -628,6 +629,13 @@ const WalletContent = () => {
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [user?.id, refetchStats, refetchTx]);
+
+  // Show goal onboarding if user has default goal and hasn't dismissed it
+  useEffect(() => {
+    if (stats && Number(stats.goal_amount) === 2500 && Number(stats.contribution_count) === 0 && !localStorage.getItem("hajj_goal_set")) {
+      setShowGoalOnboarding(true);
+    }
+  }, [stats]);
 
   const handleContributed = () => {
     refetchStats();
@@ -692,6 +700,65 @@ const WalletContent = () => {
 
         {/* Balance Hero */}
         <BalanceHero stats={stats} profile={profile} />
+
+        {/* First-login goal onboarding */}
+        <AnimatePresence>
+          {showGoalOnboarding && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.97 }}
+              className="rounded-xl border-2 border-primary/30 bg-primary/5 p-6 mb-6"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                  <Target className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-base mb-1">Set Your Savings Goal 🎯</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    What is your savings goal? Choose a package or set a custom amount.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+                    {[
+                      { label: "Essential", amount: 2500 },
+                      { label: "Premium", amount: 3500 },
+                      { label: "VIP", amount: 5000 },
+                    ].map((pkg) => (
+                      <button
+                        key={pkg.label}
+                        onClick={() => setGoalInput(String(pkg.amount))}
+                        className={`p-3 rounded-lg border text-center transition-all ${goalInput === String(pkg.amount) ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border bg-card hover:border-primary/40"}`}
+                      >
+                        <p className="text-xs text-muted-foreground">{pkg.label}</p>
+                        <p className="font-bold text-lg">${pkg.amount.toLocaleString()}</p>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                      <Input
+                        type="number"
+                        placeholder="Custom amount"
+                        value={goalInput}
+                        onChange={(e) => setGoalInput(e.target.value)}
+                        className="pl-7"
+                      />
+                    </div>
+                    <Button onClick={() => { handleSetGoal(); setShowGoalOnboarding(false); localStorage.setItem("hajj_goal_set", "1"); }} disabled={goalSaving || !parseFloat(goalInput)}>
+                      {goalSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      Save
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => { setShowGoalOnboarding(false); localStorage.setItem("hajj_goal_set", "1"); }}>
+                      Skip
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Quick Actions */}
         <QuickActions
