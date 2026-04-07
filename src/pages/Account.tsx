@@ -105,7 +105,7 @@ const NotifToggle = ({ notifKey, defaultVal, userId }: { notifKey: string; defau
     setChecked(val);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(async () => {
-      await supabase.from("notification_preferences").update({ [notifKey]: val }).eq("user_id", userId);
+      await supabase.from("notification_preferences").update({ [notifKey]: val } as any).eq("user_id", userId);
     }, 500);
   }, [notifKey, userId]);
 
