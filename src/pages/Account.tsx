@@ -521,6 +521,10 @@ const AccountContent = () => {
             ))}
           </TabsList>
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+
           <TabsContent value="overview" className="space-y-6">
             {/* Membership Progress */}
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6">
