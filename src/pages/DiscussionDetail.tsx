@@ -192,9 +192,12 @@ const DiscussionDetail = () => {
             <p className="text-sm text-muted-foreground">Please <Link to="/auth" className="text-primary hover:underline">sign in</Link> to reply.</p>
           ) : (
             <>
-              <Textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Share your thoughts..." className="resize-none min-h-[100px] mb-3" />
-              <div className="flex justify-end">
-                <Button onClick={handleReply} disabled={replyText.trim().length < 10 || posting}>{posting ? "Posting..." : "Post Reply"}</Button>
+              <Textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="আপনার মতামত লিখুন... (কমপক্ষে ১০ অক্ষর)" className="resize-none min-h-[100px] mb-1" />
+              <div className="flex items-center justify-between">
+                <span className={`text-xs ${replyText.trim().length < 10 ? "text-destructive" : "text-muted-foreground"}`}>
+                  {replyText.trim().length}/10 {replyText.trim().length < 10 ? "(কমপক্ষে ১০ অক্ষর লিখুন)" : "✓"}
+                </span>
+                <Button onClick={handleReply} disabled={replyText.trim().length < 10 || posting}>{posting ? "পোস্ট হচ্ছে..." : "Post Reply"}</Button>
               </div>
             </>
           )}
