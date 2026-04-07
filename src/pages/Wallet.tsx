@@ -798,7 +798,9 @@ const WalletContent = () => {
         <SavingsProjection stats={stats} />
 
         {/* Recent Transactions */}
-        <RecentTransactions transactions={transactions} txLoading={txLoading} />
+        <div ref={txSectionRef}>
+          <RecentTransactions transactions={transactions} txLoading={txLoading} />
+        </div>
       </div>
     </div>
   );
