@@ -29,6 +29,7 @@ import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
+import HelpCenter from "./pages/HelpCenter";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 
@@ -123,6 +124,7 @@ const App = () => (
                       <Route path="/membership" element={<Membership />} />
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
+                      <Route path="/help-center" element={<HelpCenter />} />
                       <Route path="/contact" element={<ContactUs />} />
                       <Route path="/blog" element={<Blog />} />
                       <Route path="/blog/:slug" element={<BlogArticle />} />
