@@ -72,22 +72,6 @@ const Auth = () => {
     navigate(returnTo || "/wallet", { replace: true });
   };
 
-  if (mfaFactorId) {
-    return (
-      <MfaChallenge
-        factorId={mfaFactorId}
-        onSuccess={() => {
-          toast({ title: "Welcome back!" });
-          navigate(returnTo || "/wallet", { replace: true });
-        }}
-        onCancel={() => {
-          setMfaFactorId(null);
-          supabase.auth.signOut();
-        }}
-      />
-    );
-  }
-
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -123,6 +107,22 @@ const Auth = () => {
       });
     }
   }, [user]);
+
+  if (mfaFactorId) {
+    return (
+      <MfaChallenge
+        factorId={mfaFactorId}
+        onSuccess={() => {
+          toast({ title: "Welcome back!" });
+          navigate(returnTo || "/wallet", { replace: true });
+        }}
+        onCancel={() => {
+          setMfaFactorId(null);
+          supabase.auth.signOut();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="section-padding min-h-screen flex items-center justify-center">
