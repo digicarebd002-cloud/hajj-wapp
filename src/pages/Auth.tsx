@@ -45,7 +45,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate(returnTo || "/account", { replace: true });
+      navigate(returnTo || "/wallet", { replace: true });
     }
   }, [user, navigate, returnTo]);
 
@@ -69,7 +69,7 @@ const Auth = () => {
     }
 
     toast({ title: "Welcome back!" });
-    navigate(returnTo || "/account", { replace: true });
+    navigate(returnTo || "/wallet", { replace: true });
   };
 
   if (mfaFactorId) {
@@ -78,7 +78,7 @@ const Auth = () => {
         factorId={mfaFactorId}
         onSuccess={() => {
           toast({ title: "Welcome back!" });
-          navigate(returnTo || "/account", { replace: true });
+          navigate(returnTo || "/wallet", { replace: true });
         }}
         onCancel={() => {
           setMfaFactorId(null);
@@ -175,7 +175,7 @@ const Auth = () => {
                       Forgot Password?
                     </button>
                   </div>
-                  <Input id="login-password" name="password" type="password" placeholder="••••••••" required />
+                  <Input id="login-password" name="password" type="password" placeholder="••••••••" required minLength={8} />
                 </div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button type="submit" className="w-full" disabled={loading}>
@@ -227,7 +227,7 @@ const Auth = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="reg-password">Password</Label>
-                  <Input id="reg-password" name="password" type="password" placeholder="Min 6 characters" required minLength={6} />
+                  <Input id="reg-password" name="password" type="password" placeholder="Min 8 characters" required minLength={8} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="reg-referral" className="flex items-center gap-1.5">
