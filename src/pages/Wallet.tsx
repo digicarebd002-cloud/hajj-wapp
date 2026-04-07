@@ -608,6 +608,10 @@ const WalletContent = () => {
   } = useWalletSubscription();
 
   const [showContribute, setShowContribute] = useState(false);
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [goalInput, setGoalInput] = useState("");
+  const [goalSaving, setGoalSaving] = useState(false);
+  const txSectionRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -629,6 +633,22 @@ const WalletContent = () => {
     refetchStats();
     refetchTx();
     setShowContribute(false);
+  };
+
+  const handleSetGoal = async () => {
+    const val = parseFloat(goalInput);
+    if (!val || val <= 0 || !user?.id) return;
+    setGoalSaving(true);
+    const { error } = await supabase.from("wallets").update({ goal_amount: val }).eq("user_id", user.id);
+    setGoalSaving(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "✅ Goal updated!", description: `Your savings goal is now $${val.toLocaleString()}.` });
+      setShowGoalDialog(false);
+      setGoalInput("");
+      refetchStats();
+    }
   };
 
   if (statsLoading) return (
