@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart, LogOut, Settings, UserCircle } from "lucide-react";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Heart, LogOut, Settings, UserCircle } from "lucide-react";
 
 import GlobalSearch from "@/components/GlobalSearch";
 import logoImg from "@/assets/logo.png";
