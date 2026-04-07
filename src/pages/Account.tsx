@@ -488,6 +488,12 @@ const AccountContent = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
+          <div className="mb-2">
+            <p className="text-xs text-muted-foreground font-medium flex items-center gap-1.5 mb-3">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Tap a section below to explore
+            </p>
+          </div>
           <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-6 gap-2 bg-transparent h-auto p-0">
             {[
               { value: "overview", icon: <TrendingUp className="h-5 w-5" />, label: "Overview" },
@@ -500,10 +506,17 @@ const AccountContent = () => {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border border-border bg-card shadow-sm transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-md data-[state=active]:scale-[1.03] hover:border-primary/40 h-auto"
+                asChild
               >
-                {tab.icon}
-                <span className="text-xs font-semibold">{tab.label}</span>
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex flex-col items-center gap-1.5 py-3.5 px-2 rounded-xl border-2 border-border bg-card shadow-sm cursor-pointer transition-colors duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-lg data-[state=inactive]:hover:border-primary/50 data-[state=inactive]:hover:bg-primary/5 data-[state=inactive]:hover:shadow-md h-auto group"
+                >
+                  <span className="transition-transform duration-200 group-hover:scale-110">{tab.icon}</span>
+                  <span className="text-xs font-semibold">{tab.label}</span>
+                  <span className="w-4 h-0.5 rounded-full bg-current opacity-0 data-[state=active]:opacity-100 group-hover:opacity-50 transition-opacity" />
+                </motion.button>
               </TabsTrigger>
             ))}
           </TabsList>
