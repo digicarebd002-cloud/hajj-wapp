@@ -394,11 +394,12 @@ const Community = () => {
     ?.filter((d) => !searchQuery || d.title.toLowerCase().includes(searchQuery.toLowerCase()) || d.body.toLowerCase().includes(searchQuery.toLowerCase()))
     ?? [];
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sortTab === "popular") return (b.like_count + b.views) - (a.like_count + a.views);
-    if (sortTab === "unanswered") return (a.reply_count?.[0]?.count ?? 0) - (b.reply_count?.[0]?.count ?? 0);
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  });
+  const sorted = [...filtered]
+    .filter((d) => sortTab !== "unanswered" || (d.reply_count?.[0]?.count ?? 0) === 0)
+    .sort((a, b) => {
+      if (sortTab === "popular") return (b.like_count + b.views) - (a.like_count + a.views);
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
   const visible = sorted.slice(0, visibleCount);
   const hasMore = visibleCount < sorted.length;
