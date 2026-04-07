@@ -265,8 +265,25 @@ const BookingModal = ({ pkg, open, onClose }: { pkg: DbPackage; open: boolean; o
                   special_requests: preferredDate ? `Preferred travel date: ${format(preferredDate, "PPP")}` : "",
                 },
               }}
-              onSuccess={(result) => {
-                setConfirmedBookingId(result.bookingId || "paypal-" + Date.now());
+              onSuccess={async (result) => {
+                // Update booking with form data that wasn't available at render time
+                const bookingId = result.bookingId || "paypal-" + Date.now();
+                if (result.bookingId) {
+                  const form = document.querySelector<HTMLFormElement>("form");
+                  if (form) {
+                    const fd = new FormData(form);
+                    await supabase.from("bookings").update({
+                      traveller_name: (fd.get("name") as string) || "",
+                      phone: (fd.get("phone") as string) || "",
+                      passport_number: (fd.get("passport") as string) || "",
+                      special_requests: [
+                        fd.get("requests") as string,
+                        preferredDate ? `Preferred travel date: ${format(preferredDate, "PPP")}` : "",
+                      ].filter(Boolean).join("\n") || "",
+                    }).eq("id", result.bookingId);
+                  }
+                }
+                setConfirmedBookingId(bookingId);
               }}
               onError={(err) => {
                 toast({ title: "Payment failed", description: err, variant: "destructive" });
@@ -409,7 +426,7 @@ const Packages = () => {
                         <Button className="w-full btn-glow" onClick={() => handleBook(pkg)}>Book This Package</Button>
                       </motion.div>
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button variant="outline" className="gap-1.5"><Download className="h-4 w-4" /> Itinerary</Button>
+                        <Button variant="outline" className="gap-1.5" onClick={() => toast({ title: "📄 Coming Soon", description: "The itinerary PDF will be available shortly." })}><Download className="h-4 w-4" /> Itinerary</Button>
                       </motion.div>
                     </div>
                   </div>
