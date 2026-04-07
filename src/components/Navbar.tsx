@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Mail, Heart, LogOut, Settings, UserCircle } from "lucide-react";
+import { Menu, X, User, Sparkles, Home, Wallet, ShoppingBag, Plane, MessageCircle, Heart, LogOut, Settings, UserCircle } from "lucide-react";
 
 import GlobalSearch from "@/components/GlobalSearch";
 import logoImg from "@/assets/logo.png";
@@ -131,13 +131,13 @@ const Navbar = () => {
                   <UserCircle className="h-4 w-4" />
                   My Account
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/wallet")} className="cursor-pointer gap-2">
+                  <Wallet className="h-4 w-4" />
+                  My Wallet
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/orders")} className="cursor-pointer gap-2">
                   <ShoppingBag className="h-4 w-4" />
                   My Orders
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/messages")} className="cursor-pointer gap-2">
-                  <Mail className="h-4 w-4" />
-                  Messages
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
