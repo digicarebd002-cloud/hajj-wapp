@@ -13,7 +13,7 @@ const footerLinks = {
     { label: "Blog", path: "/blog" },
   ],
   Support: [
-    { label: "Help Center", path: "/faq" },
+    { label: "Help Center", path: "/help-center" },
     { label: "Contact Us", path: "/contact" },
     { label: "FAQs", path: "/faq" },
   ],

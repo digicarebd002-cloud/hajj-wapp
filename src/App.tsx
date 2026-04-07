@@ -29,6 +29,7 @@ import Membership from "./pages/Membership";
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
+import HelpCenter from "./pages/HelpCenter";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 
