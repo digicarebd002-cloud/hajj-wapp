@@ -248,7 +248,7 @@ const Index = () => {
                 transition={{ duration: 0.6, delay: 0.8 }}
                 className="flex flex-wrap gap-4"
               >
-                <Link to="/wallet">
+                <Link to={user ? "/wallet" : "/auth"}>
                   <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button size="lg" className="gap-2.5 rounded-full btn-glow">
                       Start Your Journey <ArrowRight className="h-5 w-5" />
@@ -656,7 +656,7 @@ const Index = () => {
             <p className="text-muted-foreground mb-10 max-w-lg mx-auto text-lg leading-relaxed">
               {c("cta_desc", "Join our community and take the first step toward fulfilling your spiritual obligation.")}
             </p>
-            <Link to="/account">
+            <Link to={user ? "/wallet" : "/auth"}>
               <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
                 <Button size="lg" className="gap-2.5 rounded-full btn-glow">
                   Join Hajj Wallet <ArrowRight className="h-5 w-5" />
