@@ -558,17 +558,16 @@ const AccountContent = () => {
             </motion.div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "Member discount", to: "/store" },
-                { icon: <Package className="h-5 w-5" />, title: "My Orders", desc: "Track shipping", to: "/orders" },
-                { icon: <Plane className="h-5 w-5" />, title: "My Bookings", desc: "Installments", to: "/bookings" },
-                { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points", to: "/community" },
-                { icon: <FileText className="h-5 w-5" />, title: "My Wallet", desc: "View transactions", to: "/wallet" },
+                { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "10% member discount", to: "/store" },
+                { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points by helping", to: "/community" },
+                { icon: <Plane className="h-5 w-5" />, title: "Book Package", desc: "Use wallet balance", to: "/packages" },
+                { icon: <FileText className="h-5 w-5" />, title: "Download Reports", desc: "Transaction history", to: "/wallet" },
               ].map((a, i) => (
                 <motion.div key={a.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
-                  <Link to={a.to} className="bg-card rounded-xl card-shadow p-4 hover:border-primary/40 transition-all flex items-start gap-3 h-full block">
-                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">{a.icon}</div>
+                  <Link to={a.to} className="bg-card rounded-xl border p-4 hover:border-primary/40 hover:shadow-md transition-all flex items-start gap-3 h-full block group">
+                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{a.icon}</div>
                     <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
                   </Link>
                 </motion.div>
