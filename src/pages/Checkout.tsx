@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -465,6 +465,11 @@ const Checkout = () => {
                     orderData: {
                       subtotal,
                       discount: totalDiscount,
+                      shipping_address: (() => {
+                        const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+                        if (!form) return {};
+                        return getShippingAddress(form);
+                      })(),
                       items: items.map((item) => ({
                         product_id: item.productId,
                         size: item.size,
