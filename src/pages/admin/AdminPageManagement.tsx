@@ -148,7 +148,7 @@ export default function AdminPageManagement() {
         {isImage || section.content_type === "video" ? (
           <div className="space-y-2">
             {section.content_value && section.content_type === "image" && (
-              <img src={section.content_value} className="w-full max-h-40 object-contain rounded-lg border border-border/30 bg-secondary/30" />
+              <img src={section.content_value} alt={section.label || "Page content"} className="w-full max-h-40 object-contain rounded-lg border border-border/30 bg-secondary/30" />
             )}
             {section.content_value && section.content_type === "video" && (
               <video src={section.content_value} className="w-full max-h-40 object-contain rounded-lg border border-border/30 bg-secondary/30" controls />
