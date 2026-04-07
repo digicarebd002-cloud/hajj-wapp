@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SEOHead from "@/components/SEOHead";
 import WalletPublicLanding from "@/components/wallet/WalletPublicLanding";
 import { Button } from "@/components/ui/button";
@@ -696,7 +696,40 @@ const WalletContent = () => {
         {/* Quick Actions */}
         <QuickActions
           onAddMoney={() => setShowContribute(!showContribute)}
+          onSetGoal={() => { setGoalInput(String(stats.goal_amount ?? 2500)); setShowGoalDialog(true); }}
+          onHistory={() => txSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
         />
+
+        {/* Goal Dialog */}
+        <AlertDialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Set Savings Goal</AlertDialogTitle>
+              <AlertDialogDescription>
+                Enter your target amount for your Hajj savings goal.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-lg">$</span>
+                <Input
+                  type="number"
+                  value={goalInput}
+                  onChange={(e) => setGoalInput(e.target.value)}
+                  className="pl-9 h-14 text-lg font-semibold"
+                  placeholder="e.g. 5000"
+                />
+              </div>
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSetGoal} disabled={goalSaving || !parseFloat(goalInput)}>
+                {goalSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                Save Goal
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Membership */}
         <MembershipBanner
