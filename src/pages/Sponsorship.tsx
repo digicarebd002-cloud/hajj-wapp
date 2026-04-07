@@ -30,7 +30,7 @@ const applicationSchema = z.object({
 
 const steps = [
   { icon: Users, title: "Engage with Community", desc: "Participate in discussions, help others, and earn points through meaningful contributions.", num: "01" },
-  { icon: Star, title: "Earn Points & Rise", desc: "Build your reputation through helpful replies, quality posts, and supporting fellow members.", num: "02" },
+  { icon: Star, title: "Earn Points", desc: "Build your reputation through helpful replies, quality posts, and supporting fellow members.", num: "02" },
   { icon: Award, title: "Get Selected", desc: "Each month, we select the most active and helpful members for full sponsorship.", num: "03" },
 ];
 
@@ -44,14 +44,14 @@ const criteria = [
 ];
 
 const included = [
-  { icon: Plane, label: "Round-trip Airfare", desc: "Economy class flights covered" },
-  { icon: Hotel, label: "Accommodation", desc: "Hotels in Mecca & Medina" },
-  { icon: Bus, label: "Ground Transport", desc: "All local transportation" },
-  { icon: Map, label: "Guided Tours", desc: "Expert guidance throughout" },
-  { icon: FileCheck, label: "Visa Processing", desc: "All paperwork handled" },
-  { icon: Shield, label: "Travel Insurance", desc: "Full coverage included" },
-  { icon: Package, label: "Essentials Kit", desc: "Everything you need" },
-  { icon: BookOpen, label: "Pre-departure Prep", desc: "Orientation & training" },
+  { icon: Plane, label: "Round-trip airfare", desc: "Economy class flights covered" },
+  { icon: Hotel, label: "Accommodation in Mecca and Medina", desc: "Hotels in Mecca & Medina" },
+  { icon: Bus, label: "Ground transportation", desc: "All local transportation" },
+  { icon: Map, label: "Guided tours and support", desc: "Expert guidance throughout" },
+  { icon: FileCheck, label: "Visa processing fees", desc: "All paperwork handled" },
+  { icon: Shield, label: "Travel insurance", desc: "Full coverage included" },
+  { icon: Package, label: "Essential supplies kit", desc: "Everything you need" },
+  { icon: BookOpen, label: "Pre-departure orientation", desc: "Orientation & training" },
 ];
 
 const fadeUp = {
@@ -209,11 +209,11 @@ const Sponsorship = () => {
             </motion.span>
 
             <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-5 tracking-tight leading-tight">
-              Monthly Hajj<br />Sponsorship Program
+              Monthly Sponsorship<br />Program
             </h1>
             <p className="text-white/80 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed mb-8">
-              Every month, we sponsor selected community members for a fully-paid Hajj pilgrimage.
-              Your dedication could make you our next sponsored pilgrim.
+              Every month, we sponsor selected members to travel for Hajj completely free.
+              Your dedication to our community could make you our next sponsored pilgrim.
             </p>
 
             <motion.div
@@ -250,7 +250,7 @@ const Sponsorship = () => {
               <Target className="h-3.5 w-3.5" /> Process
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">How It Works</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto text-lg">Three simple steps to your sponsored Hajj journey</p>
+            <p className="text-muted-foreground max-w-xl mx-auto text-lg">Our sponsorship selection process</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -293,7 +293,7 @@ const Sponsorship = () => {
                 <Shield className="h-3.5 w-3.5" /> Requirements
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Eligibility Criteria</h2>
-              <p className="text-muted-foreground text-lg mb-8">Meet these requirements to be considered for sponsorship</p>
+              <p className="text-muted-foreground text-lg mb-8">Requirements to be considered for sponsorship</p>
 
               <div className="space-y-4">
                 {criteria.map((item, i) => (
@@ -355,8 +355,8 @@ const Sponsorship = () => {
             <span className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
               <Package className="h-3.5 w-3.5" /> Coverage
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">What's Included</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto text-lg">Full coverage for your entire Hajj journey</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">What's Included in Sponsorship</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto text-lg">Full coverage for your Hajj journey</p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
