@@ -81,21 +81,34 @@ const Checkout = () => {
     toast({ title: "🎟️ Coupon applied!", description: data.discount_percent > 0 ? `${data.discount_percent}% off` : `$${Number(data.discount_amount).toFixed(2)} off` });
   };
 
+  const getShippingAddress = (form: HTMLFormElement) => {
+    const formData = new FormData(form);
+    return {
+      name: (formData.get("name") as string)?.trim() || "",
+      email: (formData.get("email") as string)?.trim() || "",
+      phone: (formData.get("phone") as string)?.trim() || "",
+      address: (formData.get("address") as string)?.trim() || "",
+      city: (formData.get("city") as string)?.trim() || "",
+      state: (formData.get("state") as string)?.trim() || "",
+      postal: (formData.get("postal") as string)?.trim() || "",
+      country: (formData.get("country") as string)?.trim() || "",
+    };
+  };
+
   const handleCheckout = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
     const form = e.currentTarget;
-    const formData = new FormData(form);
-    const name = (formData.get("name") as string).trim();
-    const email = (formData.get("email") as string).trim();
-    const phone = (formData.get("phone") as string).trim();
+    const shipping = getShippingAddress(form);
+    const name = shipping.name;
+    const email = shipping.email;
+    const phone = shipping.phone;
 
     let currentUserId = user?.id;
 
     // If not logged in, auto-create account
     if (!currentUserId) {
-      // Generate a random password for the auto-created account
       const autoPassword = crypto.randomUUID();
 
       const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
@@ -107,8 +120,6 @@ const Checkout = () => {
       });
 
       if (signUpErr || !signUpData.user) {
-        // If user already exists, try to sign in with magic link approach
-        // or just create a guest order
         if (signUpErr?.message?.includes("already registered")) {
           toast({
             title: "Account exists",
@@ -129,19 +140,19 @@ const Checkout = () => {
 
       currentUserId = signUpData.user.id;
 
-      // Update profile with phone if provided
       if (phone) {
         await supabase.from("profiles").update({ phone }).eq("user_id", currentUserId);
       }
     }
 
-    // Place order
+    // Place order with shipping address
     const { data: order, error: orderErr } = await supabase.from("orders").insert({
       user_id: currentUserId,
       subtotal,
       discount: totalDiscount,
       total,
       status: "pending",
+      shipping_address: shipping,
     }).select("id").single();
 
     if (orderErr || !order) {
@@ -463,11 +474,19 @@ const Checkout = () => {
                       })),
                     },
                   }}
-                  onSuccess={(result) => {
+                  onSuccess={async (result) => {
+                    // Save shipping address to the order after PayPal capture
+                    const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+                    if (form && result.orderId) {
+                      const shipping = getShippingAddress(form);
+                      await supabase.from("orders").update({ shipping_address: shipping }).eq("id", result.orderId);
+                    }
+
+                    const customerName = form ? (new FormData(form).get("name") as string)?.trim() || "" : "";
                     const invoiceData = {
                       orderId: result.orderId,
                       date: new Date(),
-                      customerName: "",
+                      customerName,
                       customerEmail: user?.email || "",
                       items: items.map(item => ({ name: item.name, size: item.size, color: item.color, quantity: item.quantity, price: item.price })),
                       subtotal,

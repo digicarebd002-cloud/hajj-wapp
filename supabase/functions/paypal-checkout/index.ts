@@ -224,6 +224,7 @@ Deno.serve(async (req) => {
             discount: orderData.discount,
             total: captureAmount,
             status: "paid",
+            shipping_address: orderData.shipping_address || null,
           })
           .select("id")
           .single();
