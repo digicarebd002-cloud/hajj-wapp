@@ -23,6 +23,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
 import Install from "./pages/Install";
+import Messages from "./pages/Messages";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
 import Membership from "./pages/Membership";
@@ -119,6 +120,7 @@ const App = () => (
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
+                      <Route path="/messages" element={<Messages />} />
                       <Route path="/orders" element={<MyOrders />} />
                       <Route path="/bookings" element={<MyBookings />} />
                       <Route path="/membership" element={<Membership />} />
