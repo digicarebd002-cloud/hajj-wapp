@@ -837,7 +837,19 @@ const AccountContent = () => {
                 <h3 className="font-semibold">Profile Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2"><Label>Full Name</Label><Input name="full_name" defaultValue={p.full_name} /></div>
-                  <div className="space-y-2"><Label>Email</Label><Input defaultValue={user?.email || ""} type="email" disabled /></div>
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <div className="flex gap-2">
+                      <Input defaultValue={user?.email || ""} type="email" id="settings-email" />
+                      <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={async () => {
+                        const newEmail = (document.getElementById("settings-email") as HTMLInputElement)?.value;
+                        if (!newEmail || newEmail === user?.email) return;
+                        const { error } = await supabase.auth.updateUser({ email: newEmail });
+                        if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
+                        else toast({ title: "Confirmation email sent", description: "Check your inbox to verify the new email address." });
+                      }}>Update</Button>
+                    </div>
+                  </div>
                   <div className="space-y-2"><Label>Phone</Label><Input name="phone" defaultValue={p.phone || ""} type="tel" /></div>
                 </div>
               </div>
@@ -849,10 +861,13 @@ const AccountContent = () => {
                 <h3 className="font-semibold flex items-center gap-2"><Lock className="h-4 w-4" /> Change Password</h3>
                 <div className="space-y-3">
                   <div className="space-y-2"><Label>New Password</Label><Input type="password" placeholder="Min 6 characters" id="new-password" /></div>
+                  <div className="space-y-2"><Label>Confirm Password</Label><Input type="password" placeholder="Re-enter password" id="confirm-password" /></div>
                 </div>
                 <Button type="button" variant="outline" size="sm" onClick={async () => {
                   const pw = (document.getElementById("new-password") as HTMLInputElement)?.value;
+                  const confirm = (document.getElementById("confirm-password") as HTMLInputElement)?.value;
                   if (!pw || pw.length < 6) { toast({ title: "Password too short", variant: "destructive" }); return; }
+                  if (pw !== confirm) { toast({ title: "Passwords do not match", variant: "destructive" }); return; }
                   const { error } = await supabase.auth.updateUser({ password: pw });
                   if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
                   else toast({ title: "Password updated!" });
