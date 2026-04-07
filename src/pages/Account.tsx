@@ -398,36 +398,36 @@ const AccountContent = () => {
   const savingsProgress = goalAmount > 0 ? Math.min((walletBalance / goalAmount) * 100, 100) : 0;
   const initials = p.full_name ? p.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2) : "?";
 
-  return (
-    <div className="section-padding min-h-screen">
-      <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
-      <div className="container mx-auto max-w-4xl">
-        {/* Profile Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl p-6 md:p-8 mb-6 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(150, 45%, 14%), hsl(142, 50%, 22%), hsl(150, 45%, 14%))" }}>
-          {/* Animated dots overlay */}
-          <div className="absolute inset-0 opacity-10">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: 3 + Math.random() * 4,
-                  height: 3 + Math.random() * 4,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  opacity: [0.3, 0.8, 0.3],
-                  scale: [1, 1.3, 1],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 3,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
-              />
-            ))}
-          </div>
+    return (
+      <div className="section-padding min-h-screen">
+        <SEOHead title="My Account" description="Manage your Hajj Wallet profile, track savings, view activity, and update settings." noindex />
+        <div className="container mx-auto max-w-5xl">
+          {/* Profile Header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-6 md:p-8 mb-6 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(150, 45%, 14%), hsl(142, 50%, 22%), hsl(150, 45%, 14%))" }}>
+            {/* Animated dots overlay */}
+            <div className="absolute inset-0 opacity-10">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    width: 3 + Math.random() * 4,
+                    height: 3 + Math.random() * 4,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    opacity: [0.3, 0.8, 0.3],
+                    scale: [1, 1.3, 1],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+            </div>
           <div className="relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
