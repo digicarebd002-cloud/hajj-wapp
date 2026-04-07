@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle, Share2, Facebook, Twitter, Link as LinkIcon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,25 +66,46 @@ const DiscussionDetail = () => {
     if (!user || !id) return;
     const isLiked = likedDiscussions.has(id);
     setLikedDiscussions((prev) => { const s = new Set(prev); isLiked ? s.delete(id) : s.add(id); return s; });
-    if (isLiked) await supabase.from("post_likes").delete().eq("discussion_id", id).eq("user_id", user.id);
-    else await supabase.from("post_likes").insert({ user_id: user.id, discussion_id: id });
+    if (isLiked) {
+      await supabase.from("post_likes").delete().eq("discussion_id", id).eq("user_id", user.id);
+    } else {
+      await supabase.from("post_likes").insert({ user_id: user.id, discussion_id: id });
+      // Award +2 points to discussion author
+      if (discussion && discussion.user_id !== user.id) {
+        await supabase.from("points_ledger").insert({ user_id: discussion.user_id, action: "received_like", points: 2, reference_id: id });
+        await supabase.from("profiles").update({ points_total: (discussion.profiles as any)?.points_total ? (discussion.profiles as any).points_total + 2 : 2 }).eq("user_id", discussion.user_id);
+      }
+    }
     refetchDiscussion();
   };
 
-  const toggleReplyLike = async (replyId: string) => {
+  const toggleReplyLike = async (replyId: string, replyAuthorId?: string) => {
     if (!user) return;
     const isLiked = likedReplies.has(replyId);
     setLikedReplies((prev) => { const s = new Set(prev); isLiked ? s.delete(replyId) : s.add(replyId); return s; });
-    if (isLiked) await supabase.from("post_likes").delete().eq("reply_id", replyId).eq("user_id", user.id);
-    else await supabase.from("post_likes").insert({ user_id: user.id, reply_id: replyId });
+    if (isLiked) {
+      await supabase.from("post_likes").delete().eq("reply_id", replyId).eq("user_id", user.id);
+    } else {
+      await supabase.from("post_likes").insert({ user_id: user.id, reply_id: replyId });
+      // Award +2 points to reply author
+      if (replyAuthorId && replyAuthorId !== user.id) {
+        await supabase.from("points_ledger").insert({ user_id: replyAuthorId, action: "received_like", points: 2, reference_id: replyId });
+      }
+    }
     refetchReplies();
   };
 
-  const markBestAnswer = async (replyId: string) => {
+  const markBestAnswer = async (replyId: string, replyAuthorId: string) => {
     if (!user || !discussion || discussion.user_id !== user.id) return;
     const { error } = await supabase.from("replies").update({ is_best_answer: true }).eq("id", replyId);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else { toast({ title: "⭐ Best answer marked!", description: "Reply author earned +25 points." }); refetchReplies(); }
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    // Award +25 points to reply author
+    if (replyAuthorId !== user.id) {
+      await supabase.from("points_ledger").insert({ user_id: replyAuthorId, action: "best_answer", points: 25, reference_id: replyId });
+      await supabase.from("profiles").update({}).eq("user_id", replyAuthorId); // triggers tier check
+    }
+    toast({ title: "⭐ Best answer marked!", description: "Reply author earned +25 points." });
+    refetchReplies();
   };
 
   if (dLoading) return <div className="section-padding min-h-screen"><div className="container mx-auto max-w-3xl"><CardSkeleton /><CardSkeleton /></div></div>;
