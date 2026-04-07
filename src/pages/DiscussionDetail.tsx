@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, Eye, MessageCircle, Heart, Award, CheckCircle, Share2, Facebook, Twitter, Link as LinkIcon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,25 +66,46 @@ const DiscussionDetail = () => {
     if (!user || !id) return;
     const isLiked = likedDiscussions.has(id);
     setLikedDiscussions((prev) => { const s = new Set(prev); isLiked ? s.delete(id) : s.add(id); return s; });
-    if (isLiked) await supabase.from("post_likes").delete().eq("discussion_id", id).eq("user_id", user.id);
-    else await supabase.from("post_likes").insert({ user_id: user.id, discussion_id: id });
+    if (isLiked) {
+      await supabase.from("post_likes").delete().eq("discussion_id", id).eq("user_id", user.id);
+    } else {
+      await supabase.from("post_likes").insert({ user_id: user.id, discussion_id: id });
+      // Award +2 points to discussion author
+      if (discussion && discussion.user_id !== user.id) {
+        await supabase.from("points_ledger").insert({ user_id: discussion.user_id, action: "received_like", points: 2, reference_id: id });
+        await supabase.from("profiles").update({ points_total: (discussion.profiles as any)?.points_total ? (discussion.profiles as any).points_total + 2 : 2 }).eq("user_id", discussion.user_id);
+      }
+    }
     refetchDiscussion();
   };
 
-  const toggleReplyLike = async (replyId: string) => {
+  const toggleReplyLike = async (replyId: string, replyAuthorId?: string) => {
     if (!user) return;
     const isLiked = likedReplies.has(replyId);
     setLikedReplies((prev) => { const s = new Set(prev); isLiked ? s.delete(replyId) : s.add(replyId); return s; });
-    if (isLiked) await supabase.from("post_likes").delete().eq("reply_id", replyId).eq("user_id", user.id);
-    else await supabase.from("post_likes").insert({ user_id: user.id, reply_id: replyId });
+    if (isLiked) {
+      await supabase.from("post_likes").delete().eq("reply_id", replyId).eq("user_id", user.id);
+    } else {
+      await supabase.from("post_likes").insert({ user_id: user.id, reply_id: replyId });
+      // Award +2 points to reply author
+      if (replyAuthorId && replyAuthorId !== user.id) {
+        await supabase.from("points_ledger").insert({ user_id: replyAuthorId, action: "received_like", points: 2, reference_id: replyId });
+      }
+    }
     refetchReplies();
   };
 
-  const markBestAnswer = async (replyId: string) => {
+  const markBestAnswer = async (replyId: string, replyAuthorId: string) => {
     if (!user || !discussion || discussion.user_id !== user.id) return;
     const { error } = await supabase.from("replies").update({ is_best_answer: true }).eq("id", replyId);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else { toast({ title: "⭐ Best answer marked!", description: "Reply author earned +25 points." }); refetchReplies(); }
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    // Award +25 points to reply author
+    if (replyAuthorId !== user.id) {
+      await supabase.from("points_ledger").insert({ user_id: replyAuthorId, action: "best_answer", points: 25, reference_id: replyId });
+      await supabase.from("profiles").update({}).eq("user_id", replyAuthorId); // triggers tier check
+    }
+    toast({ title: "⭐ Best answer marked!", description: "Reply author earned +25 points." });
+    refetchReplies();
   };
 
   if (dLoading) return <div className="section-padding min-h-screen"><div className="container mx-auto max-w-3xl"><CardSkeleton /><CardSkeleton /></div></div>;
@@ -92,6 +114,7 @@ const DiscussionDetail = () => {
 
   const authorName = (discussion.profiles as any)?.full_name || "Anonymous";
   const authorTier = (discussion.profiles as any)?.tier || null;
+  const authorAvatar = (discussion.profiles as any)?.avatar_url;
   const initials = authorName.split(" ").map((n: string) => n[0]).join("").slice(0, 2);
   const isAuthor = user?.id === discussion.user_id;
   const discLiked = likedDiscussions.has(discussion.id);
@@ -106,7 +129,10 @@ const DiscussionDetail = () => {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl card-shadow p-6 mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">{initials}</div>
+            <Avatar className="h-12 w-12 ring-2 ring-primary/10">
+              {authorAvatar ? <AvatarImage src={authorAvatar} alt={authorName} /> : <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`} alt={authorName} />}
+              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">{initials}</AvatarFallback>
+            </Avatar>
             <div>
               <div className="flex items-center gap-2"><span className="font-semibold">{authorName}</span><TierBadge tier={authorTier} /></div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -161,7 +187,10 @@ const DiscussionDetail = () => {
                   className={`bg-card rounded-xl card-shadow p-5 ${reply.is_best_answer ? "ring-2 ring-accent" : ""}`}>
                   {reply.is_best_answer && <div className="flex items-center gap-1 text-accent text-xs font-semibold mb-3"><Award className="h-4 w-4" /> Best Answer</div>}
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold">{rInitials}</div>
+                    <Avatar className="h-9 w-9">
+                      {(reply.profiles as any)?.avatar_url ? <AvatarImage src={(reply.profiles as any).avatar_url} alt={rName} /> : <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(rName)}`} alt={rName} />}
+                      <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-bold">{rInitials}</AvatarFallback>
+                    </Avatar>
                     <div>
                       <div className="flex items-center gap-2"><span className="text-sm font-semibold">{rName}</span><TierBadge tier={rTier} /></div>
                       <span className="text-xs text-muted-foreground">{getTimeAgo(reply.created_at)}</span>
@@ -169,11 +198,11 @@ const DiscussionDetail = () => {
                   </div>
                   <p className="text-sm text-foreground/90 whitespace-pre-line leading-relaxed mb-3">{reply.body}</p>
                   <div className="flex items-center gap-4">
-                    <button onClick={() => toggleReplyLike(reply.id)} className={`flex items-center gap-1 text-sm transition-colors ${isLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
+                    <button onClick={() => toggleReplyLike(reply.id, reply.user_id)} className={`flex items-center gap-1 text-sm transition-colors ${isLiked ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"}`}>
                       <Heart className={`h-4 w-4 ${isLiked ? "fill-primary" : ""}`} /> {reply.like_count ?? 0}
                     </button>
                     {isAuthor && !reply.is_best_answer && !hasBestAnswer && (
-                      <button onClick={() => markBestAnswer(reply.id)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors">
+                      <button onClick={() => markBestAnswer(reply.id, reply.user_id)} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors">
                         <CheckCircle className="h-3.5 w-3.5" /> Mark Best Answer
                       </button>
                     )}

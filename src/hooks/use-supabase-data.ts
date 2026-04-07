@@ -117,7 +117,7 @@ export function useDiscussions() {
 
     // Fetch author profiles
     const userIds = [...new Set(discussions.map((d) => d.user_id))];
-    const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, tier").in("user_id", userIds);
+    const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, tier, avatar_url").in("user_id", userIds);
     const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
 
     // Fetch like counts per discussion
@@ -153,7 +153,7 @@ export function useDiscussion(id: string) {
     setError(null);
     const { data: disc, error: dErr } = await supabase.from("discussions").select("*").eq("id", id).single();
     if (dErr) { setError(dErr.message); setLoading(false); return; }
-    const { data: profile } = await supabase.from("profiles").select("full_name, tier").eq("user_id", disc.user_id).single();
+    const { data: profile } = await supabase.from("profiles").select("full_name, tier, avatar_url").eq("user_id", disc.user_id).single();
 
     // Get like count for this discussion
     const { count } = await supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("discussion_id", id);
@@ -187,7 +187,7 @@ export function useReplies(discussionId: string) {
     if (!replies || replies.length === 0) { setData([]); setLoading(false); return; }
 
     const userIds = [...new Set(replies.map((r) => r.user_id))];
-    const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, tier").in("user_id", userIds);
+    const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, tier, avatar_url").in("user_id", userIds);
     const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
 
     // Get like counts per reply
