@@ -309,11 +309,23 @@ const AccountContent = () => {
   const { config: subConfig, loading: subLoading, actionLoading: subActionLoading, subscribe, cancelSubscription, isActive: hasActiveSub, error: subError } = useWalletSubscription();
   const [userOrders, setUserOrders] = useState<{ total: number; created_at: string; status: string }[] | null>(null);
   const [userBookings, setUserBookings] = useState<{ created_at: string; status: string }[] | null>(null);
+  const [communityStats, setCommunityStats] = useState({ posts: 0, helpfulVotes: 0 });
 
   useEffect(() => {
     if (!user) return;
     supabase.from("orders").select("total, created_at, status").eq("user_id", user.id).then(({ data }) => setUserOrders(data || []));
     supabase.from("bookings").select("created_at, status").eq("user_id", user.id).then(({ data }) => setUserBookings(data || []));
+    // Fetch community stats for header pills
+    Promise.all([
+      supabase.from("discussions").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("replies").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("post_likes").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    ]).then(([disc, rep, likes]) => {
+      setCommunityStats({
+        posts: (disc.count ?? 0) + (rep.count ?? 0),
+        helpfulVotes: likes.count ?? 0,
+      });
+    });
   }, [user]);
   const { code: referralCode, stats: referralStats, getReferralLink } = useReferral();
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -473,8 +485,8 @@ const AccountContent = () => {
             {[
               { icon: "💰", label: "Wallet Balance", value: `$${Number(walletBalance).toLocaleString()}`, highlight: true },
               { icon: "⭐", label: "Reward Points", value: p.points_total.toLocaleString(), highlight: false },
-              { icon: "🏅", label: "Tier", value: p.tier, highlight: false },
-              { icon: "📊", label: "Status", value: p.membership_status, highlight: p.membership_status === "active" },
+              { icon: "📝", label: "Posts", value: communityStats.posts.toLocaleString(), highlight: false },
+              { icon: "👍", label: "Helpful Votes", value: communityStats.helpfulVotes.toLocaleString(), highlight: false },
             ].map((s) => (
               <div key={s.label} className={`rounded-xl p-4 text-center border transition-all ${s.highlight ? "bg-white/15 border-white/20" : "bg-white/10 border-white/10"}`}>
                 <span className="text-xl block mb-1">{s.icon}</span>
@@ -563,13 +575,33 @@ const AccountContent = () => {
                 { icon: <ShoppingBag className="h-5 w-5" />, title: "Browse Store", desc: "10% member discount", to: "/store" },
                 { icon: <MessageCircle className="h-5 w-5" />, title: "Community Forum", desc: "Earn points by helping", to: "/community" },
                 { icon: <Plane className="h-5 w-5" />, title: "Book Package", desc: "Use wallet balance", to: "/packages" },
-                { icon: <FileText className="h-5 w-5" />, title: "Download Reports", desc: "Transaction history", to: "/wallet" },
+                { icon: <FileText className="h-5 w-5" />, title: "Download Reports", desc: "Transaction history", to: "#download-reports" },
               ].map((a, i) => (
                 <motion.div key={a.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
-                  <Link to={a.to} className="bg-card rounded-xl border p-4 hover:border-primary/40 hover:shadow-md transition-all flex items-start gap-3 h-full block group">
-                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{a.icon}</div>
-                    <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
-                  </Link>
+                  {a.to === "#download-reports" ? (
+                    <button
+                      onClick={() => {
+                        if (!transactions || transactions.length === 0) { toast({ title: "No transactions to export" }); return; }
+                        const header = "Date,Type,Amount,Status\n";
+                        const rows = transactions.map((t: any) => `${new Date(t.created_at).toLocaleDateString()},${t.type},$${t.amount},${t.status}`).join("\n");
+                        const blob = new Blob([header + rows], { type: "text/csv" });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url; link.download = "hajj-wallet-transactions.csv"; link.click();
+                        URL.revokeObjectURL(url);
+                        toast({ title: "Report downloaded!" });
+                      }}
+                      className="bg-card rounded-xl border p-4 hover:border-primary/40 hover:shadow-md transition-all flex items-start gap-3 h-full w-full text-left group"
+                    >
+                      <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{a.icon}</div>
+                      <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
+                    </button>
+                  ) : (
+                    <Link to={a.to} className="bg-card rounded-xl border p-4 hover:border-primary/40 hover:shadow-md transition-all flex items-start gap-3 h-full block group">
+                      <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">{a.icon}</div>
+                      <div><p className="font-semibold text-sm">{a.title}</p><p className="text-xs text-muted-foreground">{a.desc}</p></div>
+                    </Link>
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -805,7 +837,19 @@ const AccountContent = () => {
                 <h3 className="font-semibold">Profile Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2"><Label>Full Name</Label><Input name="full_name" defaultValue={p.full_name} /></div>
-                  <div className="space-y-2"><Label>Email</Label><Input defaultValue={user?.email || ""} type="email" disabled /></div>
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <div className="flex gap-2">
+                      <Input defaultValue={user?.email || ""} type="email" id="settings-email" />
+                      <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={async () => {
+                        const newEmail = (document.getElementById("settings-email") as HTMLInputElement)?.value;
+                        if (!newEmail || newEmail === user?.email) return;
+                        const { error } = await supabase.auth.updateUser({ email: newEmail });
+                        if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
+                        else toast({ title: "Confirmation email sent", description: "Check your inbox to verify the new email address." });
+                      }}>Update</Button>
+                    </div>
+                  </div>
                   <div className="space-y-2"><Label>Phone</Label><Input name="phone" defaultValue={p.phone || ""} type="tel" /></div>
                 </div>
               </div>
@@ -817,10 +861,13 @@ const AccountContent = () => {
                 <h3 className="font-semibold flex items-center gap-2"><Lock className="h-4 w-4" /> Change Password</h3>
                 <div className="space-y-3">
                   <div className="space-y-2"><Label>New Password</Label><Input type="password" placeholder="Min 6 characters" id="new-password" /></div>
+                  <div className="space-y-2"><Label>Confirm Password</Label><Input type="password" placeholder="Re-enter password" id="confirm-password" /></div>
                 </div>
                 <Button type="button" variant="outline" size="sm" onClick={async () => {
                   const pw = (document.getElementById("new-password") as HTMLInputElement)?.value;
+                  const confirm = (document.getElementById("confirm-password") as HTMLInputElement)?.value;
                   if (!pw || pw.length < 6) { toast({ title: "Password too short", variant: "destructive" }); return; }
+                  if (pw !== confirm) { toast({ title: "Passwords do not match", variant: "destructive" }); return; }
                   const { error } = await supabase.auth.updateUser({ password: pw });
                   if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
                   else toast({ title: "Password updated!" });
