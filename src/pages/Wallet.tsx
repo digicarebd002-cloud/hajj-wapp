@@ -159,7 +159,7 @@ const BalanceHero = ({ stats, profile }: { stats: any; profile: any }) => {
 };
 
 // --- Quick Actions ---
-const QuickActions = ({ hasActiveSubscription, onAddMoney }: { hasActiveSubscription: boolean; onAddMoney: () => void }) => (
+const QuickActions = ({ onAddMoney }: { onAddMoney: () => void }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -167,14 +167,10 @@ const QuickActions = ({ hasActiveSubscription, onAddMoney }: { hasActiveSubscrip
     className="grid grid-cols-3 gap-3 mb-6"
   >
     <button
-      onClick={hasActiveSubscription ? onAddMoney : undefined}
-      className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 ${
-        hasActiveSubscription
-          ? "bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 cursor-pointer"
-          : "bg-muted/30 border-border cursor-not-allowed opacity-50"
-      }`}
+      onClick={onAddMoney}
+      className="flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 cursor-pointer"
     >
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${hasActiveSubscription ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+      <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-primary-foreground">
         <Plus className="h-5 w-5" />
       </div>
       <span className="text-xs font-semibold text-foreground">Add Money</span>
@@ -428,7 +424,11 @@ const ContributeSection = ({ onContributed }: { onContributed: () => void }) => 
           )}
         </Button>
       ) : (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+          <div className="bg-secondary/40 rounded-xl p-4 text-center">
+            <p className="text-sm text-muted-foreground mb-1">Amount to add</p>
+            <p className="text-2xl font-bold text-foreground">${parsedAmount.toFixed(2)}</p>
+          </div>
           <PayPalButton
             amount={parsedAmount}
             description={`Hajj Wallet Contribution - $${parsedAmount.toFixed(2)}`}
@@ -443,7 +443,7 @@ const ContributeSection = ({ onContributed }: { onContributed: () => void }) => 
               toast({ title: "Payment failed", description: err, variant: "destructive" });
             }}
           />
-          <Button variant="ghost" size="sm" className="w-full mt-2 text-muted-foreground text-xs" onClick={() => setShowPayPal(false)}>
+          <Button variant="ghost" size="sm" className="w-full text-muted-foreground text-xs" onClick={() => setShowPayPal(false)}>
             ← Change amount
           </Button>
         </motion.div>
@@ -675,7 +675,6 @@ const WalletContent = () => {
 
         {/* Quick Actions */}
         <QuickActions
-          hasActiveSubscription={hasActiveSubscription}
           onAddMoney={() => setShowContribute(!showContribute)}
         />
 
@@ -692,13 +691,41 @@ const WalletContent = () => {
           subError={subError}
         />
 
-        {/* Contribute (toggled) */}
-        {hasActiveSubscription && showContribute && (
-          <ContributeSection onContributed={handleContributed} />
+        {/* Contribute section or subscription prompt */}
+        {showContribute && (
+          hasActiveSubscription ? (
+            <ContributeSection onContributed={handleContributed} />
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border-2 border-dashed border-primary/25 p-6 mb-6 bg-primary/[0.02]"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                  <Shield className="h-6 w-6 text-destructive" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-base mb-1">Subscription Required</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    You need an active membership subscription to add money to your wallet. Subscribe for ${subConfig?.price ?? 25}/mo to unlock wallet contributions. Your existing balance remains usable anytime.
+                  </p>
+                  <Button onClick={subscribe} disabled={subActionLoading} className="btn-glow font-semibold h-11">
+                    {subActionLoading ? (
+                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing…</>
+                    ) : (
+                      <>Activate Membership — ${subConfig?.price ?? 25}/mo</>
+                    )}
+                  </Button>
+                  {subError && <p className="text-destructive text-xs mt-3">{subError}</p>}
+                </div>
+              </div>
+            </motion.div>
+          )
         )}
 
-        {/* Always show contribute if active but not toggled — show inline */}
-        {hasActiveSubscription && !showContribute && (
+        {/* Add Money button when not showing contribute */}
+        {!showContribute && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
