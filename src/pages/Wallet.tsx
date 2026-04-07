@@ -630,6 +630,13 @@ const WalletContent = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user?.id, refetchStats, refetchTx]);
 
+  // Show goal onboarding if user has default goal and hasn't dismissed it
+  useEffect(() => {
+    if (stats && Number(stats.goal_amount) === 2500 && Number(stats.contribution_count) === 0 && !localStorage.getItem("hajj_goal_set")) {
+      setShowGoalOnboarding(true);
+    }
+  }, [stats]);
+
   const handleContributed = () => {
     refetchStats();
     refetchTx();
