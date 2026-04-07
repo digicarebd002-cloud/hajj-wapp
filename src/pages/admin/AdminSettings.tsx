@@ -160,7 +160,7 @@ export default function AdminSettings() {
           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{field.label}</Label>
           <div className="flex gap-2 items-center">
             {val && (
-              <img src={val} className="w-10 h-10 rounded-lg object-contain border border-border/50 bg-secondary/30 shrink-0" />
+              <img src={val} alt="Setting preview" className="w-10 h-10 rounded-lg object-contain border border-border/50 bg-secondary/30 shrink-0" />
             )}
             <Input
               value={val}

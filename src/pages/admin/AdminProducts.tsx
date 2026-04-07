@@ -268,7 +268,7 @@ export default function AdminProducts() {
                 ) : products.map(p => (
                   <TableRow key={p.id} className="hover:bg-secondary/30 transition-colors">
                     <TableCell>
-                      {p.image_url ? <img src={p.image_url} className="w-12 h-12 rounded-lg object-cover border border-border/50" /> : <span className="text-2xl">{p.image_emoji || "📦"}</span>}
+                      {p.image_url ? <img src={p.image_url} alt={p.name} className="w-12 h-12 rounded-lg object-cover border border-border/50" /> : <span className="text-2xl">{p.image_emoji || "📦"}</span>}
                     </TableCell>
                     <TableCell className="font-medium text-foreground">{p.name}</TableCell>
                     <TableCell><Badge variant="outline" className="bg-secondary/30">{p.category}</Badge></TableCell>
@@ -395,7 +395,7 @@ export default function AdminProducts() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Image</Label>
               <div className="flex items-center gap-3 mt-1">
-                {form.image_url && <img src={form.image_url} className="w-16 h-16 rounded-lg object-cover border border-border/50" />}
+                {form.image_url && <img src={form.image_url} alt="Product preview" className="w-16 h-16 rounded-lg object-cover border border-border/50" />}
                 <label className="cursor-pointer">
                   <Button variant="outline" size="sm" asChild disabled={uploading} className="gap-2">
                     <span><Upload className="h-4 w-4" />{uploading ? "Uploading..." : "Upload"}</span>
@@ -623,7 +623,7 @@ export default function AdminProducts() {
                   }`}
                 >
                   {p.image_url ? (
-                    <img src={p.image_url} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                    <img src={p.image_url} alt={p.name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
                   ) : (
                     <span className="text-xl shrink-0">{p.image_emoji || "📦"}</span>
                   )}
