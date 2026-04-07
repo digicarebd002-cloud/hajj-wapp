@@ -142,7 +142,7 @@ const FAQ = () => {
                 <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-semibold mb-1">No results found</h3>
                 <p className="text-sm text-muted-foreground mb-4">Try a different keyword or contact us directly.</p>
-                <Link to="/messages">
+                <Link to="/contact">
                   <Button variant="outline" className="gap-2">
                     <Mail className="h-4 w-4" /> Contact Us
                   </Button>
@@ -179,7 +179,7 @@ const FAQ = () => {
           <h2 className="text-xl font-bold mb-2">Didn't find your answer?</h2>
           <p className="text-sm text-muted-foreground mb-5">Our support team is ready to help you</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link to="/messages">
+            <Link to="/contact">
               <Button className="gap-2 rounded-xl">
                 <Mail className="h-4 w-4" /> Send a Message
               </Button>
