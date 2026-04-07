@@ -159,7 +159,7 @@ const BalanceHero = ({ stats, profile }: { stats: any; profile: any }) => {
 };
 
 // --- Quick Actions ---
-const QuickActions = ({ onAddMoney }: { onAddMoney: () => void }) => (
+const QuickActions = ({ onAddMoney, onSetGoal, onHistory }: { onAddMoney: () => void; onSetGoal: () => void; onHistory: () => void }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -175,13 +175,13 @@ const QuickActions = ({ onAddMoney }: { onAddMoney: () => void }) => (
       </div>
       <span className="text-xs font-semibold text-foreground">Add Money</span>
     </button>
-    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+    <button onClick={onSetGoal} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
         <Target className="h-5 w-5" />
       </div>
       <span className="text-xs font-semibold text-foreground">Set Goal</span>
     </button>
-    <button className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
+    <button onClick={onHistory} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-all duration-200 cursor-pointer">
       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground">
         <History className="h-5 w-5" />
       </div>
