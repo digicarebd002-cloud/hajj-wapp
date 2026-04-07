@@ -231,29 +231,26 @@ const MembershipBanner = ({
   }
 
   if (isActive) {
+    const memberSince = subscription?.starts_at
+      ? new Date(subscription.starts_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+      : profile?.created_at
+        ? new Date(profile.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+        : "—";
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-card rounded-xl border border-primary/15 p-5 mb-6"
+        className="bg-card rounded-xl border border-primary/15 p-6 mb-6"
       >
-        <div className="flex items-center justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <Crown className="h-5 w-5 text-primary" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-semibold text-sm">Active Membership</p>
-                <Badge className="bg-primary/10 text-primary border-0 text-[10px] font-bold">${price}/mo</Badge>
-              </div>
-              {endsAt && (
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Renews {endsAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })} · PayPal
-                </p>
-              )}
-            </div>
+            <h3 className="font-bold text-base">Membership Status</h3>
           </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -278,6 +275,41 @@ const MembershipBanner = ({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+        </div>
+
+        {/* Info grid */}
+        <div className="grid grid-cols-2 gap-4 mb-5">
+          <div className="bg-secondary/40 rounded-xl p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Member Since</p>
+            <p className="text-sm font-bold text-foreground">{memberSince}</p>
+          </div>
+          <div className="bg-secondary/40 rounded-xl p-4">
+            <p className="text-xs text-muted-foreground font-medium mb-1">Status</p>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <p className="text-sm font-bold text-primary">Active</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Description + next payment */}
+        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+          Your monthly membership fee of <span className="font-semibold text-foreground">${price.toFixed(2)}</span> supports our community platform and helps sponsor fellow members on their Hajj journey.
+        </p>
+
+        <div className="flex items-center justify-between bg-secondary/40 rounded-xl p-4">
+          <div>
+            <p className="text-xs text-muted-foreground font-medium">Monthly Membership</p>
+            <p className="text-lg font-bold text-foreground">${price.toFixed(2)}</p>
+          </div>
+          {endsAt && (
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground font-medium">Next payment</p>
+              <p className="text-sm font-semibold text-foreground">
+                {endsAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+              </p>
+            </div>
+          )}
         </div>
       </motion.div>
     );
@@ -652,7 +684,7 @@ const WalletContent = () => {
           profile={profile}
           isActive={hasActiveSubscription}
           subscription={subConfig?.subscription}
-          price={subConfig?.price ?? 15}
+          price={subConfig?.price ?? 25}
           subLoading={subLoading}
           actionLoading={subActionLoading}
           onSubscribe={subscribe}
