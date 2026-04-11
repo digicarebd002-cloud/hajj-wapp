@@ -2,7 +2,7 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://supabasekong-m9av2n9slet47mf8omp4fsx5.76.13.123.99.sslip.io";
+const SUPABASE_URL = "https://hajjwalletsupabase.digicarebd.com";
 const SUPABASE_PUBLISHABLE_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc3NTczNzk4MCwiZXhwIjo0OTMxNDExNTgwLCJyb2xlIjoiYW5vbiJ9.llxJ6cjMrfaJPwTxsKn8ovoH23-6Q-YnVkCqJw0j3dQ";
 
 // Import the supabase client like this:
