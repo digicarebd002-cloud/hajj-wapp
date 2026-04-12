@@ -59,6 +59,7 @@ import AdminSupportTickets from "./pages/admin/AdminSupportTickets";
 import AdminInventory from "./pages/admin/AdminInventory";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ScrollToTopOnRouteChange } from "./components/ScrollToTop";
+import SubscriptionGate from "./components/SubscriptionGate";
 
 
 const queryClient = new QueryClient();
@@ -105,13 +106,13 @@ const App = () => (
                   <Layout>
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/wallet" element={<Wallet />} />
+                      <Route path="/wallet" element={<SubscriptionGate><Wallet /></SubscriptionGate>} />
                       <Route path="/store" element={<Store />} />
                       <Route path="/store/:id" element={<ProductDetail />} />
                       <Route path="/packages" element={<Packages />} />
                       <Route path="/community" element={<Community />} />
                       <Route path="/community/:id" element={<DiscussionDetail />} />
-                      <Route path="/account" element={<Account />} />
+                      <Route path="/account" element={<SubscriptionGate><Account /></SubscriptionGate>} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/checkout" element={<Checkout />} />
                       <Route path="/reset-password" element={<ResetPassword />} />
@@ -120,10 +121,10 @@ const App = () => (
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
-                      <Route path="/messages" element={<Messages />} />
-                      <Route path="/orders" element={<MyOrders />} />
-                      <Route path="/bookings" element={<MyBookings />} />
-                      <Route path="/membership" element={<Membership />} />
+                      <Route path="/messages" element={<SubscriptionGate><Messages /></SubscriptionGate>} />
+                      <Route path="/orders" element={<SubscriptionGate><MyOrders /></SubscriptionGate>} />
+                      <Route path="/bookings" element={<SubscriptionGate><MyBookings /></SubscriptionGate>} />
+                      <Route path="/membership" element={<SubscriptionGate><Membership /></SubscriptionGate>} />
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/help-center" element={<HelpCenter />} />
