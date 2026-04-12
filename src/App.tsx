@@ -106,7 +106,7 @@ const App = () => (
                   <Layout>
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/wallet" element={<Wallet />} />
+                      <Route path="/wallet" element={<SubscriptionGate><Wallet /></SubscriptionGate>} />
                       <Route path="/store" element={<Store />} />
                       <Route path="/store/:id" element={<ProductDetail />} />
                       <Route path="/packages" element={<Packages />} />
