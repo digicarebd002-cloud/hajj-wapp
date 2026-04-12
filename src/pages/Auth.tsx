@@ -91,6 +91,8 @@ const Auth = () => {
       if (referralInput) {
         localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
       }
+      // Immediately redirect to login tab or wallet
+      navigate(returnTo || "/wallet", { replace: true });
     }
   };
 
