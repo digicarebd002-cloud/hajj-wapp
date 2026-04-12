@@ -77,7 +77,7 @@ const Auth = () => {
     setLoading(true);
     const form = new FormData(e.currentTarget);
     const referralInput = (form.get("referral_code") as string || "").trim();
-    const { error } = await signUp(
+    const { error, data } = await signUp(
       form.get("email") as string,
       form.get("password") as string,
       form.get("name") as string,
@@ -87,11 +87,17 @@ const Auth = () => {
     if (error) {
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
     } else {
+      // Auto-confirm user email via edge function
+      const userId = data?.user?.id;
+      if (userId) {
+        try {
+          await supabase.functions.invoke("confirm-user", { body: { user_id: userId } });
+        } catch (_) { /* silent fallback */ }
+      }
       toast({ title: "Account created!", description: "Welcome to Hajj Wallet!" });
       if (referralInput) {
         localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
       }
-      // Immediately redirect to login tab or wallet
       navigate(returnTo || "/wallet", { replace: true });
     }
   };
