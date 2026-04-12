@@ -59,6 +59,7 @@ import AdminSupportTickets from "./pages/admin/AdminSupportTickets";
 import AdminInventory from "./pages/admin/AdminInventory";
 import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 import { ScrollToTopOnRouteChange } from "./components/ScrollToTop";
+import SubscriptionGate from "./components/SubscriptionGate";
 
 
 const queryClient = new QueryClient();

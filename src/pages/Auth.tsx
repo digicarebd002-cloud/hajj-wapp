@@ -94,11 +94,33 @@ const Auth = () => {
           await supabase.functions.invoke("confirm-user", { body: { user_id: userId } });
         } catch (_) { /* silent fallback */ }
       }
-      toast({ title: "Account created!", description: "Welcome to Hajj Wallet!" });
       if (referralInput) {
         localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
       }
-      navigate(returnTo || "/wallet", { replace: true });
+
+      // Initiate mandatory PayPal subscription
+      toast({ title: "অ্যাকাউন্ট তৈরি হয়েছে!", description: "এখন সাবস্ক্রিপশন পেমেন্ট সম্পন্ন করুন।" });
+
+      try {
+        const returnUrl = `${window.location.origin}/wallet?subscription=success`;
+        const cancelUrl = `${window.location.origin}/wallet?subscription=cancelled`;
+
+        const { data: subData, error: subError } = await supabase.functions.invoke("paypal-subscription", {
+          body: { action: "create-subscription", returnUrl, cancelUrl },
+        });
+
+        if (subError) throw subError;
+
+        if (subData?.approvalUrl) {
+          window.location.href = subData.approvalUrl;
+          return;
+        }
+      } catch (subErr) {
+        console.error("Subscription creation error:", subErr);
+      }
+
+      // Fallback: navigate to wallet where SubscriptionGate will handle it
+      navigate("/wallet", { replace: true });
     }
   };
 
