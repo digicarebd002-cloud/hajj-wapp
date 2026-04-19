@@ -479,9 +479,11 @@ const Packages = () => {
             <h2 className="text-2xl font-bold mb-2 text-white">Need Help Choosing?</h2>
             <p className="text-white/80 mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.a href={telHref} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="lg" variant="secondary" className="gap-2"><Phone className="h-4 w-4" /> Call an Advisor</Button>
-              </motion.a>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button size="lg" variant="secondary" className="gap-2" onClick={() => setConsultationOpen(true)}>
+                  <CalendarIcon className="h-4 w-4" /> Schedule Free Consultation
+                </Button>
+              </motion.div>
               <a href={telHref} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors">
                 <Phone className="h-4 w-4" /><span className="font-medium">{supportPhone}</span>
               </a>
