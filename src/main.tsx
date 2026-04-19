@@ -29,7 +29,7 @@ const isPreviewOrDevHost =
 
 // One-time cache buster — bump this string to force ALL devices to wipe
 // stale service workers + caches the next time they open the app.
-const CACHE_BUSTER_KEY = "hw_cache_buster_v3";
+const CACHE_BUSTER_KEY = "hw_cache_buster_v4_2026_04_19";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
