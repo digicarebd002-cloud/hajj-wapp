@@ -60,7 +60,7 @@ const HelpCenter = () => {
       </section>
 
       {/* Help Topics */}
-      <section className="container mx-auto px-4 pb-12 -mt-4">
+      <section className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-xl font-bold mb-6">Browse by Topic</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

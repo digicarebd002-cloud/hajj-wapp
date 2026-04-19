@@ -100,7 +100,7 @@ const FAQ = () => {
       </section>
 
       {/* Content */}
-      <section className="container mx-auto px-4 pb-20 -mt-4">
+      <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
           {/* Category sidebar */}
           {!search && (
