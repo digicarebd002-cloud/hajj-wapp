@@ -135,6 +135,76 @@ const Membership = () => {
     }
   };
 
+  const handleSubscribe = async (plan: Plan) => {
+    if (!user) return;
+    if (plan.price === 0) {
+      toast.info("Silver membership is free and already active!");
+      return;
+    }
+
+    setPurchasing(plan.id);
+    try {
+      const returnUrl = `${window.location.origin}/membership?subscription=success`;
+      const cancelUrl = `${window.location.origin}/membership?subscription=cancelled`;
+
+      const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+        body: {
+          action: "create-subscription",
+          returnUrl,
+          cancelUrl,
+          planData: { id: plan.id, name: plan.name, price: plan.price },
+        },
+      });
+
+      if (error) throw new Error(error.message);
+      if (!data?.approvalUrl) throw new Error("No approval URL received from PayPal");
+
+      // Redirect to PayPal for auto-debit authorization
+      window.location.href = data.approvalUrl;
+    } catch (err: any) {
+      toast.error("Subscription failed: " + err.message);
+      setPurchasing(null);
+    }
+  };
+
+  // Handle return from PayPal subscription approval
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("subscription");
+    const subId = params.get("subscription_id");
+
+    if (result === "success" && subId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+            body: { action: "activate-subscription", subscriptionId: subId },
+          });
+          if (error) throw new Error(error.message);
+          if (data?.success) {
+            toast.success("Membership activated! Auto-debit enabled.");
+            await loadUserData();
+          }
+        } catch (err: any) {
+          toast.error("Activation failed: " + err.message);
+        } finally {
+          // Clean URL
+          const url = new URL(window.location.href);
+          url.searchParams.delete("subscription");
+          url.searchParams.delete("subscription_id");
+          url.searchParams.delete("ba_token");
+          url.searchParams.delete("token");
+          window.history.replaceState({}, "", url.pathname);
+        }
+      })();
+    } else if (result === "cancelled") {
+      toast.error("Subscription cancelled. You can try again anytime.");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("subscription");
+      window.history.replaceState({}, "", url.pathname);
+    }
+  }, [user]);
+
   const isCurrentPlan = (plan: Plan) => plan.name === currentTier;
   const isUpgrade = (plan: Plan) => {
     const order = { Silver: 0, Gold: 1, Platinum: 2 };
