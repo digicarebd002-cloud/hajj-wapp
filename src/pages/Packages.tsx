@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import ConsultationModal from "@/components/ConsultationModal";
 import { motion } from "framer-motion";
 import packageMadinah from "@/assets/package-madinah.jpg";
 import packageMakkah from "@/assets/package-makkah.jpg";
@@ -316,6 +317,7 @@ const Packages = () => {
   const { data: packages, loading, error, refetch } = usePackages();
   const [bookingPkg, setBookingPkg] = useState<DbPackage | null>(null);
   const [authGateOpen, setAuthGateOpen] = useState(false);
+  const [consultationOpen, setConsultationOpen] = useState(false);
   const { settings } = useSiteSettings();
   const supportPhone = settings.support_phone || "001-800-HAJJ-HELP";
   const telHref = `tel:${supportPhone.replace(/[^\d+]/g, "")}`;
