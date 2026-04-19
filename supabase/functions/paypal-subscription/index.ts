@@ -165,8 +165,8 @@ Deno.serve(async (req) => {
 
     if (!supabaseUrl || !serviceRoleKey) {
       return new Response(
-        JSON.stringify({ error: "Server configuration error" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Server configuration error: missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -405,10 +405,13 @@ Deno.serve(async (req) => {
 
     throw new Error(`Unknown action: ${action}`);
   } catch (error: any) {
-    console.error("PayPal subscription error:", error);
+    console.error("PayPal subscription error:", error?.message, error?.stack);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({
+        error: error?.message || String(error) || "Unknown server error",
+        stack: error?.stack?.split("\n").slice(0, 3).join(" | "),
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
