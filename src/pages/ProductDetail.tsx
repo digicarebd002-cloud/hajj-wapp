@@ -208,7 +208,12 @@ const ProductDetail = () => {
   const description = (product as any).description;
   const stock = (product as any).stock ?? -1;
   const isOutOfStock = stock === 0;
-  const canAdd = !!selectedColor && !!selectedSize && !isOutOfStock;
+  const requiresSize = sizes.length > 0;
+  const requiresColor = colors.length > 0;
+  const canAdd =
+    !isOutOfStock &&
+    (!requiresSize || !!selectedSize) &&
+    (!requiresColor || !!selectedColor);
 
   const selectedVariant = variants.find(
     (v) => v.size === selectedSize && v.color_name === selectedColor
@@ -224,14 +229,15 @@ const ProductDetail = () => {
         productId: product.id,
         name: product.name,
         price: displayPrice,
-        size: selectedSize!,
-        color: selectedColor!,
+        size: selectedSize ?? "One Size",
+        color: selectedColor ?? "Default",
         image: product.image_emoji || "🛍️",
         imageUrl: imageUrl || undefined,
         category: product.category,
       });
     }
-    toast({ title: "Added to cart", description: `${quantity}x ${product.name} (${selectedSize}, ${selectedColor})` });
+    const variantLabel = [selectedSize, selectedColor].filter(Boolean).join(", ");
+    toast({ title: "Added to cart", description: `${quantity}x ${product.name}${variantLabel ? ` (${variantLabel})` : ""}` });
     setIsOpen(true);
   };
 
@@ -507,12 +513,18 @@ const ProductDetail = () => {
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  {canAdd ? `Add to Cart — $${(displayPrice * quantity).toFixed(2)}` : "Select options"}
+                  {isOutOfStock
+                    ? "Sold Out"
+                    : canAdd
+                      ? `Add to Cart — $${(displayPrice * quantity).toFixed(2)}`
+                      : "Select options"}
                 </Button>
               </div>
 
               {!canAdd && !isOutOfStock && (
-                <p className="text-xs text-muted-foreground">Please select size and color to add to cart.</p>
+                <p className="text-xs text-muted-foreground">
+                  Please select {[requiresSize && "size", requiresColor && "color"].filter(Boolean).join(" and ")} to add to cart.
+                </p>
               )}
             </div>
 
