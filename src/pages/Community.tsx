@@ -264,22 +264,37 @@ const StatsSidebar = ({ stats, statsLoading }: { stats: any; statsLoading: boole
 
 /* ─── Sidebar: Earn Points ─── */
 const PointsSidebar = ({ rules }: { rules: { label: string; points: number }[] }) => (
-  <motion.div variants={slideRight} className="bg-gradient-to-br from-primary/10 via-card to-accent/5 rounded-2xl border border-primary/20 p-5">
-    <h3 className="font-bold text-base mb-4 flex items-center gap-2">
-      <span className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center"><Sparkles className="h-4 w-4 text-primary" /></span>
-      Earn Points
-    </h3>
-    <div className="space-y-2.5">
-      {rules.map((r) => (
-        <div key={r.label} className="flex items-center justify-between text-sm">
-          <span className="text-foreground">{r.label}</span>
-          <span className="font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full text-xs">+{r.points}</span>
-        </div>
-      ))}
+  <motion.div
+    variants={slideRight}
+    className="rounded-2xl p-5 relative overflow-hidden text-white"
+    style={{
+      background: "linear-gradient(135deg, hsl(142, 72%, 32%) 0%, hsl(142, 60%, 22%) 50%, hsl(160, 50%, 14%) 100%)",
+    }}
+  >
+    <div
+      className="absolute inset-0 opacity-[0.06] pointer-events-none"
+      style={{
+        backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+        backgroundSize: "20px 20px",
+      }}
+    />
+    <div className="relative z-10">
+      <h3 className="font-bold text-base mb-4 flex items-center gap-2 text-white">
+        <span className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center"><Sparkles className="h-4 w-4 text-white" /></span>
+        Earn Points
+      </h3>
+      <div className="space-y-2.5">
+        {rules.map((r) => (
+          <div key={r.label} className="flex items-center justify-between text-sm">
+            <span className="text-white/90">{r.label}</span>
+            <span className="font-bold text-white bg-white/15 px-2.5 py-0.5 rounded-full text-xs">+{r.points}</span>
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-white/70 mt-4 leading-relaxed">
+        Points unlock higher tiers with exclusive benefits like store discounts and priority support!
+      </p>
     </div>
-    <p className="text-[11px] text-muted-foreground mt-4 leading-relaxed">
-      Points unlock higher tiers with exclusive benefits like store discounts and priority support!
-    </p>
   </motion.div>
 );
 
