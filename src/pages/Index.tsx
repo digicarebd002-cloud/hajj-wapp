@@ -460,7 +460,7 @@ const Index = () => {
                         <span className="text-3xl font-bold text-primary">${pkg.price.toLocaleString()}</span>
                         <span className="text-muted-foreground text-xs"> /person</span>
                       </div>
-                      <ul className="space-y-2 mb-6 flex-1 min-h-[180px]">
+                      <ul className="space-y-2 mb-6 flex-1">
                         {pkg.features.map((f) => (
                           <li key={f} className="flex items-start gap-2 text-xs">
                             <div className={`w-4 h-4 ${pkg.popular ? "bg-accent/15" : "bg-primary/10"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5`}>
