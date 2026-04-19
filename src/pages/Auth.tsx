@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SEOHead from "@/components/SEOHead";
 import MfaChallenge from "@/components/MfaChallenge";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { Gift } from "lucide-react";
+import { Gift, Crown, Loader2, CreditCard, CheckCircle2 } from "lucide-react";
 
 const Auth = () => {
   const { signIn, signUp, user, returnTo } = useAuth();
