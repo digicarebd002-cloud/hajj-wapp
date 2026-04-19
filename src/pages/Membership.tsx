@@ -240,21 +240,24 @@ const Membership = () => {
                           </Button>
                         ) : upgrade ? (
                           <div className="space-y-2">
-                            <p className="text-xs text-center text-muted-foreground mb-1">Pay with PayPal — ${plan.price}/mo</p>
-                            <PayPalButton
-                              amount={plan.price}
-                              description={`${plan.name} Membership`}
-                              type="membership"
-                              captureExtra={{ planData: { id: plan.id, name: plan.name } }}
-                              onSuccess={() => {
-                                toast.success(`${plan.name} membership activated!`);
-                                setCurrentTier(plan.name);
-                                const endsAt = new Date();
-                                endsAt.setMonth(endsAt.getMonth() + 1);
-                                setActiveMembership({ plan_id: plan.id, ends_at: endsAt.toISOString(), plan: { name: plan.name } });
-                              }}
-                              onError={(err) => toast.error("Payment failed: " + err)}
-                            />
+                            <p className="text-xs text-center text-muted-foreground mb-1">
+                              Auto-debit ${plan.price}/month via PayPal
+                            </p>
+                            <Button
+                              className="w-full rounded-full gap-2"
+                              variant={plan.slug === "gold" ? "default" : "outline"}
+                              disabled={purchasing === plan.id}
+                              onClick={() => handleSubscribe(plan)}
+                            >
+                              {purchasing === plan.id ? (
+                                <><Loader2 className="h-4 w-4 animate-spin" /> Redirecting…</>
+                              ) : (
+                                <>Subscribe — ${plan.price}/mo <ArrowRight className="h-4 w-4" /></>
+                              )}
+                            </Button>
+                            <p className="text-[10px] text-center text-muted-foreground">
+                              Cancel anytime from your Wallet page
+                            </p>
                           </div>
                         ) : (
                           <Button disabled className="w-full rounded-full" variant="ghost">
