@@ -380,13 +380,13 @@ const MembershipTiers = () => (
         </p>
       </div>
 
-      <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {tiers.map((tier) => (
           <motion.div
             key={tier.name}
             variants={cardPop}
             whileHover={{ y: -10, scale: 1.02 }}
-            className={`rounded-2xl p-6 relative ${tier.bg} ${tier.glow}`}
+            className={`rounded-2xl p-6 relative flex h-full flex-col ${tier.bg} ${tier.glow}`}
           >
             {tier.popular && (
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground border-0">
@@ -398,7 +398,7 @@ const MembershipTiers = () => (
               <h3 className="text-xl font-bold">{tier.name}</h3>
               <p className="text-xs text-muted-foreground mt-1">{tier.points}</p>
             </div>
-            <ul className="space-y-2.5 mb-6">
+            <ul className="space-y-2.5 mb-6 flex-1">
               {tier.benefits.map((b) => (
                 <li key={b} className="flex items-start gap-2 text-sm">
                   <span className="text-primary mt-0.5">✓</span>
