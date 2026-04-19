@@ -62,7 +62,7 @@ const SubscriptionGate = ({ children }: SubscriptionGateProps) => {
 
       if (error) throw error;
       if (data?.success) {
-        toast({ title: "✅ সাবস্ক্রিপশন সক্রিয়!", description: "আপনার অ্যাকাউন্ট এখন সম্পূর্ণ সক্রিয়।" });
+        toast({ title: "✅ Subscription activated!", description: "Your account is now fully active." });
         setHasSubscription(true);
         // Clean URL
         const url = new URL(window.location.href);
@@ -130,20 +130,20 @@ const SubscriptionGate = ({ children }: SubscriptionGateProps) => {
           <img src={logoImg} alt="Hajj Wallet" className="h-16 w-16 mx-auto object-contain" />
           <div>
             <Crown className="h-12 w-12 text-primary mx-auto mb-3" />
-            <h2 className="text-xl font-bold">সাবস্ক্রিপশন প্রয়োজন</h2>
+            <h2 className="text-xl font-bold">Subscription required</h2>
             <p className="text-muted-foreground mt-2 text-sm">
-              Hajj Wallet ব্যবহার করতে মাসিক $15 সাবস্ক্রিপশন বাধ্যতামূলক। 
-              এটি আপনার প্রথম মাসের সার্ভিস ফি।
+              A mandatory $15 monthly subscription is required to use Hajj Wallet.
+              This covers your first month of service.
             </p>
           </div>
 
           <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
             <div className="flex items-center justify-center gap-2 mb-2">
               <CreditCard className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-lg">$15/মাস</span>
+              <span className="font-semibold text-lg">$15/month</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              PayPal দিয়ে নিরাপদ পেমেন্ট • যেকোনো সময় বাতিল করা যাবে
+              Secure payment with PayPal • Cancel anytime
             </p>
           </div>
 
@@ -155,17 +155,17 @@ const SubscriptionGate = ({ children }: SubscriptionGateProps) => {
           >
             {subscribing ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> প্রসেসিং...
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...
               </>
             ) : (
               <>
-                <Crown className="h-4 w-4 mr-2" /> সাবস্ক্রাইব করুন - $15/মাস
+                <Crown className="h-4 w-4 mr-2" /> Subscribe - $15/month
               </>
             )}
           </Button>
 
           <p className="text-xs text-muted-foreground">
-            পেমেন্ট সম্পন্ন হলে আপনি স্বয়ংক্রিয়ভাবে ওয়ালেটে প্রবেশ করতে পারবেন।
+            Once payment is complete, you will automatically get access to the wallet.
           </p>
         </div>
       </motion.div>

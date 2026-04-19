@@ -82,7 +82,7 @@ const Auth = () => {
           });
           if (error) throw error;
           if (data?.success) {
-            toast({ title: "✅ সাবস্ক্রিপশন সক্রিয়!", description: "আপনার অ্যাকাউন্ট সম্পূর্ণ সক্রিয় হয়েছে।" });
+            toast({ title: "✅ Subscription activated!", description: "Your account is now fully active." });
             navigate(returnTo || "/wallet", { replace: true });
             return;
           }
@@ -98,7 +98,7 @@ const Auth = () => {
     }
 
     if (result === "cancelled") {
-      toast({ title: "পেমেন্ট বাতিল হয়েছে", description: "একাউন্ট সক্রিয় করতে সাবস্ক্রিপশন প্রয়োজন।", variant: "destructive" });
+      toast({ title: "Payment cancelled", description: "A subscription is required to activate your account.", variant: "destructive" });
       setShowSubGate(true);
       return;
     }
@@ -188,7 +188,7 @@ const Auth = () => {
       localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
     }
 
-    toast({ title: "অ্যাকাউন্ট তৈরি হয়েছে!", description: "এখন $15 সাবস্ক্রিপশন পেমেন্ট সম্পন্ন করুন।" });
+    toast({ title: "Account created!", description: "Now complete the $15 subscription payment." });
     setShowSubGate(true);
     setLoading(false);
 
@@ -233,7 +233,7 @@ const Auth = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-3">
           <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">সাবস্ক্রিপশন সক্রিয় করা হচ্ছে...</p>
+          <p className="text-muted-foreground">Activating subscription...</p>
         </div>
       </div>
     );
@@ -253,24 +253,24 @@ const Auth = () => {
             <img src={logoImg} alt="Hajj Wallet" className="h-16 w-16 mx-auto object-contain" />
             <div className="flex items-center justify-center gap-2 text-primary text-sm">
               <CheckCircle2 className="h-4 w-4" />
-              <span>অ্যাকাউন্ট তৈরি হয়েছে</span>
+              <span>Account created</span>
             </div>
             <div>
               <Crown className="h-12 w-12 text-primary mx-auto mb-3" />
-              <h2 className="text-xl font-bold">সাবস্ক্রিপশন সক্রিয় করুন</h2>
+              <h2 className="text-xl font-bold">Activate your subscription</h2>
               <p className="text-muted-foreground mt-2 text-sm">
-                আপনার অ্যাকাউন্ট ব্যবহার শুরু করতে $15 মাসিক সাবস্ক্রিপশন বাধ্যতামূলক।
-                পেমেন্ট সম্পন্ন না হওয়া পর্যন্ত কোনো ফিচার ব্যবহার করা যাবে না।
+                A mandatory $15 monthly subscription is required to start using your account.
+                No features will be available until payment is completed.
               </p>
             </div>
 
             <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <CreditCard className="h-5 w-5 text-primary" />
-                <span className="font-semibold text-lg">$15/মাস</span>
+                <span className="font-semibold text-lg">$15/month</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                PayPal দিয়ে নিরাপদ পেমেন্ট • যেকোনো সময় বাতিল করা যাবে
+                Secure payment with PayPal • Cancel anytime
               </p>
             </div>
 
@@ -281,9 +281,9 @@ const Auth = () => {
               size="lg"
             >
               {subscribing ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> PayPal-এ রিডাইরেক্ট করা হচ্ছে...</>
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting to PayPal...</>
               ) : (
-                <><Crown className="h-4 w-4 mr-2" /> সাবস্ক্রাইব করুন - $15/মাস</>
+                <><Crown className="h-4 w-4 mr-2" /> Subscribe - $15/month</>
               )}
             </Button>
 
@@ -294,7 +294,7 @@ const Auth = () => {
               }}
               className="text-xs text-muted-foreground hover:text-foreground underline block w-full"
             >
-              সাইন আউট করুন
+              Sign out
             </button>
           </div>
         </motion.div>
