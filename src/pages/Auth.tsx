@@ -134,7 +134,7 @@ const Auth = () => {
       });
 
       const subData = await res.json().catch(() => ({}));
-      if (!res.ok) {
+      if (!res.ok || subData?.error) {
         throw new Error(subData?.error || `Server error (${res.status})`);
       }
 
