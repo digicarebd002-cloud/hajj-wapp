@@ -14,7 +14,8 @@
 14: VPS (Coolify+Supabase) and cPanel (email host for info@hajj-wallet.com) are SEPARATE servers. Never assume cPanel is on VPS.
 15: 
 16: ## Memories
-17: - [VPS/cPanel Separation](mem://infrastructure/email-cpanel-separation) — VPS and cPanel are different servers; SMTP is external relay
+17: - [VPS SSH Access](mem://infrastructure/vps-ssh-access) — SSH root@76.13.123.99 (Hostinger VPS hosting Coolify+Supabase)
+- [VPS/cPanel Separation](mem://infrastructure/email-cpanel-separation) — VPS and cPanel are different servers; SMTP is external relay
 18: - [Core Functionality](mem://product/core-functionality) — Overview of Hajj Wallet features (wallet, store, forum, booking)
 19: - [Deployment URLs](mem://product/deployment-urls) — Production web at https://digitechbd.shop/
 20: - [Backend Architecture](mem://tech-stack/backend) — Self-hosted Supabase, Deno Edge Functions router
