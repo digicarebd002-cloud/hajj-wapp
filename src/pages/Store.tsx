@@ -399,7 +399,7 @@ const Store = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-start gap-3"
+                className="flex items-center gap-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <item.icon className="h-5 w-5 text-primary" />
