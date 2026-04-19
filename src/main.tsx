@@ -29,7 +29,7 @@ const isPreviewOrDevHost =
 
 // One-time cache buster — bump this string to force ALL devices to wipe
 // stale service workers + caches the next time they open the app.
-const CACHE_BUSTER_KEY = "hw_cache_buster_v4_2026_04_19";
+const CACHE_BUSTER_KEY = "hw_cache_buster_v5_2026_04_19_b";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
@@ -71,11 +71,27 @@ if ("serviceWorker" in navigator) {
       window.location.reload();
     });
 
-    // 3) Periodically check for updates (every 60s)
+    // 3) Listen for new SW installations and force activation
     try {
       const reg = await navigator.serviceWorker.getRegistration();
       if (reg) {
-        setInterval(() => reg.update().catch(() => {}), 60_000);
+        // Force any waiting SW to activate immediately
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+        reg.addEventListener("updatefound", () => {
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener("statechange", () => {
+            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+              newWorker.postMessage({ type: "SKIP_WAITING" });
+            }
+          });
+        });
+        // Check for updates more aggressively (every 30s)
+        setInterval(() => reg.update().catch(() => {}), 30_000);
+        // Also check when tab regains focus
+        window.addEventListener("focus", () => reg.update().catch(() => {}));
       }
     } catch { /* ignore */ }
   });
