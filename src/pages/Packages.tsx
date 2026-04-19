@@ -406,7 +406,7 @@ const Packages = () => {
                     </div>
                     <Separator />
                     {features.length > 0 && (
-                      <div>
+                      <div className="flex-1">
                         <div className="flex items-center gap-2 mb-3">
                           <MapPin className="h-4 w-4 text-primary" />
                           <span className="font-bold text-card-foreground">Package Features</span>
