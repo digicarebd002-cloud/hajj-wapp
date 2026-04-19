@@ -149,7 +149,7 @@ const Navbar = () => {
           ) : (
             <Link to="/auth">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="outline" size="sm" className="gap-2 rounded-full px-5">
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-full h-9 px-4 text-sm">
                   <User className="h-3.5 w-3.5" />
                   Login
                 </Button>
