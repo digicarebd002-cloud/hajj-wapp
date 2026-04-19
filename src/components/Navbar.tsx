@@ -102,7 +102,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop actions */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2 bg-card/95 backdrop-blur-md rounded-full px-2 py-1 border border-border/60 shadow-sm">
           <GlobalSearch />
           <NotificationBell />
           <Link to="/wishlist">
