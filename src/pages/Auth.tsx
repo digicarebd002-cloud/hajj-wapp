@@ -114,6 +114,29 @@ const Auth = () => {
     })();
   }, [user, navigate, returnTo, checkSubscription]);
 
+  const startSubscription = async () => {
+    setSubscribing(true);
+    try {
+      const returnUrl = `${window.location.origin}/auth?subscription=success`;
+      const cancelUrl = `${window.location.origin}/auth?subscription=cancelled`;
+
+      const { data: subData, error: subError } = await supabase.functions.invoke("paypal-subscription", {
+        body: { action: "create-subscription", returnUrl, cancelUrl },
+      });
+
+      if (subError) throw subError;
+
+      if (subData?.approvalUrl) {
+        window.location.href = subData.approvalUrl;
+        return;
+      }
+      throw new Error("No approval URL received");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+      setSubscribing(false);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -134,7 +157,7 @@ const Auth = () => {
     }
 
     toast({ title: "Welcome back!" });
-    navigate(returnTo || "/wallet", { replace: true });
+    // The user effect above will check subscription and either navigate or show the gate.
   };
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -148,45 +171,29 @@ const Auth = () => {
       form.get("name") as string,
       form.get("phone") as string
     );
-    setLoading(false);
     if (error) {
+      setLoading(false);
       toast({ title: "Registration failed", description: error.message, variant: "destructive" });
-    } else {
-      // Auto-confirm user email via edge function
-      const userId = data?.user?.id;
-      if (userId) {
-        try {
-          await supabase.functions.invoke("confirm-user", { body: { user_id: userId } });
-        } catch (_) { /* silent fallback */ }
-      }
-      if (referralInput) {
-        localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
-      }
-
-      // Initiate mandatory PayPal subscription
-      toast({ title: "অ্যাকাউন্ট তৈরি হয়েছে!", description: "এখন সাবস্ক্রিপশন পেমেন্ট সম্পন্ন করুন।" });
-
-      try {
-        const returnUrl = `${window.location.origin}/wallet?subscription=success`;
-        const cancelUrl = `${window.location.origin}/wallet?subscription=cancelled`;
-
-        const { data: subData, error: subError } = await supabase.functions.invoke("paypal-subscription", {
-          body: { action: "create-subscription", returnUrl, cancelUrl },
-        });
-
-        if (subError) throw subError;
-
-        if (subData?.approvalUrl) {
-          window.location.href = subData.approvalUrl;
-          return;
-        }
-      } catch (subErr) {
-        console.error("Subscription creation error:", subErr);
-      }
-
-      // Fallback: navigate to wallet where SubscriptionGate will handle it
-      navigate("/wallet", { replace: true });
+      return;
     }
+
+    // Auto-confirm user email via edge function
+    const userId = data?.user?.id;
+    if (userId) {
+      try {
+        await supabase.functions.invoke("confirm-user", { body: { user_id: userId } });
+      } catch (_) { /* silent fallback */ }
+    }
+    if (referralInput) {
+      localStorage.setItem("pending_referral_code", referralInput.toUpperCase());
+    }
+
+    toast({ title: "অ্যাকাউন্ট তৈরি হয়েছে!", description: "এখন $15 সাবস্ক্রিপশন পেমেন্ট সম্পন্ন করুন।" });
+    setShowSubGate(true);
+    setLoading(false);
+
+    // Immediately redirect to PayPal — subscription is mandatory
+    await startSubscription();
   };
 
   // Process pending referral after login
