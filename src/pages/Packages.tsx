@@ -21,6 +21,7 @@ import { usePackages, useProfile, useWallet } from "@/hooks/use-supabase-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { motion } from "framer-motion";
 import packageMadinah from "@/assets/package-madinah.jpg";
 import packageMakkah from "@/assets/package-makkah.jpg";
