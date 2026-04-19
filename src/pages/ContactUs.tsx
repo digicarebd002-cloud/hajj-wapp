@@ -78,7 +78,7 @@ const ContactUs = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 pb-20 -mt-4">
+      <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Contact Info Cards */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-1 space-y-4">
