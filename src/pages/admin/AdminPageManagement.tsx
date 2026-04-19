@@ -45,8 +45,10 @@ export default function AdminPageManagement() {
         .from("page_contents")
         .select("page_slug")
         .order("page_slug") as any;
-      const slugs = [...new Set((data as { page_slug: string }[] || []).map(r => r.page_slug))];
-      setPages(slugs);
+      const existing = (data as { page_slug: string }[] || []).map(r => r.page_slug);
+      // Always show all known pages, even if they have no content rows yet
+      const allSlugs = Array.from(new Set([...Object.keys(PAGE_LABELS), ...existing]));
+      setPages(allSlugs);
       setLoading(false);
     })();
   }, []);
