@@ -51,19 +51,19 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
-            urlPattern: /^https:\/\/iennklbxdvguzfoqgpwa\.supabase\.co\/rest\/.*/i,
+            urlPattern: /^https:\/\/hajjwalletsupabase\.digicarebd\.com\/rest\/.*/i,
             handler: "NetworkFirst",
             options: {
-              cacheName: "supabase-api-cache",
+              cacheName: "supabase-api-cache-v2",
               expiration: { maxEntries: 50, maxAgeSeconds: 5 * 60 },
               networkTimeoutSeconds: 10,
             },
           },
           {
-            urlPattern: /^https:\/\/iennklbxdvguzfoqgpwa\.supabase\.co\/storage\/.*/i,
+            urlPattern: /^https:\/\/hajjwalletsupabase\.digicarebd\.com\/storage\/.*/i,
             handler: "CacheFirst",
             options: {
-              cacheName: "supabase-storage-cache",
+              cacheName: "supabase-storage-cache-v2",
               expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
