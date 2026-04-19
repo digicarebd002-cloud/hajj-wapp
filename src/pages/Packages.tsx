@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import ConsultationModal from "@/components/ConsultationModal";
 import { motion } from "framer-motion";
 import packageMadinah from "@/assets/package-madinah.jpg";
 import packageMakkah from "@/assets/package-makkah.jpg";
@@ -316,6 +317,7 @@ const Packages = () => {
   const { data: packages, loading, error, refetch } = usePackages();
   const [bookingPkg, setBookingPkg] = useState<DbPackage | null>(null);
   const [authGateOpen, setAuthGateOpen] = useState(false);
+  const [consultationOpen, setConsultationOpen] = useState(false);
   const { settings } = useSiteSettings();
   const supportPhone = settings.support_phone || "001-800-HAJJ-HELP";
   const telHref = `tel:${supportPhone.replace(/[^\d+]/g, "")}`;
@@ -477,9 +479,11 @@ const Packages = () => {
             <h2 className="text-2xl font-bold mb-2 text-white">Need Help Choosing?</h2>
             <p className="text-white/80 mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.a href={telHref} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="lg" variant="secondary" className="gap-2"><Phone className="h-4 w-4" /> Call an Advisor</Button>
-              </motion.a>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button size="lg" variant="secondary" className="gap-2" onClick={() => setConsultationOpen(true)}>
+                  <CalendarIcon className="h-4 w-4" /> Schedule Free Consultation
+                </Button>
+              </motion.div>
               <a href={telHref} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors">
                 <Phone className="h-4 w-4" /><span className="font-medium">{supportPhone}</span>
               </a>
@@ -505,6 +509,7 @@ const Packages = () => {
 
       {bookingPkg && <BookingModal pkg={bookingPkg} open={!!bookingPkg} onClose={() => setBookingPkg(null)} />}
       <AuthGate open={authGateOpen} onClose={() => setAuthGateOpen(false)} message="Sign in to book a Hajj package and start your journey!" />
+      <ConsultationModal open={consultationOpen} onOpenChange={setConsultationOpen} />
     </div>
   );
 };
