@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/SEOHead";
 import { Crown, Check, Loader2, Wallet, ArrowRight, Shield, Star, Zap } from "lucide-react";
-import PayPalButton from "@/components/PayPalButton";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -135,6 +135,76 @@ const Membership = () => {
     }
   };
 
+  const handleSubscribe = async (plan: Plan) => {
+    if (!user) return;
+    if (plan.price === 0) {
+      toast.info("Silver membership is free and already active!");
+      return;
+    }
+
+    setPurchasing(plan.id);
+    try {
+      const returnUrl = `${window.location.origin}/membership?subscription=success`;
+      const cancelUrl = `${window.location.origin}/membership?subscription=cancelled`;
+
+      const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+        body: {
+          action: "create-subscription",
+          returnUrl,
+          cancelUrl,
+          planData: { id: plan.id, name: plan.name, price: plan.price },
+        },
+      });
+
+      if (error) throw new Error(error.message);
+      if (!data?.approvalUrl) throw new Error("No approval URL received from PayPal");
+
+      // Redirect to PayPal for auto-debit authorization
+      window.location.href = data.approvalUrl;
+    } catch (err: any) {
+      toast.error("Subscription failed: " + err.message);
+      setPurchasing(null);
+    }
+  };
+
+  // Handle return from PayPal subscription approval
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("subscription");
+    const subId = params.get("subscription_id");
+
+    if (result === "success" && subId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+            body: { action: "activate-subscription", subscriptionId: subId },
+          });
+          if (error) throw new Error(error.message);
+          if (data?.success) {
+            toast.success("Membership activated! Auto-debit enabled.");
+            await loadUserData();
+          }
+        } catch (err: any) {
+          toast.error("Activation failed: " + err.message);
+        } finally {
+          // Clean URL
+          const url = new URL(window.location.href);
+          url.searchParams.delete("subscription");
+          url.searchParams.delete("subscription_id");
+          url.searchParams.delete("ba_token");
+          url.searchParams.delete("token");
+          window.history.replaceState({}, "", url.pathname);
+        }
+      })();
+    } else if (result === "cancelled") {
+      toast.error("Subscription cancelled. You can try again anytime.");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("subscription");
+      window.history.replaceState({}, "", url.pathname);
+    }
+  }, [user]);
+
   const isCurrentPlan = (plan: Plan) => plan.name === currentTier;
   const isUpgrade = (plan: Plan) => {
     const order = { Silver: 0, Gold: 1, Platinum: 2 };
@@ -240,21 +310,24 @@ const Membership = () => {
                           </Button>
                         ) : upgrade ? (
                           <div className="space-y-2">
-                            <p className="text-xs text-center text-muted-foreground mb-1">Pay with PayPal — ${plan.price}/mo</p>
-                            <PayPalButton
-                              amount={plan.price}
-                              description={`${plan.name} Membership`}
-                              type="membership"
-                              captureExtra={{ planData: { id: plan.id, name: plan.name } }}
-                              onSuccess={() => {
-                                toast.success(`${plan.name} membership activated!`);
-                                setCurrentTier(plan.name);
-                                const endsAt = new Date();
-                                endsAt.setMonth(endsAt.getMonth() + 1);
-                                setActiveMembership({ plan_id: plan.id, ends_at: endsAt.toISOString(), plan: { name: plan.name } });
-                              }}
-                              onError={(err) => toast.error("Payment failed: " + err)}
-                            />
+                            <p className="text-xs text-center text-muted-foreground mb-1">
+                              Auto-debit ${plan.price}/month via PayPal
+                            </p>
+                            <Button
+                              className="w-full rounded-full gap-2"
+                              variant={plan.slug === "gold" ? "default" : "outline"}
+                              disabled={purchasing === plan.id}
+                              onClick={() => handleSubscribe(plan)}
+                            >
+                              {purchasing === plan.id ? (
+                                <><Loader2 className="h-4 w-4 animate-spin" /> Redirecting…</>
+                              ) : (
+                                <>Subscribe — ${plan.price}/mo <ArrowRight className="h-4 w-4" /></>
+                              )}
+                            </Button>
+                            <p className="text-[10px] text-center text-muted-foreground">
+                              Cancel anytime from your Wallet page
+                            </p>
                           </div>
                         ) : (
                           <Button disabled className="w-full rounded-full" variant="ghost">
