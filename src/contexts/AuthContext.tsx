@@ -38,12 +38,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
+    // Note: Server has ENABLE_EMAIL_AUTOCONFIRM=true — no confirmation email is sent on signup.
+    // Users are auto-confirmed and can log in immediately. Password reset / other auth emails still work via SMTP.
     const { error, data } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { full_name: fullName, phone: phone || "" },
-        emailRedirectTo: window.location.origin,
       },
     });
     return { error: error as Error | null, data };
