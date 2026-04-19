@@ -364,7 +364,7 @@ const Packages = () => {
               const features = pkg.package_features?.sort((a, b) => a.sort_order - b.sort_order) ?? [];
               const imgSrc = packageImages[index % packageImages.length];
               return (
-                <motion.div key={pkg.id} variants={fadeUp} whileHover={{ y: -8, boxShadow: "0 25px 50px -12px hsl(var(--primary) / 0.15)" }} className={`bg-card rounded-xl card-shadow relative overflow-hidden ${pkg.is_popular ? "ring-2 ring-accent" : ""}`}>
+                <motion.div key={pkg.id} variants={fadeUp} whileHover={{ y: -8, boxShadow: "0 25px 50px -12px hsl(var(--primary) / 0.15)" }} className={`bg-card rounded-xl card-shadow relative overflow-hidden flex flex-col h-full ${pkg.is_popular ? "ring-2 ring-accent" : ""}`}>
                   {pkg.is_popular && (
                     <motion.div initial={{ scale: 0, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: 0.4, type: "spring", stiffness: 300 }}>
                       <Badge className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground border-0">⭐ Most Popular</Badge>
@@ -375,7 +375,7 @@ const Packages = () => {
                     <img src={imgSrc} alt={pkg.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
                   </div>
-                  <div className="p-6 space-y-5">
+                  <div className="p-6 space-y-5 flex flex-col flex-1">
                     <div>
                       <h2 className="text-2xl font-bold text-card-foreground">{pkg.name}</h2>
                       <p className="text-sm text-muted-foreground mt-1">Complete your sacred pilgrimage with comfort and guidance.</p>
@@ -421,7 +421,7 @@ const Packages = () => {
                         </ul>
                       </div>
                     )}
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex gap-3 pt-2 mt-auto">
                       <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-1">
                         <Button className="w-full btn-glow" onClick={() => handleBook(pkg)}>Book This Package</Button>
                       </motion.div>

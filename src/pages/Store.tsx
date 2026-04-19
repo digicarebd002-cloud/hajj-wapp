@@ -237,7 +237,7 @@ const Store = () => {
                   <motion.div
                     key={product.id}
                     variants={cardVariants}
-                    className="group relative bg-card rounded-xl border border-border overflow-hidden hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300"
+                    className="group relative bg-card rounded-xl border border-border overflow-hidden hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 flex flex-col h-full"
                   >
                     {/* Image */}
                     <Link to={`/store/${(product as any).slug || product.id}`} className="block relative">
@@ -296,7 +296,7 @@ const Store = () => {
                     </button>
 
                     {/* Info */}
-                    <div className="p-3 md:p-4 space-y-2.5">
+                    <div className="p-3 md:p-4 space-y-2.5 flex flex-col flex-1">
                       <div>
                         <Link to={`/store/${(product as any).slug || product.id}`} className="hover:text-primary transition-colors">
                           <h3 className="font-semibold text-sm md:text-base text-foreground line-clamp-1">{product.name}</h3>
