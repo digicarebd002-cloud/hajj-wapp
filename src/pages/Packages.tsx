@@ -509,6 +509,7 @@ const Packages = () => {
 
       {bookingPkg && <BookingModal pkg={bookingPkg} open={!!bookingPkg} onClose={() => setBookingPkg(null)} />}
       <AuthGate open={authGateOpen} onClose={() => setAuthGateOpen(false)} message="Sign in to book a Hajj package and start your journey!" />
+      <ConsultationModal open={consultationOpen} onOpenChange={setConsultationOpen} />
     </div>
   );
 };
