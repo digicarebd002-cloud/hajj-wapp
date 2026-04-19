@@ -124,7 +124,7 @@ const App = () => (
                       <Route path="/messages" element={<SubscriptionGate><Messages /></SubscriptionGate>} />
                       <Route path="/orders" element={<SubscriptionGate><MyOrders /></SubscriptionGate>} />
                       <Route path="/bookings" element={<SubscriptionGate><MyBookings /></SubscriptionGate>} />
-                      <Route path="/membership" element={<SubscriptionGate><Membership /></SubscriptionGate>} />
+                      
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/help-center" element={<HelpCenter />} />
