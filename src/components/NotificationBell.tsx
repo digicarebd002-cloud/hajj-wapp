@@ -128,6 +128,13 @@ const NotificationBell = () => {
           )}
         </div>
         <Separator />
+        <button
+          onClick={() => { setOpen(false); navigate("/notifications"); }}
+          className="w-full text-xs font-semibold text-primary hover:bg-primary/5 transition-colors py-2.5"
+        >
+          View all notifications
+        </button>
+        <Separator />
         <ScrollArea className="max-h-80">
           {notifications.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">No notifications yet</p>
