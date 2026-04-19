@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Wallet, ShoppingBag, Plane, MessageCircle, User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TourStep {
   title: string;
@@ -73,10 +74,24 @@ const OnboardingTour = () => {
   useEffect(() => {
     if (!user) return;
     const done = localStorage.getItem(`${TOUR_KEY}_${user.id}`);
-    if (!done) {
-      const timer = setTimeout(() => setActive(true), 1500);
-      return () => clearTimeout(timer);
-    }
+    if (done) return;
+
+    let cancelled = false;
+    (async () => {
+      // Only show tour AFTER subscription is active
+      try {
+        const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+          body: { action: "get-config" },
+        });
+        if (error) return;
+        if (cancelled) return;
+        if (data?.hasActiveSubscription === true) {
+          setTimeout(() => { if (!cancelled) setActive(true); }, 1500);
+        }
+      } catch { /* silent */ }
+    })();
+
+    return () => { cancelled = true; };
   }, [user]);
 
   const updateTarget = useCallback((idx: number) => {
