@@ -27,6 +27,12 @@ const Auth = () => {
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const refCode = searchParams.get("ref") || "";
 
+  // Subscription gate state (shown after registration / when logged-in user has no sub)
+  const [showSubGate, setShowSubGate] = useState(false);
+  const [checkingSub, setCheckingSub] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [activating, setActivating] = useState(false);
+
   const handleForgotPassword = async () => {
     if (!resetEmail.trim()) return;
     setResetLoading(true);
@@ -42,12 +48,71 @@ const Auth = () => {
     }
   };
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate(returnTo || "/wallet", { replace: true });
+  const checkSubscription = useCallback(async () => {
+    setCheckingSub(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+        body: { action: "get-config" },
+      });
+      if (error) throw error;
+      return data?.hasActiveSubscription === true;
+    } catch (err) {
+      console.error("Subscription check error:", err);
+      return false;
+    } finally {
+      setCheckingSub(false);
     }
-  }, [user, navigate, returnTo]);
+  }, []);
+
+  // When a user is logged in: only proceed to wallet if they have an active subscription.
+  // Otherwise, show the inline subscription gate on this same page.
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("subscription");
+    const subId = params.get("subscription_id");
+
+    // Returning from PayPal approval
+    if (result === "success" && subId) {
+      (async () => {
+        setActivating(true);
+        try {
+          const { data, error } = await supabase.functions.invoke("paypal-subscription", {
+            body: { action: "activate-subscription", subscriptionId: subId },
+          });
+          if (error) throw error;
+          if (data?.success) {
+            toast({ title: "✅ সাবস্ক্রিপশন সক্রিয়!", description: "আপনার অ্যাকাউন্ট সম্পূর্ণ সক্রিয় হয়েছে।" });
+            navigate(returnTo || "/wallet", { replace: true });
+            return;
+          }
+          throw new Error("Activation failed");
+        } catch (err: any) {
+          toast({ title: "Activation Error", description: err.message, variant: "destructive" });
+          setShowSubGate(true);
+        } finally {
+          setActivating(false);
+        }
+      })();
+      return;
+    }
+
+    if (result === "cancelled") {
+      toast({ title: "পেমেন্ট বাতিল হয়েছে", description: "একাউন্ট সক্রিয় করতে সাবস্ক্রিপশন প্রয়োজন।", variant: "destructive" });
+      setShowSubGate(true);
+      return;
+    }
+
+    // Normal logged-in arrival: verify subscription before allowing navigation
+    (async () => {
+      const ok = await checkSubscription();
+      if (ok) {
+        navigate(returnTo || "/wallet", { replace: true });
+      } else {
+        setShowSubGate(true);
+      }
+    })();
+  }, [user, navigate, returnTo, checkSubscription]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
