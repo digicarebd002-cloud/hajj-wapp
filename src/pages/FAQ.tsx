@@ -78,7 +78,7 @@ const FAQ = () => {
       <SEOHead title="FAQ & Help Center — Hajj Wallet" description="Frequently asked questions and answers about Hajj Wallet. Get help with wallet, store, packages, and community." />
 
       {/* Hero */}
-      <section className="relative bg-gradient-to-b from-primary/10 via-background to-background py-16 md:py-24">
+      <section className="relative py-16 md:py-24">
         <div className="container mx-auto px-4 text-center max-w-2xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-primary/10 flex items-center justify-center">
