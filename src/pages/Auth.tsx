@@ -216,13 +216,98 @@ const Auth = () => {
         factorId={mfaFactorId}
         onSuccess={() => {
           toast({ title: "Welcome back!" });
-          navigate(returnTo || "/wallet", { replace: true });
+          setMfaFactorId(null);
+          // The user effect will check subscription and route accordingly.
         }}
         onCancel={() => {
           setMfaFactorId(null);
           supabase.auth.signOut();
         }}
       />
+    );
+  }
+
+  // Activating subscription after PayPal return
+  if (activating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">সাবস্ক্রিপশন সক্রিয় করা হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Logged in but no active subscription — show mandatory subscription gate
+  if (user && showSubGate) {
+    return (
+      <div className="section-padding min-h-screen flex items-center justify-center">
+        <SEOHead title="Activate Subscription" description="Complete your $15/month subscription to activate your Hajj Wallet account." noindex />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md text-center"
+        >
+          <div className="bg-card rounded-xl card-shadow p-8 space-y-6">
+            <img src={logoImg} alt="Hajj Wallet" className="h-16 w-16 mx-auto object-contain" />
+            <div className="flex items-center justify-center gap-2 text-primary text-sm">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>অ্যাকাউন্ট তৈরি হয়েছে</span>
+            </div>
+            <div>
+              <Crown className="h-12 w-12 text-primary mx-auto mb-3" />
+              <h2 className="text-xl font-bold">সাবস্ক্রিপশন সক্রিয় করুন</h2>
+              <p className="text-muted-foreground mt-2 text-sm">
+                আপনার অ্যাকাউন্ট ব্যবহার শুরু করতে $15 মাসিক সাবস্ক্রিপশন বাধ্যতামূলক।
+                পেমেন্ট সম্পন্ন না হওয়া পর্যন্ত কোনো ফিচার ব্যবহার করা যাবে না।
+              </p>
+            </div>
+
+            <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CreditCard className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-lg">$15/মাস</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                PayPal দিয়ে নিরাপদ পেমেন্ট • যেকোনো সময় বাতিল করা যাবে
+              </p>
+            </div>
+
+            <Button
+              onClick={startSubscription}
+              disabled={subscribing || checkingSub}
+              className="w-full"
+              size="lg"
+            >
+              {subscribing ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> PayPal-এ রিডাইরেক্ট করা হচ্ছে...</>
+              ) : (
+                <><Crown className="h-4 w-4 mr-2" /> সাবস্ক্রাইব করুন - $15/মাস</>
+              )}
+            </Button>
+
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setShowSubGate(false);
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground underline block w-full"
+            >
+              সাইন আউট করুন
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Logged-in user, checking subscription — show loader to prevent form flash
+  if (user && checkingSub) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
