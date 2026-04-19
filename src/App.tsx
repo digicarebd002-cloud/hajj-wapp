@@ -26,7 +26,7 @@ import Install from "./pages/Install";
 import Messages from "./pages/Messages";
 import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
-import Membership from "./pages/Membership";
+
 import Wishlist from "./pages/Wishlist";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
