@@ -161,14 +161,14 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: hsl(var(--primary) / 0.4);
-    filter: blur(20px);
+    background: hsl(var(--primary) / 0.25);
+    filter: blur(10px);
     z-index: -1;
-    opacity: 0.6;
+    opacity: 0.3;
     transition: opacity 0.3s;
   }
   .btn-glow:hover::after {
-    opacity: 0.9;
+    opacity: 0.5;
   }
 
   /* Gradient border animation */
