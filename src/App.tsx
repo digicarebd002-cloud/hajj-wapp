@@ -28,6 +28,7 @@ import MyOrders from "./pages/MyOrders";
 import MyBookings from "./pages/MyBookings";
 
 import Wishlist from "./pages/Wishlist";
+import Notifications from "./pages/Notifications";
 import FAQ from "./pages/FAQ";
 import ContactUs from "./pages/ContactUs";
 import HelpCenter from "./pages/HelpCenter";
@@ -126,6 +127,7 @@ const App = () => (
                       <Route path="/bookings" element={<SubscriptionGate><MyBookings /></SubscriptionGate>} />
                       
                       <Route path="/wishlist" element={<Wishlist />} />
+                      <Route path="/notifications" element={<SubscriptionGate><Notifications /></SubscriptionGate>} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/help-center" element={<HelpCenter />} />
                       <Route path="/contact" element={<ContactUs />} />

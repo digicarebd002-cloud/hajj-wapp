@@ -90,7 +90,7 @@ export default function Notifications() {
     <div className="min-h-screen pt-24 pb-16">
       <SEOHead title="Notifications" description="Your notifications" />
       <div className="container max-w-3xl mx-auto px-4">
-        <Breadcrumbs items={[{ label: "Notifications" }]} />
+        <Breadcrumbs />
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
