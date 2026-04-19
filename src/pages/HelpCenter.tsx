@@ -95,8 +95,9 @@ const HelpCenter = () => {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.05 }}
+                className="h-full"
               >
-                <Link to={item.link} className="group flex items-start gap-3 bg-card rounded-xl border p-4 hover:shadow-md hover:border-primary/30 transition-all">
+                <Link to={item.link} className="group flex items-start gap-3 bg-card rounded-xl border p-4 hover:shadow-md hover:border-primary/30 transition-all h-full">
                   <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
                     <item.icon className="h-4 w-4 text-primary" />
                   </div>
