@@ -120,19 +120,32 @@ const Auth = () => {
       const returnUrl = `${window.location.origin}/auth?subscription=success`;
       const cancelUrl = `${window.location.origin}/auth?subscription=cancelled`;
 
-      const { data: subData, error: subError } = await supabase.functions.invoke("paypal-subscription", {
-        body: { action: "create-subscription", returnUrl, cancelUrl },
+      // Use raw fetch so we can read the actual error body from the edge function
+      const { data: { session } } = await supabase.auth.getSession();
+      const SUPABASE_URL = "https://hajjwalletsupabase.digicarebd.com";
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/paypal-subscription`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: (supabase as any).supabaseKey,
+          Authorization: `Bearer ${session?.access_token ?? (supabase as any).supabaseKey}`,
+        },
+        body: JSON.stringify({ action: "create-subscription", returnUrl, cancelUrl }),
       });
 
-      if (subError) throw subError;
+      const subData = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(subData?.error || `Server error (${res.status})`);
+      }
 
       if (subData?.approvalUrl) {
         window.location.href = subData.approvalUrl;
         return;
       }
-      throw new Error("No approval URL received");
+      throw new Error("No approval URL received from PayPal");
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      console.error("Subscription error:", err);
+      toast({ title: "Subscription error", description: err.message, variant: "destructive" });
       setSubscribing(false);
     }
   };
