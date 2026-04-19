@@ -21,6 +21,7 @@ import { usePackages, useProfile, useWallet } from "@/hooks/use-supabase-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { motion } from "framer-motion";
 import packageMadinah from "@/assets/package-madinah.jpg";
 import packageMakkah from "@/assets/package-makkah.jpg";
@@ -315,6 +316,9 @@ const Packages = () => {
   const { data: packages, loading, error, refetch } = usePackages();
   const [bookingPkg, setBookingPkg] = useState<DbPackage | null>(null);
   const [authGateOpen, setAuthGateOpen] = useState(false);
+  const { settings } = useSiteSettings();
+  const supportPhone = settings.support_phone || "001-800-HAJJ-HELP";
+  const telHref = `tel:${supportPhone.replace(/[^\d+]/g, "")}`;
 
   const handleBook = (pkg: DbPackage) => {
     if (!user) { setAuthGateOpen(true); return; }
@@ -451,14 +455,34 @@ const Packages = () => {
         </motion.div>
 
         {/* Need Help CTA */}
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 150 }} className="mb-16 border-2 border-primary rounded-xl p-8 md:p-12 text-center max-w-2xl mx-auto relative overflow-hidden">
-          <motion.div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-primary/5" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 4, repeat: Infinity }} />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 150 }}
+          className="mb-16 rounded-xl p-8 md:p-12 text-center max-w-2xl mx-auto relative overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, hsl(142, 72%, 32%) 0%, hsl(142, 60%, 22%) 50%, hsl(160, 50%, 14%) 100%)",
+          }}
+        >
+          <div
+            className="absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundSize: "24px 24px",
+            }}
+          />
+          <motion.div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white/10" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 4, repeat: Infinity }} />
           <div className="relative z-10">
-            <h2 className="text-2xl font-bold mb-2">Need Help Choosing?</h2>
-            <p className="text-muted-foreground mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
+            <h2 className="text-2xl font-bold mb-2 text-white">Need Help Choosing?</h2>
+            <p className="text-white/80 mb-6">Our Hajj advisors are ready to help you find the perfect package.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}><Button size="lg">Schedule Free Consultation</Button></motion.div>
-              <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-4 w-4" /><span className="font-medium">1-800-HAJJ-HELP</span></div>
+              <motion.a href={telHref} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button size="lg" variant="secondary" className="gap-2"><Phone className="h-4 w-4" /> Call an Advisor</Button>
+              </motion.a>
+              <a href={telHref} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors">
+                <Phone className="h-4 w-4" /><span className="font-medium">{supportPhone}</span>
+              </a>
             </div>
           </div>
         </motion.div>

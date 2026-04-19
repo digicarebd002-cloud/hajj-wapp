@@ -12,6 +12,7 @@ export interface SiteSettings {
   accent_color: string;
   footer_text: string;
   contact_email: string;
+  support_phone: string;
   social_facebook: string;
   social_twitter: string;
   social_instagram: string;
@@ -30,6 +31,7 @@ const defaults: SiteSettings = {
   accent_color: "142 79% 44%",
   footer_text: "© 2025 Hajj Wallet. All rights reserved.",
   contact_email: "",
+  support_phone: "001-800-HAJJ-HELP",
   social_facebook: "",
   social_twitter: "",
   social_instagram: "",

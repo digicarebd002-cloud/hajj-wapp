@@ -37,6 +37,7 @@ const colorFields: SettingField[] = [
 const seoFields: SettingField[] = [
   { key: "og_image_url", label: "OG Image URL", type: "url", placeholder: "https://example.com/og-image.jpg", hint: "Social share image (1200×630 recommended)" },
   { key: "contact_email", label: "Contact Email", type: "email", placeholder: "contact@example.com" },
+  { key: "support_phone", label: "Support Phone", type: "text", placeholder: "001-800-HAJJ-HELP", hint: "US format with leading 00 (e.g. 001-800-555-1234). Used in 'Need Help' callouts." },
 ];
 
 const socialFields: SettingField[] = [
