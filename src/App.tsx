@@ -123,7 +123,7 @@ const App = () => (
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/install" element={<Install />} />
                       <Route path="/messages" element={<SubscriptionGate><Messages /></SubscriptionGate>} />
-                      <Route path="/orders" element={<SubscriptionGate><MyOrders /></SubscriptionGate>} />
+                      <Route path="/orders" element={<MyOrders />} />
                       <Route path="/bookings" element={<SubscriptionGate><MyBookings /></SubscriptionGate>} />
                       
                       <Route path="/wishlist" element={<Wishlist />} />
