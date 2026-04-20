@@ -97,10 +97,10 @@ export function generateInvoicePDF(data: InvoiceData) {
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
   doc.text("PRODUCT", margin + 4, y + 7);
-  doc.text("SIZE", margin + 90, y + 7);
-  doc.text("COLOR", margin + 110, y + 7);
-  doc.text("QTY", margin + 135, y + 7);
-  doc.text("PRICE", margin + 148, y + 7);
+  doc.text("SIZE", margin + 78, y + 7);
+  doc.text("COLOR", margin + 98, y + 7);
+  doc.text("QTY", margin + 122, y + 7);
+  doc.text("PRICE", margin + 138, y + 7, { align: "right" });
   doc.text("TOTAL", pageWidth - margin - 4, y + 7, { align: "right" });
   y += 14;
 
@@ -118,12 +118,13 @@ export function generateInvoicePDF(data: InvoiceData) {
     doc.setFont("helvetica", "normal");
     // Truncate long names
     const displayName = item.name.length > 30 ? item.name.substring(0, 28) + "..." : item.name;
-    doc.text(displayName, margin + 4, y + 4);
+    const truncName = item.name.length > 26 ? item.name.substring(0, 24) + "..." : item.name;
+    doc.text(truncName, margin + 4, y + 4);
     doc.setTextColor(muted[0], muted[1], muted[2]);
-    doc.text(item.size, margin + 90, y + 4);
-    doc.text(item.color, margin + 110, y + 4);
-    doc.text(String(item.quantity), margin + 137, y + 4);
-    doc.text(`$${item.price.toFixed(2)}`, margin + 148, y + 4);
+    doc.text(item.size, margin + 78, y + 4);
+    doc.text(item.color, margin + 98, y + 4);
+    doc.text(String(item.quantity), margin + 124, y + 4);
+    doc.text(`$${item.price.toFixed(2)}`, margin + 138, y + 4, { align: "right" });
 
     doc.setTextColor(dark[0], dark[1], dark[2]);
     doc.setFont("helvetica", "bold");
