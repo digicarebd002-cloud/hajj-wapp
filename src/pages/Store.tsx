@@ -227,9 +227,12 @@ const Store = () => {
                 const sel = getSelection(product.id);
                 const stock = (product as any).stock ?? -1;
                 const isOutOfStock = stock === 0;
-                const canAdd = !!sel.color && !!sel.size && !isOutOfStock;
                 const variants = product.product_variants ?? [];
                 const colors = [...new Map(variants.map((v) => [v.color_name, v])).values()];
+                const variantSizes = [...new Set(variants.map((v: any) => v.size).filter(Boolean))];
+                const needsColor = colors.length > 0;
+                const needsSize = variantSizes.length > 0;
+                const canAdd = !isOutOfStock && (!needsColor || !!sel.color) && (!needsSize || !!sel.size);
                 const sizes = [...new Set(variants.map((v) => v.size))];
                 const imageUrl = (product as any).image_url;
 
