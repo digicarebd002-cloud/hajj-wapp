@@ -114,10 +114,11 @@ export function generateInvoicePDF(data: InvoiceData) {
       doc.line(margin, y - 2, pageWidth - margin, y - 2);
     }
 
+    // Truncate long names
     doc.setTextColor(dark[0], dark[1], dark[2]);
     doc.setFont("helvetica", "normal");
-    // Truncate long names
-    const displayName = item.name.length > 30 ? item.name.substring(0, 28) + "..." : item.name;
+    const truncName = item.name.length > 26 ? item.name.substring(0, 24) + "..." : item.name;
+    doc.text(truncName, margin + 4, y + 4);
     const truncName = item.name.length > 26 ? item.name.substring(0, 24) + "..." : item.name;
     doc.text(truncName, margin + 4, y + 4);
     doc.setTextColor(muted[0], muted[1], muted[2]);
