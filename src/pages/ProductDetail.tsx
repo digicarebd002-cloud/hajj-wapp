@@ -177,14 +177,14 @@ const ProductDetail = () => {
       description: metaDesc,
       image: ogImage || undefined,
       offers: { "@type": "Offer", price: Number(product.price).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock" },
-      aggregateRating: product.reviews > 0 ? { "@type": "AggregateRating", ratingValue: Number(product.rating).toFixed(1), reviewCount: product.reviews } : undefined,
+      aggregateRating: reviews.length > 0 ? { "@type": "AggregateRating", ratingValue: (reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length).toFixed(1), reviewCount: reviews.length } : undefined,
     });
     return () => {
       document.title = "Hajj Wallet — Your Sacred Journey Starts Here";
       const ldEl = document.getElementById("product-jsonld");
       if (ldEl) ldEl.remove();
     };
-  }, [product]);
+  }, [product, reviews]);
 
   if (loading) return (
     <div className="min-h-screen bg-background">
@@ -388,26 +388,34 @@ const ProductDetail = () => {
               <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight">{product.name}</h1>
             </div>
 
-            {/* Rating */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.floor(Number(product.rating)) ? "fill-gold text-gold" : "text-border"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm font-semibold text-foreground">{Number(product.rating).toFixed(1)}</span>
-              <span className="text-sm text-muted-foreground">({product.reviews} reviews)</span>
-              {!isOutOfStock && (
-                <span className="text-xs text-primary font-medium flex items-center gap-1 ml-auto">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> In Stock
-                </span>
-              )}
-            </div>
+            {/* Rating — computed from real reviews */}
+            {(() => {
+              const count = reviews.length;
+              const avg = count > 0 ? reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / count : 0;
+              return (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < Math.round(avg) ? "fill-gold text-gold" : "text-border"}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">
+                    {count > 0 ? avg.toFixed(1) : "—"}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    ({count} {count === 1 ? "review" : "reviews"})
+                  </span>
+                  {!isOutOfStock && (
+                    <span className="text-xs text-primary font-medium flex items-center gap-1 ml-auto">
+                      <CheckCircle2 className="h-3.5 w-3.5" /> In Stock
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Price */}
             <div className="flex items-baseline gap-3 pb-4 border-b border-border">
