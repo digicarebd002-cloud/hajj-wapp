@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag, MessageCircle, Package, FileText, Plane,
   Phone, CreditCard, Lock, LogOut, Edit, Check, X,
-  TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare,
+  TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare, ShieldCheck,
 } from "lucide-react";
 
 const tierBadgeClass: Record<string, string> = {
@@ -506,13 +506,14 @@ const AccountContent = () => {
               Tap a section below to explore
             </p>
           </div>
-          <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-6 gap-2 bg-transparent h-auto p-0">
+          <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-7 gap-2 bg-transparent h-auto p-0">
             {[
               { value: "overview", icon: <TrendingUp className="h-5 w-5" />, label: "Overview" },
               { value: "subscription", icon: <CreditCard className="h-5 w-5" />, label: "Subscription" },
               { value: "analytics", icon: <BarChart3 className="h-5 w-5" />, label: "Analytics" },
               { value: "points", icon: <Award className="h-5 w-5" />, label: "Points" },
               { value: "activity", icon: <MessageCircle className="h-5 w-5" />, label: "Activity" },
+              { value: "security", icon: <ShieldCheck className="h-5 w-5" />, label: "Security" },
               { value: "settings", icon: <Lock className="h-5 w-5" />, label: "Settings" },
             ].map((tab) => (
               <TabsTrigger
