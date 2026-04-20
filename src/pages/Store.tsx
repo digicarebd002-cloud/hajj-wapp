@@ -327,22 +327,27 @@ const Store = () => {
                         <p className="text-xs text-muted-foreground mt-0.5">{product.category}</p>
                       </div>
 
-                      {/* Rating */}
-                      <div className="flex items-center gap-1">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-3 w-3 ${
-                                i < Math.floor(Number(product.rating))
-                                  ? "fill-gold text-gold"
-                                  : "text-border"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">({product.reviews})</span>
-                      </div>
+                      {/* Rating — real reviews */}
+                      {(() => {
+                        const rs = reviewStats[product.id];
+                        const avg = rs?.avg ?? 0;
+                        const count = rs?.count ?? 0;
+                        return (
+                          <div className="flex items-center gap-1">
+                            <div className="flex items-center">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-3 w-3 ${i < Math.round(avg) ? "fill-gold text-gold" : "text-border"}`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              {count > 0 ? `${avg.toFixed(1)} (${count})` : "No reviews"}
+                            </span>
+                          </div>
+                        );
+                      })()}
 
                       {/* Sizes — compact */}
                       {sizes.length > 0 && (
