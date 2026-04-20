@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag, MessageCircle, Package, FileText, Plane,
   Phone, CreditCard, Lock, LogOut, Edit, Check, X,
-  TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare,
+  TrendingUp, Award, Zap, Star, ThumbsUp, MessageSquare, ShieldCheck,
 } from "lucide-react";
 
 const tierBadgeClass: Record<string, string> = {
@@ -506,13 +506,14 @@ const AccountContent = () => {
               Tap a section below to explore
             </p>
           </div>
-          <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-6 gap-2 bg-transparent h-auto p-0">
+          <TabsList className="mb-8 w-full grid grid-cols-3 md:grid-cols-7 gap-2 bg-transparent h-auto p-0">
             {[
               { value: "overview", icon: <TrendingUp className="h-5 w-5" />, label: "Overview" },
               { value: "subscription", icon: <CreditCard className="h-5 w-5" />, label: "Subscription" },
               { value: "analytics", icon: <BarChart3 className="h-5 w-5" />, label: "Analytics" },
               { value: "points", icon: <Award className="h-5 w-5" />, label: "Points" },
               { value: "activity", icon: <MessageCircle className="h-5 w-5" />, label: "Activity" },
+              { value: "security", icon: <ShieldCheck className="h-5 w-5" />, label: "Security" },
               { value: "settings", icon: <Lock className="h-5 w-5" />, label: "Settings" },
             ].map((tab) => (
               <TabsTrigger
@@ -831,6 +832,44 @@ const AccountContent = () => {
             </div>
           </TabsContent>
 
+          <TabsContent value="security" className="space-y-6">
+            <div className="bg-card rounded-xl card-shadow p-6">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Account Security</h3>
+                  <p className="text-sm text-muted-foreground">Manage your password and two-factor authentication to keep your account safe.</p>
+                </div>
+              </div>
+            </div>
+
+            <TwoFactorSetup />
+
+            <div className="bg-card rounded-xl card-shadow p-6 space-y-4">
+              <h3 className="font-semibold flex items-center gap-2"><Lock className="h-4 w-4" /> Change Password</h3>
+              <p className="text-xs text-muted-foreground">Use at least 6 characters. We recommend a mix of letters, numbers, and symbols.</p>
+              <div className="space-y-3">
+                <div className="space-y-2"><Label>New Password</Label><Input type="password" placeholder="Min 6 characters" id="new-password" /></div>
+                <div className="space-y-2"><Label>Confirm Password</Label><Input type="password" placeholder="Re-enter password" id="confirm-password" /></div>
+              </div>
+              <Button type="button" onClick={async () => {
+                const pw = (document.getElementById("new-password") as HTMLInputElement)?.value;
+                const confirm = (document.getElementById("confirm-password") as HTMLInputElement)?.value;
+                if (!pw || pw.length < 6) { toast({ title: "Password too short", variant: "destructive" }); return; }
+                if (pw !== confirm) { toast({ title: "Passwords do not match", variant: "destructive" }); return; }
+                const { error } = await supabase.auth.updateUser({ password: pw });
+                if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
+                else {
+                  toast({ title: "Password updated!", description: "Your password has been changed successfully." });
+                  (document.getElementById("new-password") as HTMLInputElement).value = "";
+                  (document.getElementById("confirm-password") as HTMLInputElement).value = "";
+                }
+              }}>Update Password</Button>
+            </div>
+          </TabsContent>
+
           <TabsContent value="settings" className="space-y-6">
             <form onSubmit={handleSaveProfile}>
               <div className="bg-card rounded-xl card-shadow p-6 space-y-4">
@@ -854,25 +893,6 @@ const AccountContent = () => {
                 </div>
               </div>
 
-              {/* Two-Factor Authentication */}
-              <TwoFactorSetup />
-
-              <div className="bg-card rounded-xl card-shadow p-6 space-y-4">
-                <h3 className="font-semibold flex items-center gap-2"><Lock className="h-4 w-4" /> Change Password</h3>
-                <div className="space-y-3">
-                  <div className="space-y-2"><Label>New Password</Label><Input type="password" placeholder="Min 6 characters" id="new-password" /></div>
-                  <div className="space-y-2"><Label>Confirm Password</Label><Input type="password" placeholder="Re-enter password" id="confirm-password" /></div>
-                </div>
-                <Button type="button" variant="outline" size="sm" onClick={async () => {
-                  const pw = (document.getElementById("new-password") as HTMLInputElement)?.value;
-                  const confirm = (document.getElementById("confirm-password") as HTMLInputElement)?.value;
-                  if (!pw || pw.length < 6) { toast({ title: "Password too short", variant: "destructive" }); return; }
-                  if (pw !== confirm) { toast({ title: "Passwords do not match", variant: "destructive" }); return; }
-                  const { error } = await supabase.auth.updateUser({ password: pw });
-                  if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-                  else toast({ title: "Password updated!" });
-                }}>Update Password</Button>
-              </div>
 
               {!notifsLoading && notifPrefs && (
                 <div className="bg-card rounded-xl card-shadow p-6 mt-6">
