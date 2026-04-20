@@ -38,6 +38,7 @@ const Store = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
+  const [reviewStats, setReviewStats] = useState<Record<string, { avg: number; count: number }>>({});
   const { addToCart, setIsOpen } = useCart();
   const { isSaved, toggle: toggleWishlist } = useWishlist();
 
@@ -46,6 +47,29 @@ const Store = () => {
       setDynamicCategories((data as any[])?.map((c: any) => c.name) || []);
     });
   }, []);
+
+  // Aggregate real review stats per product
+  useEffect(() => {
+    if (!products || products.length === 0) return;
+    const ids = products.map((p) => p.id);
+    supabase
+      .from("product_reviews")
+      .select("product_id, rating")
+      .in("product_id", ids)
+      .then(({ data }) => {
+        const acc: Record<string, { sum: number; count: number }> = {};
+        (data || []).forEach((r: any) => {
+          if (!acc[r.product_id]) acc[r.product_id] = { sum: 0, count: 0 };
+          acc[r.product_id].sum += Number(r.rating || 0);
+          acc[r.product_id].count += 1;
+        });
+        const stats: Record<string, { avg: number; count: number }> = {};
+        Object.entries(acc).forEach(([pid, v]) => {
+          stats[pid] = { avg: v.count > 0 ? v.sum / v.count : 0, count: v.count };
+        });
+        setReviewStats(stats);
+      });
+  }, [products]);
 
   const categories = ["All", ...dynamicCategories];
   const filtered = useMemo(() => {
