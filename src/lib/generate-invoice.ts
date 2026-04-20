@@ -119,8 +119,6 @@ export function generateInvoicePDF(data: InvoiceData) {
     doc.setFont("helvetica", "normal");
     const truncName = item.name.length > 26 ? item.name.substring(0, 24) + "..." : item.name;
     doc.text(truncName, margin + 4, y + 4);
-    const truncName = item.name.length > 26 ? item.name.substring(0, 24) + "..." : item.name;
-    doc.text(truncName, margin + 4, y + 4);
     doc.setTextColor(muted[0], muted[1], muted[2]);
     doc.text(item.size, margin + 78, y + 4);
     doc.text(item.color, margin + 98, y + 4);
