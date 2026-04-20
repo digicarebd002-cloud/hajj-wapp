@@ -177,7 +177,7 @@ const ProductDetail = () => {
       description: metaDesc,
       image: ogImage || undefined,
       offers: { "@type": "Offer", price: Number(product.price).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock" },
-      aggregateRating: product.reviews > 0 ? { "@type": "AggregateRating", ratingValue: Number(product.rating).toFixed(1), reviewCount: product.reviews } : undefined,
+      aggregateRating: reviews.length > 0 ? { "@type": "AggregateRating", ratingValue: (reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / reviews.length).toFixed(1), reviewCount: reviews.length } : undefined,
     });
     return () => {
       document.title = "Hajj Wallet — Your Sacred Journey Starts Here";
