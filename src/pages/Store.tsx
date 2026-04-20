@@ -256,14 +256,10 @@ const Store = () => {
                         )}
 
                         {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileHover={{ opacity: 1, scale: 1 }}
-                            className="hidden group-hover:flex items-center gap-2 bg-white/90 text-foreground px-4 py-2 rounded-full text-xs font-semibold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          >
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                          <div className="flex items-center gap-2 bg-white/90 text-foreground px-4 py-2 rounded-full text-xs font-semibold shadow-lg opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
                             <Eye className="h-3.5 w-3.5" /> Quick View
-                          </motion.div>
+                          </div>
                         </div>
 
                         {/* Badges */}
