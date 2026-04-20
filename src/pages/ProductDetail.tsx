@@ -184,7 +184,7 @@ const ProductDetail = () => {
       const ldEl = document.getElementById("product-jsonld");
       if (ldEl) ldEl.remove();
     };
-  }, [product]);
+  }, [product, reviews]);
 
   if (loading) return (
     <div className="min-h-screen bg-background">
