@@ -296,7 +296,6 @@ const CommunityStats = () => {
           });
       });
   }, []);
-  }, []);
 
   return (
   <RevealSection className="section-padding">
@@ -310,7 +309,7 @@ const CommunityStats = () => {
 
       {/* Stats */}
       <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-        {communityStats.map((stat) => (
+        {stats.map((stat) => (
           <motion.div
             key={stat.label}
             variants={cardPop}
