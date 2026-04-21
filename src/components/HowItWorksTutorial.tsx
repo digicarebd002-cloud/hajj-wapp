@@ -74,7 +74,7 @@ const tutorialSteps: TutorialStep[] = [
     heroGradient: "from-[hsl(210,70%,30%)] via-[hsl(220,60%,40%)] to-[hsl(210,70%,30%)]",
     heroIconBg: "bg-white/15",
     title: "Join the Community",
-    subtitle: "Become a member for $25/month",
+    subtitle: "Become a member for $15/month",
     description: "Create your account, activate your membership, and unlock wallet contributions, member-only store discounts, and the monthly sponsorship program.",
     features: [
       { icon: <CreditCard className="h-4 w-4" />, text: "Easy PayPal setup" },
