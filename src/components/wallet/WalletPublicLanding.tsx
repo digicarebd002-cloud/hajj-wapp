@@ -241,11 +241,11 @@ const HowItWorks = () => (
 /* ═══════════════════════════════════════════════
    SECTION 3 — Community Stats & Success Stories
    ═══════════════════════════════════════════════ */
-const communityStats = [
-  { label: "Active Members", value: "2,400+", icon: Users },
-  { label: "Savings Goals Set", value: "1,850+", icon: Target },
-  { label: "Contributions Made", value: "18,000+", icon: PiggyBank },
-  { label: "Dreams Achieved", value: "320+", icon: Trophy },
+const fallbackStats = [
+  { label: "Active Members", value: "—", icon: Users, key: "members" },
+  { label: "Discussions Started", value: "—", icon: Target, key: "discussions" },
+  { label: "Community Replies", value: "—", icon: PiggyBank, key: "replies" },
+  { label: "Dreams Achieved", value: "—", icon: Trophy, key: "achieved" },
 ];
 
 const fallbackTestimonials = [
@@ -254,8 +254,15 @@ const fallbackTestimonials = [
   { quote: "The membership benefits are incredible — the points I earned gave me a discount on my Hajj package!", full_name: "Omar S.", country: "Platinum Tier Member", rating: 5 },
 ];
 
+const formatStat = (n: number) => {
+  if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k+`;
+  if (n >= 100) return `${n}+`;
+  return `${n}`;
+};
+
 const CommunityStats = () => {
   const [testimonials, setTestimonials] = useState<any[]>(fallbackTestimonials);
+  const [stats, setStats] = useState(fallbackStats);
 
   useEffect(() => {
     supabase
@@ -266,6 +273,27 @@ const CommunityStats = () => {
       .limit(6)
       .then(({ data }) => {
         if (data && data.length > 0) setTestimonials(data);
+      });
+
+    // Real community stats
+    (supabase.from as any)("v_community_stats")
+      .select("members, discussions, replies")
+      .maybeSingle()
+      .then(({ data }: any) => {
+        if (!data) return;
+        // Count completed Hajj testimonials as "Dreams Achieved" approximation
+        supabase
+          .from("testimonials")
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .then(({ count }) => {
+            setStats([
+              { label: "Active Members", value: formatStat(Number(data.members) || 0), icon: Users, key: "members" },
+              { label: "Discussions Started", value: formatStat(Number(data.discussions) || 0), icon: Target, key: "discussions" },
+              { label: "Community Replies", value: formatStat(Number(data.replies) || 0), icon: PiggyBank, key: "replies" },
+              { label: "Success Stories", value: formatStat(count || 0), icon: Trophy, key: "achieved" },
+            ]);
+          });
       });
   }, []);
 
@@ -281,7 +309,7 @@ const CommunityStats = () => {
 
       {/* Stats */}
       <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-        {communityStats.map((stat) => (
+        {stats.map((stat) => (
           <motion.div
             key={stat.label}
             variants={cardPop}

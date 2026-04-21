@@ -118,7 +118,7 @@ const tutorialSteps: TutorialStep[] = [
       </div>
     ),
     ctaLabel: "View Membership Plans",
-    ctaLink: "/membership",
+    ctaLink: "/wallet",
   },
   {
     id: "wallet",
