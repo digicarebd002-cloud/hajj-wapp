@@ -92,7 +92,7 @@ const NotificationBell = () => {
     if (n.type === "booking") navigate("/bookings");
     else if (n.type === "order") navigate("/orders");
     else if (n.type === "community" && n.reference_id) navigate(`/community/${n.reference_id}`);
-    else if (n.type === "membership") navigate("/membership");
+    else if (n.type === "membership") navigate("/account");
     else if (n.type === "contribution") navigate("/wallet");
     else if (n.type === "sponsorship") navigate("/sponsorship");
   };

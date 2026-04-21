@@ -147,7 +147,7 @@ function getNotifUrl(type: string, referenceId: string | null): string {
     case "booking": return "/bookings";
     case "community": return referenceId ? `/community/${referenceId}` : "/community";
     case "contribution": return "/wallet";
-    case "membership": return "/membership";
+    case "membership": return "/account";
     case "store": return "/orders";
     default: return "/account";
   }
