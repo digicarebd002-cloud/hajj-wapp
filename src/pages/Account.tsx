@@ -935,7 +935,7 @@ const AccountContent = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Monthly Fee</span>
-                    <span className="font-bold text-primary">$25</span>
+                    <span className="font-bold text-primary">$15</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Status</span>
@@ -951,7 +951,7 @@ const AccountContent = () => {
                   )}
                 </div>
                 <div className="mt-4 pt-3 border-t border-border">
-                  <Link to="/membership" className="text-xs text-primary font-semibold hover:underline">Manage Membership →</Link>
+                  <Link to="/wallet" className="text-xs text-primary font-semibold hover:underline">Manage Membership →</Link>
                 </div>
               </motion.div>
 
@@ -970,8 +970,8 @@ const AccountContent = () => {
                   ))}
                 </ul>
                 {p.tier !== "Platinum" && (
-                  <Link to="/membership" className="block mt-4 text-xs text-primary font-semibold hover:underline">
-                    Upgrade to {p.tier === "Silver" ? "Gold" : "Platinum"} →
+                  <Link to="/community" className="block mt-4 text-xs text-primary font-semibold hover:underline">
+                    Earn points to upgrade to {p.tier === "Silver" ? "Gold" : "Platinum"} →
                   </Link>
                 )}
               </motion.div>
