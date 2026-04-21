@@ -26,7 +26,7 @@ const steps = [
     icon: Handshake,
     emoji: "🤝",
     title: "Join the Community",
-    description: "Become a member for $25/month and join hundreds of Muslims on the same journey.",
+    description: "Become a member for $15/month and join hundreds of Muslims on the same journey.",
   },
   {
     icon: Wallet,

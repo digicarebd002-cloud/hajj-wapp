@@ -17,7 +17,7 @@ const steps = [
   {
     icon: Handshake,
     title: "Join the Community",
-    desc: "Become a member for $25/month and join hundreds of Muslims on the same journey",
+    desc: "Become a member for $15/month and join hundreds of Muslims on the same journey",
   },
   {
     icon: Wallet,
