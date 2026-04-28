@@ -569,7 +569,24 @@ async function handleWebhook(body: any, supabaseAdmin: any) {
             status: "active",
             starts_at: now.toISOString(),
             ends_at: newEnds.toISOString(),
+            cancelled_at: null,
           })
+          .eq("paypal_subscription_id", subscriptionId);
+      }
+    }
+
+    // Payment failed — keep status active until expiry, but log it.
+    if (event_type === "BILLING.SUBSCRIPTION.PAYMENT.FAILED") {
+      console.warn("Subscription payment failed:", resource?.id);
+    }
+
+    // Suspended (e.g. PayPal paused due to failed payments)
+    if (event_type === "BILLING.SUBSCRIPTION.SUSPENDED") {
+      const subscriptionId = resource?.id;
+      if (subscriptionId) {
+        await supabaseAdmin
+          .from("wallet_subscriptions")
+          .update({ status: "expired", cancelled_at: new Date().toISOString() })
           .eq("paypal_subscription_id", subscriptionId);
       }
     }
