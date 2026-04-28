@@ -801,10 +801,18 @@ const WalletContent = () => {
           profile={profile}
           isActive={hasActiveSubscription}
           subscription={subConfig?.subscription}
-          price={subConfig?.price ?? 25}
+          price={subConfig?.price ?? 15}
           subLoading={subLoading}
           actionLoading={subActionLoading}
-          onSubscribe={subscribe}
+          onApproved={async (subscriptionId) => {
+            const ok = await recordPlanSubscription(subscriptionId);
+            if (ok) {
+              toast({
+                title: "Membership activated",
+                description: "Your $15/month subscription is now active.",
+              });
+            }
+          }}
           onCancel={cancelSubscription}
           subError={subError}
         />
@@ -826,15 +834,23 @@ const WalletContent = () => {
                 <div className="flex-1">
                   <h3 className="font-bold text-base mb-1">Subscription Required</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    You need an active membership subscription to add money to your wallet. Subscribe for ${subConfig?.price ?? 25}/mo to unlock wallet contributions. Your existing balance remains usable anytime.
+                    You need an active $15/month membership to add money to your wallet.
+                    Your existing balance remains usable anytime.
                   </p>
-                  <Button onClick={subscribe} disabled={subActionLoading} className="btn-glow font-semibold h-11">
-                    {subActionLoading ? (
-                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing…</>
-                    ) : (
-                      <>Activate Membership — ${subConfig?.price ?? 25}/mo</>
-                    )}
-                  </Button>
+                  <div className="max-w-xs">
+                    <PayPalSubscribePlanButton
+                      onApproved={async (subscriptionId) => {
+                        const ok = await recordPlanSubscription(subscriptionId);
+                        if (ok) {
+                          toast({
+                            title: "Membership activated",
+                            description: "Your $15/month subscription is now active.",
+                          });
+                        }
+                      }}
+                      disabled={subActionLoading}
+                    />
+                  </div>
                   {subError && <p className="text-destructive text-xs mt-3">{subError}</p>}
                 </div>
               </div>
