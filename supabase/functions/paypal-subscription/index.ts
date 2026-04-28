@@ -187,6 +187,86 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) throw new Error("Invalid token");
 
+    // Record a subscription created via PayPal hosted plan button (separate
+    // client ID). We trust the subscriptionID returned by PayPal's JS SDK
+    // because the user just completed the approval flow in PayPal's popup.
+    if (action === "record-plan-subscription") {
+      const { subscriptionId, planId, amount } = body;
+      if (!subscriptionId) throw new Error("Missing subscriptionId");
+
+      const now = new Date();
+      const endsAt = new Date(now);
+      endsAt.setMonth(endsAt.getMonth() + 1);
+
+      // Upsert by paypal_subscription_id for this user
+      const { data: existing } = await supabaseAdmin
+        .from("wallet_subscriptions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("paypal_subscription_id", subscriptionId)
+        .maybeSingle();
+
+      if (existing?.id) {
+        await supabaseAdmin
+          .from("wallet_subscriptions")
+          .update({
+            status: "active",
+            starts_at: now.toISOString(),
+            ends_at: endsAt.toISOString(),
+            cancelled_at: null,
+          })
+          .eq("id", existing.id);
+      } else {
+        await supabaseAdmin.from("wallet_subscriptions").insert({
+          user_id: user.id,
+          paypal_subscription_id: subscriptionId,
+          paypal_plan_id: planId || "P-1D83979625931534RNHYMMPQ",
+          status: "active",
+          amount: amount ?? 15,
+          starts_at: now.toISOString(),
+          ends_at: endsAt.toISOString(),
+        });
+      }
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // get-config does not need PayPal API access — it only reads DB state.
+    if (action === "get-config") {
+      const { data: activeSub } = await supabaseAdmin
+        .from("wallet_subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .in("status", ["active", "pending"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      // Try to read price from settings, fallback to 15
+      let price = 15;
+      try {
+        const { data: priceRow } = await supabaseAdmin
+          .from("site_settings")
+          .select("value")
+          .eq("key", "wallet_subscription_price")
+          .maybeSingle();
+        if (priceRow?.value) price = parseFloat(priceRow.value) || 15;
+      } catch (_) {}
+
+      return new Response(
+        JSON.stringify({
+          price,
+          hasActiveSubscription: activeSub?.status === "active",
+          subscription: activeSub,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Remaining actions require admin-configured PayPal API credentials.
     const { clientId, secret, baseUrl, isSandbox, price } = await getPayPalCredentials(supabaseAdmin);
     const accessToken = await getAccessToken(baseUrl, clientId, secret);
 
