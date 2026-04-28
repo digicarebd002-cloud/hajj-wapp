@@ -31,6 +31,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import PayPalButton from "@/components/PayPalButton";
+import PayPalSubscribePlanButton from "@/components/PayPalSubscribePlanButton";
 import { useWalletSubscription } from "@/hooks/use-wallet-subscription";
 import {
   AlertDialog,
