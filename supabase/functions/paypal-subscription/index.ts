@@ -174,8 +174,10 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { action } = body;
 
-    // Webhook doesn't need auth
-    if (action === "webhook") {
+    // Webhook doesn't need auth.
+    // PayPal sends webhooks in native format with `event_type` and `resource`
+    // fields (no `action`). Detect either form.
+    if (action === "webhook" || (typeof body?.event_type === "string" && body?.resource)) {
       return await handleWebhook(body, supabaseAdmin);
     }
 
