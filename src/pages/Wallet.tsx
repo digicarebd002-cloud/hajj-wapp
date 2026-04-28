@@ -601,6 +601,7 @@ const WalletContent = () => {
     actionLoading: subActionLoading,
     subscribe,
     cancelSubscription,
+    recordPlanSubscription,
     isActive: hasActiveSubscription,
   } = useWalletSubscription();
 
