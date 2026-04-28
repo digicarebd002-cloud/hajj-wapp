@@ -328,14 +328,10 @@ const MembershipBanner = ({
           <p className="text-sm text-muted-foreground mb-4">
             Subscribe for ${price}/mo to unlock wallet contributions. Your existing balance remains usable anytime.
           </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={onSubscribe} disabled={actionLoading} className="btn-glow font-semibold h-11">
-              {actionLoading ? (
-                <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing…</>
-              ) : (
-                <>Activate — ${price}/mo</>
-              )}
-            </Button>
+          <div className="space-y-3">
+            <div className="max-w-xs">
+              <PayPalSubscribePlanButton onApproved={onApproved} disabled={actionLoading} />
+            </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1"><CheckCircle2 className="h-3 w-3 text-primary" /> Cancel anytime</span>
               <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-primary" /> Via PayPal</span>
