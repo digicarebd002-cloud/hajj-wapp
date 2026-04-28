@@ -54,7 +54,7 @@ const DiscussionDetail = () => {
   const handleReply = async () => {
     if (!user || !id) return;
     const body = replyText.trim();
-    if (body.length < 10) { toast({ title: "Too short", description: "Reply must be at least 10 characters.", variant: "destructive" }); return; }
+    if (body.length < 1) { toast({ title: "Empty reply", description: "Please write something before posting.", variant: "destructive" }); return; }
     setPosting(true);
     const { error } = await supabase.from("replies").insert({ user_id: user.id, discussion_id: id, body });
     setPosting(false);
