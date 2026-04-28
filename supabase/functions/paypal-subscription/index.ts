@@ -196,9 +196,52 @@ Deno.serve(async (req) => {
       const { subscriptionId, planId, amount } = body;
       if (!subscriptionId) throw new Error("Missing subscriptionId");
 
+      // Server-side verification: ask PayPal directly whether this subscription
+      // exists, is active/approved, and what its real billing dates are.
+      let verifiedStatus: string | null = null;
+      let verifiedNextBilling: string | null = null;
+      let verifiedPlanId: string | null = null;
+      try {
+        const { clientId, secret, baseUrl } = await getPayPalCredentials(supabaseAdmin);
+        const accessToken = await getAccessToken(baseUrl, clientId, secret);
+        const verifyRes = await fetch(
+          `${baseUrl}/v1/billing/subscriptions/${subscriptionId}`,
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        if (verifyRes.ok) {
+          const subData = await verifyRes.json();
+          verifiedStatus = subData.status;
+          verifiedNextBilling = subData?.billing_info?.next_billing_time || null;
+          verifiedPlanId = subData?.plan_id || null;
+        } else {
+          const errTxt = await verifyRes.text();
+          console.warn(
+            `PayPal verify failed for ${subscriptionId} [${verifyRes.status}]: ${errTxt}. ` +
+              `This usually means the hosted plan belongs to a different PayPal merchant ` +
+              `than the configured admin credentials. Falling back to trusting client.`
+          );
+        }
+      } catch (e: any) {
+        console.warn("PayPal verify threw, falling back to client trust:", e?.message);
+      }
+
+      // If we successfully verified and PayPal says it's NOT active/approved, reject.
+      if (verifiedStatus && !["ACTIVE", "APPROVED"].includes(verifiedStatus)) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: `Subscription not active on PayPal (status: ${verifiedStatus})`,
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       const now = new Date();
-      const endsAt = new Date(now);
-      endsAt.setMonth(endsAt.getMonth() + 1);
+      const endsAt = verifiedNextBilling ? new Date(verifiedNextBilling) : (() => {
+        const d = new Date(now);
+        d.setMonth(d.getMonth() + 1);
+        return d;
+      })();
 
       // Upsert by paypal_subscription_id for this user
       const { data: existing } = await supabaseAdmin
@@ -222,7 +265,7 @@ Deno.serve(async (req) => {
         await supabaseAdmin.from("wallet_subscriptions").insert({
           user_id: user.id,
           paypal_subscription_id: subscriptionId,
-          paypal_plan_id: planId || "P-1D83979625931534RNHYMMPQ",
+          paypal_plan_id: verifiedPlanId || planId || "P-1D83979625931534RNHYMMPQ",
           status: "active",
           amount: amount ?? 15,
           starts_at: now.toISOString(),
@@ -231,7 +274,7 @@ Deno.serve(async (req) => {
       }
 
       return new Response(
-        JSON.stringify({ success: true }),
+        JSON.stringify({ success: true, verified: !!verifiedStatus }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
