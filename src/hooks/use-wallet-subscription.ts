@@ -16,8 +16,8 @@ interface SubscriptionConfig {
   price: number;
   hasActiveSubscription: boolean;
   subscription: WalletSubscription | null;
-  clientId: string | null;
-  isSandbox: boolean;
+  clientId?: string | null;
+  isSandbox?: boolean;
 }
 
 export function useWalletSubscription() {
@@ -165,6 +165,37 @@ export function useWalletSubscription() {
     }
   }, [config, fetchConfig]);
 
+  const recordPlanSubscription = useCallback(
+    async (subscriptionId: string) => {
+      setActionLoading(true);
+      try {
+        const { data, error: invokeError } = await supabase.functions.invoke(
+          "paypal-subscription",
+          {
+            body: {
+              action: "record-plan-subscription",
+              subscriptionId,
+              planId: "P-1D83979625931534RNHYMMPQ",
+              amount: 15,
+            },
+          }
+        );
+        if (invokeError) throw new Error(invokeError.message);
+        if (data?.success) {
+          await fetchConfig();
+          return true;
+        }
+        return false;
+      } catch (err: any) {
+        setError(err.message);
+        return false;
+      } finally {
+        setActionLoading(false);
+      }
+    },
+    [fetchConfig]
+  );
+
   return {
     config,
     loading,
@@ -172,6 +203,7 @@ export function useWalletSubscription() {
     actionLoading,
     subscribe,
     cancelSubscription,
+    recordPlanSubscription,
     refetch: fetchConfig,
     isActive: config?.hasActiveSubscription ?? false,
   };
