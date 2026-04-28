@@ -270,29 +270,6 @@ Deno.serve(async (req) => {
     const { clientId, secret, baseUrl, isSandbox, price } = await getPayPalCredentials(supabaseAdmin);
     const accessToken = await getAccessToken(baseUrl, clientId, secret);
 
-    if (action === "get-config") {
-      // Check user's current subscription status
-      const { data: activeSub } = await supabaseAdmin
-        .from("wallet_subscriptions")
-        .select("*")
-        .eq("user_id", user.id)
-        .in("status", ["active", "pending"])
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      return new Response(
-        JSON.stringify({
-          clientId,
-          isSandbox,
-          price,
-          hasActiveSubscription: activeSub?.status === "active",
-          subscription: activeSub,
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     if (action === "create-subscription") {
       const { returnUrl, cancelUrl } = body;
       const planId = await ensureProductAndPlan(baseUrl, accessToken, price, supabaseAdmin);
