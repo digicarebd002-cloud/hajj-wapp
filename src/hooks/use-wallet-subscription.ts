@@ -16,8 +16,8 @@ interface SubscriptionConfig {
   price: number;
   hasActiveSubscription: boolean;
   subscription: WalletSubscription | null;
-  clientId: string | null;
-  isSandbox: boolean;
+  clientId?: string | null;
+  isSandbox?: boolean;
 }
 
 export function useWalletSubscription() {
