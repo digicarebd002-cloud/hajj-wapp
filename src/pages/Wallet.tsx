@@ -198,7 +198,7 @@ const MembershipBanner = ({
   price,
   subLoading,
   actionLoading,
-  onSubscribe,
+  onApproved,
   onCancel,
   subError,
 }: {
@@ -208,7 +208,7 @@ const MembershipBanner = ({
   price: number;
   subLoading: boolean;
   actionLoading: boolean;
-  onSubscribe: () => void;
+  onApproved: (subscriptionId: string) => Promise<void> | void;
   onCancel: () => void;
   subError: string | null;
 }) => {
