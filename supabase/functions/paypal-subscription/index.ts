@@ -171,14 +171,23 @@ Deno.serve(async (req) => {
     }
 
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-    const body = await req.json();
+
+    // Read raw body once so we can both JSON-parse it AND use the exact
+    // string for PayPal webhook signature verification.
+    const rawBody = await req.text();
+    let body: any = {};
+    try {
+      body = rawBody ? JSON.parse(rawBody) : {};
+    } catch {
+      body = {};
+    }
     const { action } = body;
 
-    // Webhook doesn't need auth.
+    // Webhook doesn't need user auth.
     // PayPal sends webhooks in native format with `event_type` and `resource`
     // fields (no `action`). Detect either form.
     if (action === "webhook" || (typeof body?.event_type === "string" && body?.resource)) {
-      return await handleWebhook(body, supabaseAdmin);
+      return await handleWebhook(body, rawBody, req.headers, supabaseAdmin);
     }
 
     // Verify user auth
