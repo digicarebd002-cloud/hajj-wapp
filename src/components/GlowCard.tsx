@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -8,8 +8,9 @@ interface GlowCardProps {
   gradientBorder?: boolean;
 }
 
-const GlowCard = ({ children, className, gradientBorder = false }: GlowCardProps) => {
+const GlowCard = forwardRef<HTMLDivElement, GlowCardProps>(({ children, className, gradientBorder = false }, forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
+  useImperativeHandle(forwardedRef, () => ref.current as HTMLDivElement);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
@@ -61,6 +62,8 @@ const GlowCard = ({ children, className, gradientBorder = false }: GlowCardProps
       </div>
     </motion.div>
   );
-};
+});
+
+GlowCard.displayName = "GlowCard";
 
 export default GlowCard;
