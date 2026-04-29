@@ -40,13 +40,13 @@ const SubscriptionGate = ({ children }: SubscriptionGateProps) => {
   }, [checkSubscription]);
 
   const handleApproved = useCallback(
-    async (subscriptionId: string) => {
+    async (subscriptionId: string, planId: string) => {
       try {
         const { data, error } = await supabase.functions.invoke("paypal-subscription", {
           body: {
             action: "record-plan-subscription",
             subscriptionId,
-            planId: "P-1D83979625931534RNHYMMPQ",
+            planId,
             amount: 15,
           },
         });

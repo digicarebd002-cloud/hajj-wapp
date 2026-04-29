@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Live subscription plan from PayPal (the mandatory $15/mo wallet membership).
 // This uses PayPal's hosted plan flow — separate from the wallet/order/booking
 // PayPal credentials configured in the admin panel.
-const SUBSCRIPTION_PLAN_ID = "P-1D83979625931534RNHYMMPQ";
+// Plan ID is loaded dynamically from site_settings.paypal_subscription_plan_id.
 const SUBSCRIPTION_CLIENT_ID =
   "AcuG6DcljT1pJsaF66gNFw3ZlNkbgV5wfZqzl5djVfFBZ--BcsUHURWtU9IgD9VypaDv_JH47dFJFgRA";
 
@@ -16,8 +17,6 @@ function loadSubscriptionSdk(): Promise<void> {
   if (sdkPromise) return sdkPromise;
 
   sdkPromise = new Promise((resolve, reject) => {
-    // If a different paypal SDK was already loaded (e.g. for one-time payments),
-    // we still need a separate script tag with vault+subscription intent.
     const existing = document.querySelector(
       `script[data-paypal-subscription="true"]`
     ) as HTMLScriptElement | null;
@@ -41,7 +40,7 @@ function loadSubscriptionSdk(): Promise<void> {
 }
 
 interface Props {
-  onApproved: (subscriptionId: string) => void | Promise<void>;
+  onApproved: (subscriptionId: string, planId: string) => void | Promise<void>;
   disabled?: boolean;
 }
 
@@ -49,9 +48,40 @@ export default function PayPalSubscribePlanButton({ onApproved, disabled }: Prop
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [planId, setPlanId] = useState<string | null>(null);
   const renderedRef = useRef(false);
 
+  // Fetch plan ID from DB
   useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("site_settings")
+          .select("value")
+          .eq("key", "paypal_subscription_plan_id")
+          .maybeSingle();
+        if (cancelled) return;
+        if (error) throw error;
+        if (!data?.value) {
+          setError("Subscription plan not configured");
+          setLoading(false);
+          return;
+        }
+        setPlanId(data.value);
+      } catch (err: any) {
+        if (cancelled) return;
+        setError(err.message || "Could not load subscription plan");
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!planId) return;
     let cancelled = false;
 
     loadSubscriptionSdk()
@@ -75,10 +105,10 @@ export default function PayPalSubscribePlanButton({ onApproved, disabled }: Prop
               label: "subscribe",
             },
             createSubscription: (_data: any, actions: any) =>
-              actions.subscription.create({ plan_id: SUBSCRIPTION_PLAN_ID }),
+              actions.subscription.create({ plan_id: planId }),
             onApprove: async (data: any) => {
               try {
-                await onApproved(data.subscriptionID);
+                await onApproved(data.subscriptionID, planId);
               } catch (err) {
                 console.error("Subscription approval handling failed:", err);
               }
@@ -108,7 +138,7 @@ export default function PayPalSubscribePlanButton({ onApproved, disabled }: Prop
     return () => {
       cancelled = true;
     };
-  }, [onApproved]);
+  }, [onApproved, planId]);
 
   return (
     <div className="w-full">
