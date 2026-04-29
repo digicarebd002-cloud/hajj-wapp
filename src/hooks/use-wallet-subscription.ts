@@ -166,7 +166,7 @@ export function useWalletSubscription() {
   }, [config, fetchConfig]);
 
   const recordPlanSubscription = useCallback(
-    async (subscriptionId: string) => {
+    async (subscriptionId: string, planId?: string) => {
       setActionLoading(true);
       try {
         const { data, error: invokeError } = await supabase.functions.invoke(
@@ -175,7 +175,7 @@ export function useWalletSubscription() {
             body: {
               action: "record-plan-subscription",
               subscriptionId,
-              planId: "P-1D83979625931534RNHYMMPQ",
+              planId,
               amount: 15,
             },
           }
