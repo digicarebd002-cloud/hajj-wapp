@@ -171,14 +171,23 @@ Deno.serve(async (req) => {
     }
 
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-    const body = await req.json();
+
+    // Read raw body once so we can both JSON-parse it AND use the exact
+    // string for PayPal webhook signature verification.
+    const rawBody = await req.text();
+    let body: any = {};
+    try {
+      body = rawBody ? JSON.parse(rawBody) : {};
+    } catch {
+      body = {};
+    }
     const { action } = body;
 
-    // Webhook doesn't need auth.
+    // Webhook doesn't need user auth.
     // PayPal sends webhooks in native format with `event_type` and `resource`
     // fields (no `action`). Detect either form.
     if (action === "webhook" || (typeof body?.event_type === "string" && body?.resource)) {
-      return await handleWebhook(body, supabaseAdmin);
+      return await handleWebhook(body, rawBody, req.headers, supabaseAdmin);
     }
 
     // Verify user auth
@@ -518,10 +527,71 @@ Deno.serve(async (req) => {
   }
 });
 
-async function handleWebhook(body: any, supabaseAdmin: any) {
+async function handleWebhook(
+  body: any,
+  rawBody: string,
+  headers: Headers,
+  supabaseAdmin: any
+) {
   const { event_type, resource } = body;
 
   console.log("PayPal webhook event:", event_type);
+
+  // === Signature verification ===
+  const webhookId = Deno.env.get("PAYPAL_WEBHOOK_ID");
+  if (!webhookId) {
+    console.error("PAYPAL_WEBHOOK_ID not configured — rejecting webhook");
+    return new Response(
+      JSON.stringify({ received: false, error: "webhook_id_missing" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  try {
+    const { clientId, secret, baseUrl } = await getPayPalCredentials(supabaseAdmin);
+    const accessToken = await getAccessToken(baseUrl, clientId, secret);
+
+    const verifyRes = await fetch(
+      `${baseUrl}/v1/notifications/verify-webhook-signature`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          auth_algo: headers.get("paypal-auth-algo"),
+          cert_url: headers.get("paypal-cert-url"),
+          transmission_id: headers.get("paypal-transmission-id"),
+          transmission_sig: headers.get("paypal-transmission-sig"),
+          transmission_time: headers.get("paypal-transmission-time"),
+          webhook_id: webhookId,
+          webhook_event: JSON.parse(rawBody),
+        }),
+      }
+    );
+
+    const verifyData = await verifyRes.json();
+    if (verifyData?.verification_status !== "SUCCESS") {
+      console.error(
+        "PayPal webhook signature verification FAILED:",
+        verifyData,
+        "event_type:",
+        event_type
+      );
+      return new Response(
+        JSON.stringify({ received: false, error: "invalid_signature" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    console.log("PayPal webhook signature verified ✓");
+  } catch (err) {
+    console.error("Signature verification error:", err);
+    return new Response(
+      JSON.stringify({ received: false, error: "verification_error" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
 
   try {
     if (event_type === "BILLING.SUBSCRIPTION.ACTIVATED") {
